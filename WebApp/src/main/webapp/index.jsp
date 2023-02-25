@@ -51,7 +51,7 @@
             </div>
 
             <div>
-              <p class="mb-0">Non hai un account? <a href="sign-up.jsp" class="text-white-50 fw-bold">Registrati</a>
+              <p class="mb-0">Non hai un account? <a href="sign-up" class="text-white-50 fw-bold">Registrati</a>
               </p>
             </div>
 
