@@ -12,51 +12,94 @@
 </head>
 <body>
 
-<section class="vh-100 gradient-custom">
-  <div class="container py-5 h-100">
+<section class="vh-100" style="background-color: #2779e2;">
+  <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-        <div class="card bg-dark text-white" style="border-radius: 1rem;">
-          <div class="card-body p-5 text-center">
+      <div class="col-xl-9">
 
-            <div class="mb-md-5 mt-md-4 pb-5">
+        <h1 class="text-white mb-4">Registrati</h1>
 
-			  <form action="">
+        <div class="card" style="border-radius: 15px;">
+          <div class="card-body">
 
-              <h2 class="fw-bold mb-2 text-uppercase">REGISTRATI</h2>
-              <p class="text-white-50 mb-5">Inserire username e password</p>
+            <div class="row align-items-center pt-4 pb-3">
+              <div class="col-md-3 ps-5">
 
-              <div class="form-outline form-white mb-4">
-                <input type="text" id="typeEmailX" class="form-control form-control-lg" />
-                <label class="form-label" for="typeEmailX">Username</label>
+                <h6 class="mb-0">E-mail</h6>
+
               </div>
+              <div class="col-md-9 pe-5">
 
-              <div class="form-outline form-white mb-4">
-                <input type="password" id="typePasswordX" class="form-control form-control-lg" />
-                <label class="form-label" for="typePasswordX">Password</label>
+                <input type="email" class="form-control form-control-lg" placeholder="example@example.com" />
+
+              </div>
+            </div>
+
+            <hr class="mx-n3">
+
+            <div class="row align-items-center py-3">
+              <div class="col-md-3 ps-5">
+
+                <h6 class="mb-0">Password</h6>
+
+              </div>
+              <div class="col-md-9 pe-5">
+
+                <input type="password" class="form-control form-control-lg" />
+
+              </div>
+            </div>
+
+            <hr class="mx-n3">
+
+            <div class="row align-items-center py-3">
+            
+            <!-- 
+            
+              <div class="col-md-3 ps-5">
+
+                <h6 class="mb-0">Full name</h6>
+
+              </div>
+            
+              <div class="col-md-9 pe-5">
+
+                <textarea class="form-control" rows="3" placeholder="Message sent to the employer"></textarea>
+
               </div>
               
-              <div class="form-outline form-white mb-4">
-                <input type="password" id="typePasswordX" class="form-control form-control-lg" />
-                <label class="form-label" for="typePasswordX">Conferma password</label>
+            <hr class="mx-n3">
+            
+             -->
+            
+            
+              
+            </div>
+
+
+            <div class="row align-items-center py-3">
+              <div class="col-md-3 ps-5">
+
+                <h6 class="mb-0">Immagine del profilo (opzionale)</h6>
+
               </div>
+              <div class="col-md-9 pe-5">
 
-		      </form>
+                <input class="form-control form-control-lg" id="formFileLg" type="file" />
+                <!-- <div class="small text-muted mt-2">Upload your CV/Resume or any other relevant file. Max file size 50 MB</div>  -->
 
-              <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Password dimenticata?</a></p>
-
-              <button class="btn btn-outline-light btn-lg px-5" type="submit">Registrati</button>
-
-              <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
-                <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
-                <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a>
               </div>
+            </div>
 
+            <hr class="mx-n3">
+
+            <div class="px-5 py-4">
+              <button type="submit" class="btn btn-primary btn-lg">Registrati</button>
             </div>
 
           </div>
         </div>
+
       </div>
     </div>
   </div>
