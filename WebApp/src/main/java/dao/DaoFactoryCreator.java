@@ -4,13 +4,15 @@ import dao.jdbc.JDBCDaoFactory;
 
 public class DaoFactoryCreator {
 
-	private static DaoFactory instance;
+	private static final DaoFactory instance;
 	
 	static {
 		
 		try {
 			
-			instance = new JDBCDaoFactory("","","");
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			
+			instance = new JDBCDaoFactory("jdbc:mysql://localhost:3306/users_passwords_db", "root", "WgAb_9114_2359");
 			
 		} catch (Exception e) {
 			
