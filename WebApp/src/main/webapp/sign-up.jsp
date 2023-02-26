@@ -19,18 +19,22 @@
 
         <h1 class="text-white mb-4">Registrati</h1>
 
+		<form action="SignUpServlet" method="POST">
+
         <div class="card" style="border-radius: 15px;">
           <div class="card-body">
 
             <div class="row align-items-center pt-4 pb-3">
+            
               <div class="col-md-3 ps-5">
 
                 <h6 class="mb-0">E-mail</h6>
 
               </div>
+              
               <div class="col-md-9 pe-5">
 
-                <input type="email" class="form-control form-control-lg" placeholder="example@example.com" />
+                <input type="email" name="email" class="form-control form-control-lg" placeholder="example@example.com" />
 
               </div>
             </div>
@@ -38,14 +42,16 @@
             <hr class="mx-n3">
 
             <div class="row align-items-center py-3">
+            
               <div class="col-md-3 ps-5">
 
                 <h6 class="mb-0">Password</h6>
 
               </div>
+              
               <div class="col-md-9 pe-5">
 
-                <input type="password" class="form-control form-control-lg" />
+                <input type="password" name="password" class="form-control form-control-lg" />
 
               </div>
             </div>
@@ -85,7 +91,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input class="form-control form-control-lg" id="formFileLg" type="file" />
+                <input class="form-control form-control-lg" name="photo" id="formFileLg" type="file" />
                 <!-- <div class="small text-muted mt-2">Upload your CV/Resume or any other relevant file. Max file size 50 MB</div>  -->
 
               </div>
@@ -96,10 +102,12 @@
             <div class="px-5 py-4">
               <button type="submit" class="btn btn-primary btn-lg">Registrati</button>
             </div>
-
+            
           </div>
         </div>
 
+		</form>
+		
       </div>
     </div>
   </div>
