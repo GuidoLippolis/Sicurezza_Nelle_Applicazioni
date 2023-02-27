@@ -150,6 +150,12 @@ public class JDBCUserDao implements UserDao {
 				if(preparedStatementUsers != null)
 					preparedStatementUsers.close();
 				
+				if(preparedStatementPasswords != null)
+					preparedStatementPasswords.close();
+				
+				if(preparedStatementSalts != null)
+					preparedStatementSalts.close();
+				
 			}
 			
 		} else
