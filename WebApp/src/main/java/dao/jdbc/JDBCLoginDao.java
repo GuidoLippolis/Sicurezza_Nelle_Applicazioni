@@ -30,9 +30,6 @@ public class JDBCLoginDao implements LoginDao {
 			
 			preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE email = " + email + " AND password = " + password);
 			
-			preparedStatement.setString(1, email);
-			preparedStatement.setBytes(2, password);
-			
 			resultSet = preparedStatement.executeQuery();
 			
 			userValid = resultSet.next();
