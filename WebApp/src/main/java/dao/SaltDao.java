@@ -14,6 +14,6 @@ import model.User;
 public interface SaltDao {
 
 	Optional<byte[]> findSaltForUser(User user) throws SQLException;
-	boolean insertSaltIntoDB(Salt salt) throws SQLException;
+	void insertSaltIntoDB(Salt salt) throws SQLException;
 	
 }

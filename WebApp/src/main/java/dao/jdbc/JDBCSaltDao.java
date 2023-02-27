@@ -67,7 +67,7 @@ public class JDBCSaltDao implements SaltDao {
 	}
 
 	@Override
-	public boolean insertSaltIntoDB(Salt salt) throws SQLException {
+	public void insertSaltIntoDB(Salt salt) throws SQLException {
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -79,16 +79,16 @@ public class JDBCSaltDao implements SaltDao {
 			preparedStatement = connection.prepareStatement("INSERT INTO salt_user(user_id, salt) VALUES (?,?)");
 			
 			preparedStatement.setInt(1, salt.getUserId());
-			preparedStatement.setBytes(2, salt.getSalt());
+			preparedStatement.setBytes(2, salt.getSaltValue());
 			
 			affectedRows = preparedStatement.executeUpdate();
 			
-			return affectedRows > 0;
+			if(affectedRows == 0)
+				throw new SQLException();
 			
 		} catch (Exception e) {
 			
 			e.printStackTrace();
-			return false;
 			
 		} finally {
 			

@@ -3,7 +3,7 @@ package model;
 public class Salt {
 
 	private int userId;
-	private byte[] salt;
+	private byte[] saltValue;
 	
 	public Salt() {
 		super();
@@ -12,7 +12,7 @@ public class Salt {
 	public Salt(int userId, byte[] salt) {
 		super();
 		this.userId = userId;
-		this.salt = salt;
+		this.saltValue = salt;
 	}
 
 	public int getUserId() {
@@ -23,12 +23,12 @@ public class Salt {
 		this.userId = userId;
 	}
 
-	public byte[] getSalt() {
-		return salt;
+	public byte[] getSaltValue() {
+		return saltValue;
 	}
 
-	public void setSalt(byte[] salt) {
-		this.salt = salt;
+	public void setSaltValue(byte[] salt) {
+		this.saltValue = salt;
 	}
 	
 }

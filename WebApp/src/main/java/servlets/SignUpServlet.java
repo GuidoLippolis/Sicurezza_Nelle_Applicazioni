@@ -58,14 +58,12 @@ public class SignUpServlet extends HttpServlet {
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		byte[] photo = request.getParameter("photo").getBytes();
-		
-		
+
 		User user = new User(email, photo);
 		
 		Optional<User> insertedUser = null;
 		
 		boolean insertedSalt = false;
-		
 		
 		try {
 			
@@ -89,23 +87,32 @@ public class SignUpServlet extends HttpServlet {
 				System.out.println("Inserimento utente avvenuto con successo");
 				
 				/*
-				 * Ottenuto l'utente, faccio una query di INSERT sul database salts
+				 * Ottenuto l'utente, si apre una connessione verso il database salts
 				 * 
 				 * */
 				
 		        DaoFactory saltDaoFactory = SaltsDaoFactoryCreator.getDaoFactory();
 		        SaltDao saltDao = saltDaoFactory.getSaltDao();
 		        
-		        insertedSalt = saltDao.insertSaltIntoDB(new Salt(user.getId(), user.getSalt().getSalt()));
+		        saltDao.insertSaltIntoDB(new Salt(user.getId(), user.getSalt().getSaltValue()));
 		        
-		        if(insertedSalt)
+		        if(insertedSalt) {
+		        	
 		        	System.out.println("Intero inserimento avvenuto con successo");
-		        else
+		        	
+		        } else {
+		        	
+		        	// TODO: Mostrare pagina di errore
 		        	System.out.println("Intero inserimento fallito");
+		        	
+		        }
+				
+			} else {
+				
+				// TODO: Mostrare pagina di errore
+				System.out.println("Errore nell'inserimento");
 				
 			}
-			else
-				System.out.println("Errore nell'inserimento");
 			
 			
 		} catch (Exception e) {
