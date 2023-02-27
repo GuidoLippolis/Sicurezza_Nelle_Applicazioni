@@ -18,7 +18,7 @@ public class JDBCLoginDao implements LoginDao {
 
 	@Override
 	public boolean isUserValid(String email, byte[] password) throws SQLException {
-		// TODO Auto-generated method stub
+		// Insecure
 		return false;
 	}
 
