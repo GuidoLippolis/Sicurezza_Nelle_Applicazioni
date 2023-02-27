@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dao.DaoFactory;
+import dao.DaoFactoryCreator;
+import dao.LoginDao;
+
 /**
  * Servlet implementation class SignUpServlet
  */
@@ -36,6 +40,44 @@ public class SignUpServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		/*
+		 * FASE DI REGISTRAZIONE:
+		 * 
+		 * 1. L'utente invia le credenziali scelte: email, password ed eventualmente foto profilo
+		 * 2. Le credenziali vengono recuperate dall'oggetto request
+		 * 3. Viene chiamato un metodo in JDBCLoginDao che permette di inserire le credenziali scelte nel database
+		 * 
+		 * */
+		
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
+		byte[] photo = request.getParameter("photo").getBytes();
+		
+		boolean insertedUser = false;
+		
+		DaoFactory daoFactory = DaoFactoryCreator.getDaoFactory();
+		LoginDao loginDao = daoFactory.getLoginDao();
+		
+		try {
+			
+			/*
+			 * TODO: Gestire il caso di errore di email già esistente
+			 * 
+			 * */
+			
+			insertedUser = loginDao.signUp(email, password, photo);
+			
+			if(insertedUser)
+				System.out.println("Inserimento avvenuto con successo");
+			else
+				System.out.println("Errore nell'inserimento");
+				
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		doGet(request, response);
 		
