@@ -58,7 +58,6 @@ public class JDBCUserDao implements UserDao {
 		
 		int rowsAffectedUsers = 0;
 		int rowsAffectedPasswords = 0;
-		int rowsAffectedSalts = 0;
 		
 		/*
 		 * Dopo l'inserimento di un utente nel database degli utenti (users),
@@ -128,8 +127,6 @@ public class JDBCUserDao implements UserDao {
 				    	preparedStatementPasswords.setBytes(2, hashedPassword);
 				    	
 				        rowsAffectedPasswords = preparedStatementPasswords.executeUpdate();
-				        
-				        user.setSalt(new Salt(user.getId(), salt));
 				        
 				    } else
 				    	
