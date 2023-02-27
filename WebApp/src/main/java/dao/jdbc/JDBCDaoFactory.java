@@ -5,7 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import dao.DaoFactory;
-import dao.LoginDao;
+import dao.SaltDao;
+import dao.UserDao;
 
 public class JDBCDaoFactory implements DaoFactory {
 
@@ -26,9 +27,16 @@ public class JDBCDaoFactory implements DaoFactory {
 	}
 
 	@Override
-	public LoginDao getLoginDao() {
+	public UserDao getUserDao() {
 		
-		return new JDBCLoginDao(connection);
+		return new JDBCUserDao(connection);
+		
+	}
+
+	@Override
+	public SaltDao getSaltDao() {
+		
+		return new JDBCSaltDao(connection);
 		
 	}
 

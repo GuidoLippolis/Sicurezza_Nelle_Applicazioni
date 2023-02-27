@@ -5,16 +5,33 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Optional;
 
-import dao.LoginDao;
+import dao.DaoFactory;
+import dao.SaltDao;
+import dao.SaltsDaoFactoryCreator;
+import dao.UserDao;
+import model.Salt;
 import model.User;
 import passwordUtils.PasswordUtils;
 
-public class JDBCLoginDao implements LoginDao {
+/*
+ * Classe che implementa i metodi dell'interfaccia UserDao tramite l'utilizzo
+ * della specifica libreria JDBC.
+ * 
+ * */
+
+/*
+ * TODO: Recuperare le query SQL da un file .properties
+ * 
+ * */
+
+public class JDBCUserDao implements UserDao {
 
 	private Connection connection;
 	
-	public JDBCLoginDao(Connection connection) {
+	public JDBCUserDao(Connection connection) {
 		
 		super();
 		this.connection = connection;
@@ -22,7 +39,7 @@ public class JDBCLoginDao implements LoginDao {
 	}
 	
 	@Override
-	public boolean signUp(User user, String password) throws SQLException {
+	public Optional<User> signUp(User user, String password) throws SQLException {
 		
 		/*
 		 * preparedStatementUsers serve per l'inserimento dell'utente nel database
@@ -30,7 +47,27 @@ public class JDBCLoginDao implements LoginDao {
 		 * */
 		
 		PreparedStatement preparedStatementUsers = null;
-		int rowsAffected = 0;
+		
+		/*
+		 * generatedKeys serve per contenere gli attributi dell'oggetto
+		 * inserito nel database
+		 * 
+		 * */
+		
+		ResultSet generatedKeys = null;
+		
+		int rowsAffectedUsers = 0;
+		int rowsAffectedPasswords = 0;
+		int rowsAffectedSalts = 0;
+		
+		/*
+		 * Dopo l'inserimento di un utente nel database degli utenti (users),
+		 * dal momento che la password viene memorizzata in una tabella separata
+		 * per ragioni di sicurezza, è necessario recuperare l'id dell'utente generato
+		 * per inserirlo nella tabella passwords
+		 * 
+		 * */
+		
 		int generatedId = 0;
 		
 		/*
@@ -40,6 +77,14 @@ public class JDBCLoginDao implements LoginDao {
 		 * */
 		
 		PreparedStatement preparedStatementPasswords = null;
+		
+		/*
+		 * preparedStatementSalts serve per l'inserimento del valore di salt
+		 * generato nel database
+		 * 
+		 * */
+		
+		PreparedStatement preparedStatementSalts = null;
 		
 		if(user.getEmail().length() != 0 && password.length() != 0) {
 			
@@ -55,37 +100,52 @@ public class JDBCLoginDao implements LoginDao {
 				preparedStatementUsers.setString(1, user.getEmail());
 				preparedStatementUsers.setBytes(2, user.getPhoto());
 				
-				rowsAffected = preparedStatementUsers.executeUpdate();
+				rowsAffectedUsers = preparedStatementUsers.executeUpdate();
 				
-				if(rowsAffected > 0) {
+				if(rowsAffectedUsers > 0) {
 					
-					ResultSet generatedKeys = preparedStatementUsers.getGeneratedKeys();
+					generatedKeys = preparedStatementUsers.getGeneratedKeys();
 					
 				    if (generatedKeys.next()) {
 				    	
-				    	byte[] hashedPassword = PasswordUtils.generateHash(password, "SHA-256", PasswordUtils.createSalt(5));
+				    	// TODO: Recuperare il parametro di createSalt(int) da un file .properties
+				    	
+				    	byte[] salt = PasswordUtils.createSalt(5);
+				    	
+				    	byte[] hashedPassword = PasswordUtils.generateHash(password, "SHA-256", salt);
 				    	
 				    	generatedId = generatedKeys.getInt(1);
+				    	user.setId(generatedId);
+				    	
+				    	/*
+				    	 * Inserimento della password nel database users_passwords_db
+				    	 * 
+				    	 * */
 				    	
 				    	preparedStatementPasswords = connection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES(?,?)");
 				    	
 				    	preparedStatementPasswords.setInt(1, generatedId);
 				    	preparedStatementPasswords.setBytes(2, hashedPassword);
 				    	
-				    	preparedStatementPasswords.executeUpdate();
-				    	
+				        rowsAffectedPasswords = preparedStatementPasswords.executeUpdate();
+				        
+				        user.setSalt(new Salt(user.getId(), salt));
+				        
 				    } else
 				    	
-				    	return false;
+				    	return Optional.empty();
 					
 				}
 				
 			} catch (Exception e) {
 				
 				e.printStackTrace();
-				return false;
+				return Optional.empty();
 				
 			} finally {
+				
+				if(generatedKeys != null)
+					generatedKeys.close();
 				
 				if(preparedStatementUsers != null)
 					preparedStatementUsers.close();
@@ -94,9 +154,9 @@ public class JDBCLoginDao implements LoginDao {
 			
 		} else
 			
-			return false;
+			return Optional.empty();
 			
-		return true;
+		return Optional.ofNullable(user);
 		
 	}
 
@@ -114,6 +174,8 @@ public class JDBCLoginDao implements LoginDao {
 			
 			preparedStatement.setString(1, email);
 			preparedStatement.setBytes(2, password);
+			
+			Arrays.fill(password, (byte)0);
 			
 			resultSet = preparedStatement.executeQuery();
 			

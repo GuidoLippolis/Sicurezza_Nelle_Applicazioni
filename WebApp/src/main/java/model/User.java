@@ -5,8 +5,10 @@ import java.util.Arrays;
 
 public class User implements Serializable {
 
+	private int id;
 	private String email;
 	private byte[] photo;
+	private Salt salt;
 	
 	public User() {
 		super();
@@ -21,6 +23,21 @@ public class User implements Serializable {
 		super();
 		this.email = email;
 		this.photo = photo;
+	}
+	
+	public User(int id, String email, byte[] photo) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.photo = photo;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getEmail() {
@@ -37,6 +54,14 @@ public class User implements Serializable {
 
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
+	}
+	
+	public Salt getSalt() {
+		return salt;
+	}
+
+	public void setSalt(Salt salt) {
+		this.salt = salt;
 	}
 
 	@Override

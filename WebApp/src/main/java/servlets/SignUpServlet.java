@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,8 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DaoFactory;
-import dao.DaoFactoryCreator;
-import dao.LoginDao;
+import dao.SaltDao;
+import dao.SaltsDaoFactoryCreator;
+import dao.UserDao;
+import dao.UsersPasswordsDaoFactoryCreator;
+import model.Salt;
 import model.User;
 
 /**
@@ -55,15 +59,24 @@ public class SignUpServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		byte[] photo = request.getParameter("photo").getBytes();
 		
+		
 		User user = new User(email, photo);
 		
-		boolean insertedUser = false;
+		Optional<User> insertedUser = null;
 		
-		DaoFactory daoFactory = DaoFactoryCreator.getDaoFactory();
-		LoginDao loginDao = daoFactory.getLoginDao();
+		boolean insertedSalt = false;
+		
 		
 		try {
 			
+			/*
+			 * Si apre una connessione verso il database users_passwords_db
+			 * 
+			 * */
+			
+			DaoFactory daoFactory = UsersPasswordsDaoFactoryCreator.getDaoFactory();
+			UserDao loginDao = daoFactory.getUserDao();
+
 			/*
 			 * TODO: Gestire il caso di errore di email già esistente
 			 * 
@@ -71,15 +84,34 @@ public class SignUpServlet extends HttpServlet {
 			
 			insertedUser = loginDao.signUp(user, password);
 			
-			if(insertedUser)
-				System.out.println("Inserimento avvenuto con successo");
+			if(insertedUser.isPresent()) {
+				
+				System.out.println("Inserimento utente avvenuto con successo");
+				
+				/*
+				 * Ottenuto l'utente, faccio una query di INSERT sul database salts
+				 * 
+				 * */
+				
+		        DaoFactory saltDaoFactory = SaltsDaoFactoryCreator.getDaoFactory();
+		        SaltDao saltDao = saltDaoFactory.getSaltDao();
+		        
+		        insertedSalt = saltDao.insertSaltIntoDB(new Salt(user.getId(), user.getSalt().getSalt()));
+		        
+		        if(insertedSalt)
+		        	System.out.println("Intero inserimento avvenuto con successo");
+		        else
+		        	System.out.println("Intero inserimento fallito");
+				
+			}
 			else
 				System.out.println("Errore nell'inserimento");
-				
+			
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			
 		}
 		
 		doGet(request, response);

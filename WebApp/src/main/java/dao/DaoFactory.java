@@ -2,6 +2,7 @@ package dao;
 
 public interface DaoFactory extends AutoCloseable {
 
-	LoginDao getLoginDao();
+	UserDao getUserDao();
+	SaltDao getSaltDao();
 	
 }
