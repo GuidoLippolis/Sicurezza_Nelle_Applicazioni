@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import dao.DaoFactory;
 import dao.DaoFactoryCreator;
 import dao.LoginDao;
+import model.User;
 
 /**
  * Servlet implementation class SignUpServlet
@@ -54,6 +55,8 @@ public class SignUpServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		byte[] photo = request.getParameter("photo").getBytes();
 		
+		User user = new User(email, photo);
+		
 		boolean insertedUser = false;
 		
 		DaoFactory daoFactory = DaoFactoryCreator.getDaoFactory();
@@ -66,7 +69,7 @@ public class SignUpServlet extends HttpServlet {
 			 * 
 			 * */
 			
-			insertedUser = loginDao.signUp(email, password, photo);
+			insertedUser = loginDao.signUp(user, password);
 			
 			if(insertedUser)
 				System.out.println("Inserimento avvenuto con successo");

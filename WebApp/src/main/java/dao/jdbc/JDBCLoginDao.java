@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import dao.LoginDao;
+import model.User;
 import passwordUtils.PasswordUtils;
 
 public class JDBCLoginDao implements LoginDao {
@@ -21,7 +22,7 @@ public class JDBCLoginDao implements LoginDao {
 	}
 	
 	@Override
-	public boolean signUp(String email, String password, byte[] photo) throws SQLException {
+	public boolean signUp(User user, String password) throws SQLException {
 		
 		/*
 		 * preparedStatementUsers serve per l'inserimento dell'utente nel database
@@ -40,7 +41,7 @@ public class JDBCLoginDao implements LoginDao {
 		
 		PreparedStatement preparedStatementPasswords = null;
 		
-		if(email.length() != 0) {
+		if(user.getEmail().length() != 0 && password.length() != 0) {
 			
 			try {
 				
@@ -51,8 +52,8 @@ public class JDBCLoginDao implements LoginDao {
 				
 				preparedStatementUsers = connection.prepareStatement("INSERT INTO users(email, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 				
-				preparedStatementUsers.setString(1, email);
-				preparedStatementUsers.setBytes(2, photo);
+				preparedStatementUsers.setString(1, user.getEmail());
+				preparedStatementUsers.setBytes(2, user.getPhoto());
 				
 				rowsAffected = preparedStatementUsers.executeUpdate();
 				
