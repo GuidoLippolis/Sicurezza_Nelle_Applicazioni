@@ -1,6 +1,9 @@
 package servlets;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -10,9 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.DaoFactory;
-import dao.UserDao;
-import dao.UsersDaoFactoryCreator;
+import dao.UserDAO;
 import model.User;
 
 /**
@@ -54,28 +55,26 @@ public class SignUpServlet extends HttpServlet {
 		 * */
 		
 		String email = request.getParameter("email");
-		String password = request.getParameter("password");
+		byte[] password = request.getParameter("password").getBytes();
 		byte[] photo = request.getParameter("photo").getBytes();
 
 		User user = new User(email, photo);
 		
-		Optional<User> insertedUser = null;
-		
-		/*
-		 * Si apre una connessione verso il database degli utenti
-		 * 
-		 * */
-		
-		DaoFactory daoFactory = UsersDaoFactoryCreator.getDaoFactory();
-		UserDao userDao = daoFactory.getUserDao();
+		boolean insertedUser = false;
 		
 		try {
 			
-			userDao.signUp(user, password);
+			insertedUser = UserDAO.signIn(user, password);
 			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			if(insertedUser)
+				System.out.println("Transazione avvenuta con successo");
+			else
+				System.out.println("Successo senza succ");
+			
+		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException e) {
+			
 			e.printStackTrace();
+			
 		}
 		
 		doGet(request, response);

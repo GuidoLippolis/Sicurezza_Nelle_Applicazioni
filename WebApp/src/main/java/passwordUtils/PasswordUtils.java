@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import model.User;
+
 public class PasswordUtils {
 
 	public static byte[] generateHash(byte[] password, String algorithm) throws NoSuchAlgorithmException {
