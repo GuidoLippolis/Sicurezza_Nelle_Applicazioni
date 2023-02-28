@@ -64,7 +64,9 @@ public class SignUpServlet extends HttpServlet {
 		
 		try {
 			
-			insertedUser = UserDAO.signIn(user, password);
+			if(email.length() != 0 && password.length != 0)
+				insertedUser = UserDAO.signIn(user, password);
+				
 			
 			if(insertedUser)
 				System.out.println("Transazione avvenuta con successo");

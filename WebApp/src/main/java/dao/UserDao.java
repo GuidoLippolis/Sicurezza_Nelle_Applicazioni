@@ -28,9 +28,23 @@ public class UserDAO {
 		
 		try {
 			
+			/*
+			 * Apertura di due connessioni diverse verso i database users_db e passwords_db
+			 * 
+			 * TODO: Recuperare i parametri di connessione al database da un file .properties
+			 * 
+			 * */
+			
 			passwordsDBConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/passwords_db", "root", "WgAb_9114_2359");
 			usersDBConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
-		
+			
+			/*
+			 * Si disattiva la modalità di autocommit per evitare che le singole istruzioni SQL vengano
+			 * eseguite come transazioni a sé stanti. Al contrario, si raggruppano tali istruzioni in
+			 * un'unica transazione, così che se una di queste dovesse fallire, falliscono tutte (rollback)
+			 * 
+			 * */
+			
 			passwordsDBConnection.setAutoCommit(false);
 			
 			preparedStatementUsers = usersDBConnection.prepareStatement("INSERT INTO users(email, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -40,10 +54,22 @@ public class UserDAO {
 			
 			preparedStatementUsers.executeUpdate();
 			
+			/*
+			 * A seguito dell'inserimento dell'utente nel database, vengono recuperati i valori dell'oggetto
+			 * appena inserito. In particolare, viene recuperato il valore corrispondente all'id. Ciò viene fatto
+			 * perché ogni password viene associata all'id dell'utente al quale essa appartiene
+			 * 
+			 * */
+			
 			ResultSet generatedKeys = preparedStatementUsers.getGeneratedKeys();
 			
 			int userId = 0;
 
+			/*
+			 * Se è stato correttamente inserito l'utente nel database, viene recuperato il suo id
+			 * 
+			 * */
+			
 			if(generatedKeys.next()) {
 				
 				userId = generatedKeys.getInt(1);
@@ -55,6 +81,12 @@ public class UserDAO {
 				
 				preparedStatementPasswords.executeUpdate();
 				
+				/*
+				 * Se l'inserimento della password nel database avviene senza errori, viene effettuato
+				 * il commit dell'intera transazione
+				 * 
+				 * */
+				
 				passwordsDBConnection.commit();
 				
 				return true;
@@ -63,12 +95,19 @@ public class UserDAO {
 			
 		} catch (SQLException e) {
 			
+			/*
+			 * Se si verifica qualche errore nell'inserimento di dati nel database, che l'errore
+			 * riguardi il database degli utenti o quello delle password, l'intera transazione
+			 * viene annullata
+			 * 
+			 * */
+			
 			if(passwordsDBConnection != null)
 				passwordsDBConnection.rollback();
 			
 			e.printStackTrace();
 			
-			return true;
+			return false;
 			
 		} finally {
 			

@@ -10,13 +10,36 @@ public class PasswordUtils {
 
 	public static byte[] generateHash(byte[] password, String algorithm) throws NoSuchAlgorithmException {
 		
+		/*
+		 * Generazione del valore di salt da concatenare alla password
+		 * 
+		 * TODO: Recuperare il parametro del metodo createSalt() da un file .properties
+		 * 
+		 * */
+		
 		byte[] salt = createSalt(10);
 		
+		/*
+		 * Concatenazione dell'array di byte corrispondente alla password con
+		 * quello corrispondente al salt
+		 * 
+		 * */
+		
 		byte[] passwordAndSalt = appendByteArrays(password, salt);
+		
+		/*
+		 * Applicazione dell'algoritmo di hashing scelto
+		 * 
+		 * */
 		
 		MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
 		
 		byte[] hashValue = messageDigest.digest(passwordAndSalt);
+		
+		/*
+		 * Pulizia dei dati sensibili
+		 * 
+		 * */
 		
 		clearArray(password);
 		clearArray(passwordAndSalt);
