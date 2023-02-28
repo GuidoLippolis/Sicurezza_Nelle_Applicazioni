@@ -12,14 +12,14 @@ public class PasswordUtils {
 		
 		byte[] salt = createSalt(10);
 		
-		byte[] input = appendByteArrays(password, salt);
+		byte[] passwordAndSalt = appendByteArrays(password, salt);
 		
 		MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
 		
-		byte[] hashValue = messageDigest.digest(input);
+		byte[] hashValue = messageDigest.digest(passwordAndSalt);
 		
 		clearArray(password);
-		clearArray(input);
+		clearArray(passwordAndSalt);
 		clearArray(salt);
 
 		return hashValue;
@@ -27,10 +27,14 @@ public class PasswordUtils {
 	}
 	
 	private static byte[] appendByteArrays(byte[] a, byte[] b) {
+		
 	    byte[] result = new byte[a.length + b.length];
+	    
 	    System.arraycopy(a, 0, result, 0, a.length);
 	    System.arraycopy(b, 0, result, a.length, b.length);
+	    
 	    return result;
+	    
 	}
 	
 	private static byte[] createSalt(int length) {
