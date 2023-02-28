@@ -1,6 +1,8 @@
 package model;
 
-public class Salt {
+import java.io.Serializable;
+
+public class Salt implements Serializable {
 
 	private int userId;
 	private byte[] saltValue;

@@ -9,10 +9,9 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import dao.DaoFactory;
-import dao.SaltDao;
-import dao.SaltsDaoFactoryCreator;
+import dao.PasswordDao;
+import dao.PasswordsDaoFactoryCreator;
 import dao.UserDao;
-import model.Salt;
 import model.User;
 import passwordUtils.PasswordUtils;
 
@@ -48,121 +47,114 @@ public class JDBCUserDao implements UserDao {
 		
 		PreparedStatement preparedStatementUsers = null;
 		
-		/*
-		 * generatedKeys serve per contenere gli attributi dell'oggetto
-		 * inserito nel database
-		 * 
-		 * */
+		int rowsAffectedUsers = 0;
+		
+//		/*
+//		 * preparedStatementPasswords serve per l'inserimento del valore hash
+//		 * della password nel database
+//		 * 
+//		 * */
+//		
+		PreparedStatement preparedStatementPasswords = null;
 		
 		ResultSet generatedKeys = null;
 		
-		int rowsAffectedUsers = 0;
 		int rowsAffectedPasswords = 0;
 		
-		/*
-		 * Dopo l'inserimento di un utente nel database degli utenti (users),
-		 * dal momento che la password viene memorizzata in una tabella separata
-		 * per ragioni di sicurezza, è necessario recuperare l'id dell'utente generato
-		 * per inserirlo nella tabella passwords
-		 * 
-		 * */
+		boolean insertedPassword = false;
 		
 		int generatedId = 0;
 		
-		/*
-		 * preparedStatementPasswords serve per l'inserimento del valore hash
-		 * della password nel database
-		 * 
-		 * */
-		
-		PreparedStatement preparedStatementPasswords = null;
-		
-		/*
-		 * preparedStatementSalts serve per l'inserimento del valore di salt
-		 * generato nel database
-		 * 
-		 * */
-		
-		PreparedStatement preparedStatementSalts = null;
-		
-		if(user.getEmail().length() != 0 && password.length() != 0) {
+		try {
 			
-			try {
+			preparedStatementUsers = connection.prepareStatement("INSERT INTO users(email, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
+			
+//			connection.setAutoCommit(false);
+			
+			preparedStatementUsers.setString(1, user.getEmail());
+			preparedStatementUsers.setBytes(2, user.getPhoto());
+			
+			rowsAffectedUsers = preparedStatementUsers.executeUpdate();
+			
+			/*
+			 * Inserimento password
+			 * 
+			 * */
+			
+			if(rowsAffectedUsers > 0) {
 				
-				/*
-				 * Query per l'inserimento dell'utente nel database
-				 * 
-				 * */
+				generatedKeys = preparedStatementUsers.getGeneratedKeys();
 				
-				preparedStatementUsers = connection.prepareStatement("INSERT INTO users(email, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
-				
-				preparedStatementUsers.setString(1, user.getEmail());
-				preparedStatementUsers.setBytes(2, user.getPhoto());
-				
-				rowsAffectedUsers = preparedStatementUsers.executeUpdate();
-				
-				if(rowsAffectedUsers > 0) {
-					
-					generatedKeys = preparedStatementUsers.getGeneratedKeys();
-					
-				    if (generatedKeys.next()) {
-				    	
-				    	// TODO: Recuperare il parametro di createSalt(int) da un file .properties
-				    	
-				    	byte[] salt = PasswordUtils.createSalt(5);
-				    	
-				    	byte[] hashedPassword = PasswordUtils.generateHash(password, "SHA-256", salt);
-				    	
-				    	generatedId = generatedKeys.getInt(1);
-				    	user.setId(generatedId);
-				    	
-				    	/*
-				    	 * Inserimento della password nel database users_passwords_db
-				    	 * 
-				    	 * */
-				    	
-				    	preparedStatementPasswords = connection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES(?,?)");
-				    	
-				    	preparedStatementPasswords.setInt(1, generatedId);
-				    	preparedStatementPasswords.setBytes(2, hashedPassword);
-				    	
-				        rowsAffectedPasswords = preparedStatementPasswords.executeUpdate();
-				        
-				    } else
-				    	
-				    	return Optional.empty();
-					
-				}
-				
-			} catch (Exception e) {
-				
-				e.printStackTrace();
-				return Optional.empty();
-				
-			} finally {
-				
-				if(generatedKeys != null)
-					generatedKeys.close();
-				
-				if(preparedStatementUsers != null)
-					preparedStatementUsers.close();
-				
-				if(preparedStatementPasswords != null)
-					preparedStatementPasswords.close();
-				
-				if(preparedStatementSalts != null)
-					preparedStatementSalts.close();
+			    if (generatedKeys.next()) {
+			    	
+			    	// TODO: Recuperare il parametro di createSalt(int) da un file .properties
+			    	
+			    	byte[] salt = PasswordUtils.createSalt(5);
+			    	
+			    	byte[] hashedPassword = PasswordUtils.generateHash(password, "SHA-256", salt);
+			    	
+			    	generatedId = generatedKeys.getInt(1);
+			    	user.setId(generatedId);
+			    	
+			    	insertedPassword = createConnectionToPasswordsDBAndInsert(user, hashedPassword);
+			    	
+			    	if(insertedPassword) {
+			    		
+//			    		connection.commit();
+			    		return Optional.ofNullable(user);
+			    		
+			    	}
+			    	
+			    } else
+			    	
+			    	return Optional.empty();
 				
 			}
 			
-		} else
+		} catch (Exception e) {
 			
+			e.printStackTrace();
 			return Optional.empty();
+			
+		} finally {
+			
+			if(generatedKeys != null)
+				generatedKeys.close();
+			
+			if(preparedStatementUsers != null)
+				preparedStatementUsers.close();
+			
+			if(preparedStatementPasswords != null)
+				preparedStatementPasswords.close();
+			
+		}
 			
 		return Optional.ofNullable(user);
 		
 	}
+	
+	private boolean createConnectionToPasswordsDBAndInsert(User user, byte[] hashedPassword) throws SQLException {
+		
+		boolean insertedPassword = false;
+		
+		try {
+			
+			DaoFactory passwordsDaoFactoryCreator = PasswordsDaoFactoryCreator.getDaoFactory();
+			PasswordDao passwordDao = passwordsDaoFactoryCreator.getPasswordDao();
+			
+			insertedPassword = passwordDao.insertPasswordIntoDB(user, hashedPassword);
+			
+		} catch (Exception e) {
 
+			e.printStackTrace();
+			return false;
+			
+		}
+		
+		return insertedPassword;
+		
+	}
+	
 	@Override
 	public boolean isUserValid(String email, byte[] password) throws SQLException {
 		

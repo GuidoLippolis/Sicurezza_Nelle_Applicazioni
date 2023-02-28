@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.servlet.ServletException;
@@ -10,11 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DaoFactory;
-import dao.SaltDao;
-import dao.SaltsDaoFactoryCreator;
 import dao.UserDao;
-import dao.UsersPasswordsDaoFactoryCreator;
-import model.Salt;
+import dao.UsersDaoFactoryCreator;
 import model.User;
 
 /**
@@ -40,7 +38,7 @@ public class SignUpServlet extends HttpServlet {
 		request.getRequestDispatcher("sign-up.jsp").forward(request, response);
 		
 	}
-
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -63,62 +61,21 @@ public class SignUpServlet extends HttpServlet {
 		
 		Optional<User> insertedUser = null;
 		
-		boolean insertedSalt = false;
+		/*
+		 * Si apre una connessione verso il database degli utenti
+		 * 
+		 * */
+		
+		DaoFactory daoFactory = UsersDaoFactoryCreator.getDaoFactory();
+		UserDao userDao = daoFactory.getUserDao();
 		
 		try {
 			
-			/*
-			 * Si apre una connessione verso il database users_passwords_db
-			 * 
-			 * */
+			userDao.signUp(user, password);
 			
-			DaoFactory daoFactory = UsersPasswordsDaoFactoryCreator.getDaoFactory();
-			UserDao loginDao = daoFactory.getUserDao();
-
-			/*
-			 * TODO: Gestire il caso di errore di email già esistente
-			 * 
-			 * */
-			
-			insertedUser = loginDao.signUp(user, password);
-			
-			if(insertedUser.isPresent()) {
-				
-				System.out.println("Inserimento utente avvenuto con successo");
-				
-				/*
-				 * Ottenuto l'utente, si apre una connessione verso il database salts
-				 * 
-				 * */
-				
-		        DaoFactory saltDaoFactory = SaltsDaoFactoryCreator.getDaoFactory();
-		        SaltDao saltDao = saltDaoFactory.getSaltDao();
-		        
-		        saltDao.insertSaltIntoDB(new Salt(user.getId(), user.getSalt().getSaltValue()));
-		        
-		        if(insertedSalt) {
-		        	
-		        	System.out.println("Intero inserimento avvenuto con successo");
-		        	
-		        } else {
-		        	
-		        	// TODO: Mostrare pagina di errore
-		        	System.out.println("Intero inserimento fallito");
-		        	
-		        }
-				
-			} else {
-				
-				// TODO: Mostrare pagina di errore
-				System.out.println("Errore nell'inserimento");
-				
-			}
-			
-			
-		} catch (Exception e) {
-			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		}
 		
 		doGet(request, response);

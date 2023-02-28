@@ -2,7 +2,7 @@ package dao;
 
 import dao.jdbc.JDBCDaoFactory;
 
-public class UsersPasswordsDaoFactoryCreator {
+public class UsersDaoFactoryCreator {
 
 	private static final DaoFactory instance;
 	
@@ -12,7 +12,7 @@ public class UsersPasswordsDaoFactoryCreator {
 			
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			
-			instance = new JDBCDaoFactory("jdbc:mysql://localhost:3306/users_passwords_db", "root", "WgAb_9114_2359");
+			instance = new JDBCDaoFactory("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
 			
 		} catch (Exception e) {
 			

@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import dao.DaoFactory;
+import dao.PasswordDao;
 import dao.SaltDao;
 import dao.UserDao;
 
@@ -37,6 +38,13 @@ public class JDBCDaoFactory implements DaoFactory {
 	public SaltDao getSaltDao() {
 		
 		return new JDBCSaltDao(connection);
+		
+	}
+
+	@Override
+	public PasswordDao getPasswordDao() {
+		
+		return new JDBCPasswordDao(connection);
 		
 	}
 
