@@ -65,7 +65,7 @@ public class SignUpServlet extends HttpServlet {
 		try {
 			
 			if(email.length() != 0 && password.length != 0)
-				insertedUser = UserDAO.signIn(user, password);
+				insertedUser = UserDAO.signUp(user, password);
 				
 			
 			if(insertedUser)

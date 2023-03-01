@@ -7,14 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Optional;
 
 import model.User;
 import passwordUtils.PasswordUtils;
 
 public class UserDAO {
 
-	public static boolean signIn(User user, byte[] password) throws SQLException, NoSuchAlgorithmException, ClassNotFoundException {
+	public static boolean signUp(User user, byte[] password) throws SQLException, NoSuchAlgorithmException, ClassNotFoundException {
 		
         Class.forName("com.mysql.cj.jdbc.Driver");
 		
