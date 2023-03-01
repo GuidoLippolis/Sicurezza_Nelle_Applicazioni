@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 public class User implements Serializable {
 
+	private int id;
 	private String email;
 	private byte[] photo;
 	
@@ -22,6 +23,21 @@ public class User implements Serializable {
 		this.email = email;
 		this.photo = photo;
 	}
+	
+	public User(int id, String email, byte[] photo) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.photo = photo;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getEmail() {
 		return email;
@@ -38,7 +54,7 @@ public class User implements Serializable {
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "User [email=" + email + ", photo=" + Arrays.toString(photo) + "]";

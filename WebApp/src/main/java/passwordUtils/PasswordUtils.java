@@ -6,25 +6,50 @@ import java.security.SecureRandom;
 
 public class PasswordUtils {
 
-//	public static String generateHash(String data, String algorithm, byte[] salt) throws NoSuchAlgorithmException {
-	public static byte[] generateHash(String data, String algorithm, byte[] salt) throws NoSuchAlgorithmException {
+	public static byte[] generateHash(byte[] password, String algorithm) throws NoSuchAlgorithmException {
 		
-		MessageDigest digest = MessageDigest.getInstance(algorithm);
-		digest.reset();
-		digest.update(salt);
-		byte[] hash = digest.digest(data.getBytes());
-		return hash;
-//		return bytesToStringHex(hash);
+		/*
+		 * Generazione del valore di salt da concatenare alla password
+		 * 
+		 * TODO: Recuperare il parametro del metodo createSalt() da un file .properties
+		 * 
+		 * */
+		
+		byte[] salt = createSalt(10);
+		
+		/*
+		 * Concatenazione dell'array di byte corrispondente alla password con
+		 * quello corrispondente al salt
+		 * 
+		 * */
+		
+		byte[] passwordAndSalt = appendByteArrays(password, salt);
+		
+		/*
+		 * Applicazione dell'algoritmo di hashing scelto
+		 * 
+		 * */
+		
+		MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
+		
+		byte[] hashValue = messageDigest.digest(passwordAndSalt);
+		
+		return hashValue;
 		
 	}
 	
-//	private static String bytesToStringHex(byte[] bytes) {
-//		
-//		return new BigInteger(1, bytes).toString(16);
-//		
-//	}
+	private static byte[] appendByteArrays(byte[] a, byte[] b) {
+		
+	    byte[] result = new byte[a.length + b.length];
+	    
+	    System.arraycopy(a, 0, result, 0, a.length);
+	    System.arraycopy(b, 0, result, a.length, b.length);
+	    
+	    return result;
+	    
+	}
 	
-	public static byte[] createSalt(int length) {
+	private static byte[] createSalt(int length) {
 		
 		byte[] bytes = new byte[length];
 		SecureRandom random = new SecureRandom();
