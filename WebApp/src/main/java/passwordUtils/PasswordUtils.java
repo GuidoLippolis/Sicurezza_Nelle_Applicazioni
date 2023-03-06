@@ -6,16 +6,7 @@ import java.security.SecureRandom;
 
 public class PasswordUtils {
 
-	public static byte[] generateHash(byte[] password, String algorithm) throws NoSuchAlgorithmException {
-		
-		/*
-		 * Generazione del valore di salt da concatenare alla password
-		 * 
-		 * TODO: Recuperare il parametro del metodo createSalt() da un file .properties
-		 * 
-		 * */
-		
-		byte[] salt = createSalt(10);
+	public static byte[] generateHash(byte[] password, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
 		
 		/*
 		 * Concatenazione dell'array di byte corrispondente alla password con
@@ -58,19 +49,19 @@ public class PasswordUtils {
 	    
 	}
 	
-	private static byte[] createSalt(int length) {
+	private static void clearArray(byte[] array) {
+		
+		for(int i=0; i<array.length; i++)
+			array[i] = 0;
+		
+	}
+	
+	public static byte[] createSalt(int length) {
 		
 		byte[] bytes = new byte[length];
 		SecureRandom random = new SecureRandom();
 		random.nextBytes(bytes);
 		return bytes;
-		
-	}
-	
-	private static void clearArray(byte[] array) {
-		
-		for(int i=0; i<array.length; i++)
-			array[i] = 0;
 		
 	}
 	

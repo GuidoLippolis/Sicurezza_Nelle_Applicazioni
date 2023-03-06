@@ -8,7 +8,6 @@ public class User implements Serializable {
 	private int id;
 	private String email;
 	private byte[] photo;
-	private Salt salt;
 	
 	public User() {
 		super();
@@ -56,14 +55,6 @@ public class User implements Serializable {
 		this.photo = photo;
 	}
 	
-	public Salt getSalt() {
-		return salt;
-	}
-
-	public void setSalt(Salt salt) {
-		this.salt = salt;
-	}
-
 	@Override
 	public String toString() {
 		return "User [email=" + email + ", photo=" + Arrays.toString(photo) + "]";

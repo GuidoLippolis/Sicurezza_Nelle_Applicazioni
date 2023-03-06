@@ -51,6 +51,7 @@ public class SignUpServlet extends HttpServlet {
 		 * 
 		 * */
 		
+		
 		String email = request.getParameter("email");
 		byte[] password = request.getParameter("password").getBytes();
 		byte[] photo = request.getParameter("photo").getBytes();
