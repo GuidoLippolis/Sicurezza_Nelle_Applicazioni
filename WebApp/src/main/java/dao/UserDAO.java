@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import model.User;
+import passwordUtils.PasswordUtils;
 
 public class UserDAO {
 	
@@ -24,6 +25,9 @@ public class UserDAO {
 		ResultSet resultSetUsers = null;
 		
 		int userId = 0;
+		
+		byte[] salt = PasswordUtils.createSalt(10);
+		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
 		
 		try {
 			
@@ -47,10 +51,10 @@ public class UserDAO {
 				
 			}
 			
-			passwordsStatement = usersConnection.prepareStatement("INSERT INTO passwords_db.password(user_id, password) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
+			passwordsStatement = usersConnection.prepareStatement("INSERT INTO passwords_db.passwords(user_id, password) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 
 			passwordsStatement.setInt(1, userId);
-			passwordsStatement.setBytes(2, password);
+			passwordsStatement.setBytes(2, hashedPassword);
 			
 			int rowsAffectedPasswords = passwordsStatement.executeUpdate();
 			
