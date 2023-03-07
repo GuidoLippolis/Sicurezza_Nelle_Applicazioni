@@ -74,10 +74,6 @@ public class SignUpServlet extends HttpServlet {
 			
 			e.printStackTrace();
 			
-		} catch (InterruptedException e) {
-
-			e.printStackTrace();
-			
 		}
 		
 		doGet(request, response);
