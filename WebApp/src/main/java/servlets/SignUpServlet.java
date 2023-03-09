@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,7 +26,6 @@ public class SignUpServlet extends HttpServlet {
      */
     public SignUpServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -47,28 +47,43 @@ public class SignUpServlet extends HttpServlet {
 		 * 
 		 * 1. L'utente invia le credenziali scelte: email, password ed eventualmente foto profilo
 		 * 2. Le credenziali vengono recuperate dall'oggetto request
-		 * 3. Viene chiamato un metodo in JDBCLoginDao che permette di inserire le credenziali scelte nel database
+		 * 3. Viene chiamato un metodo in UserDAO che permette di inserire le credenziali scelte nel database
 		 * 
 		 * */
 		
 		String email = request.getParameter("email");
 		byte[] password = request.getParameter("password").getBytes();
+		byte[] passwordToConfirm = request.getParameter("confirm_password").getBytes();
 		byte[] photo = request.getParameter("photo").getBytes();
 
-		User user = new User(email, photo);
-		
 		boolean insertedUser = false;
 		
 		try {
 			
-			if(email.length() != 0 && password.length != 0)
-				insertedUser = UserDAO.signUp(user, password);
-				
+			if(Arrays.equals(password, passwordToConfirm))
+				insertedUser = UserDAO.signUp(new User(email, photo), password);
 			
-			if(insertedUser)
+			/*
+			 * FIXME: Risolvere l'errore java.lang.IllegalStateException: Cannot forward after response has been committed
+			 * quando si prova a fare la redirect
+			 * 
+			 * */
+			
+			if(insertedUser) {
+				
+				/*
+				 * TODO: Sostituire con log
+				 * 
+				 * */
+				
 				System.out.println("Transazione avvenuta con successo");
-			else
-				System.out.println("Successo senza succ");
+				
+			} else {
+				
+				response.sendRedirect("./index.jsp");
+				return;
+				
+			}
 			
 		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException e) {
 			

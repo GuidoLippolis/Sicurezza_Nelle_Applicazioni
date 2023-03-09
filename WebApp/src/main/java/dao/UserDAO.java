@@ -28,6 +28,8 @@ public class UserDAO {
 		
 		/*
 		 * TODO: Il parametro di createSalt va recuperato da un file .properties
+		 * TODO: Le query e l'algoritmo di hashing vanno anche recuperate da un file .properties
+		 * TODO: Aggiungere query INSERT sul database salts_db
 		 * 
 		 * */
 		
