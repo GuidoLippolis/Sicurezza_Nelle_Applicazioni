@@ -12,119 +12,94 @@ import model.User;
 import passwordUtils.PasswordUtils;
 
 public class UserDAO {
-
-	public static boolean signUp(User user, byte[] password) throws SQLException, NoSuchAlgorithmException, ClassNotFoundException {
+	
+	public static boolean signUp(final User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 		
-        Class.forName("com.mysql.cj.jdbc.Driver");
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		
-		Connection passwordsDBConnection = null;
-		Connection usersDBConnection = null;
+		Connection connection = null;
 		
-		PreparedStatement preparedStatementUsers = null;
-		PreparedStatement preparedStatementPasswords = null;
+		PreparedStatement usersStatement = null;
+		PreparedStatement passwordsStatement = null;
 		
-		byte[] hashedPassword = PasswordUtils.generateHash(password, "SHA-256");
+		ResultSet resultSetUsers = null;
+		
+		int userId = 0;
+		
+		/*
+		 * TODO: Il parametro di createSalt va recuperato da un file .properties
+		 * 
+		 * */
+		
+		byte[] salt = PasswordUtils.createSalt(10);
+		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
 		
 		try {
 			
-			/*
-			 * Apertura di due connessioni diverse verso i database users_db e passwords_db
-			 * 
-			 * TODO: Recuperare i parametri di connessione al database da un file .properties
-			 * 
-			 * */
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
 			
-			passwordsDBConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/passwords_db", "root", "WgAb_9114_2359");
-			usersDBConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
+			connection.setAutoCommit(false);
 			
-			/*
-			 * Si disattiva la modalità di autocommit per evitare che le singole istruzioni SQL vengano
-			 * eseguite come transazioni a sé stanti. Al contrario, si raggruppano tali istruzioni in
-			 * un'unica transazione, così che se una di queste dovesse fallire, falliscono tutte (rollback)
-			 * 
-			 * */
+			usersStatement = connection.prepareStatement("INSERT INTO users(email, photo) VALUES(" + user.getEmail() + "," + user.getPhoto() + ")", Statement.RETURN_GENERATED_KEYS);
 			
-			passwordsDBConnection.setAutoCommit(false);
+			usersStatement.setString(1, user.getEmail());
+			usersStatement.setBytes(2, user.getPhoto());
 			
-			preparedStatementUsers = usersDBConnection.prepareStatement("INSERT INTO users(email, photo) VALUES(" + user.getEmail() + "," + user.getPhoto() + ")", Statement.RETURN_GENERATED_KEYS);
+			int rowsAffectedUsers = usersStatement.executeUpdate();
 			
-			preparedStatementUsers.setString(1, user.getEmail());
-			preparedStatementUsers.setBytes(2, user.getPhoto());
-			
-			preparedStatementUsers.executeUpdate();
-			
-			/*
-			 * A seguito dell'inserimento dell'utente nel database, vengono recuperati i valori dell'oggetto
-			 * appena inserito. In particolare, viene recuperato il valore corrispondente all'id. Ciò viene fatto
-			 * perché ogni password viene associata all'id dell'utente al quale essa appartiene
-			 * 
-			 * */
-			
-			ResultSet generatedKeys = preparedStatementUsers.getGeneratedKeys();
-			
-			int userId = 0;
-
-			/*
-			 * Se è stato correttamente inserito l'utente nel database, viene recuperato il suo id
-			 * 
-			 * */
-			
-			if(generatedKeys.next()) {
+			if(rowsAffectedUsers > 0) {
 				
-				userId = generatedKeys.getInt(1);
+				resultSetUsers = usersStatement.getGeneratedKeys();
+				resultSetUsers.next();
 				
-				preparedStatementPasswords = passwordsDBConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES(" + userId + "," + hashedPassword + ")");
-				
-				preparedStatementPasswords.setInt(1, userId);
-				preparedStatementPasswords.setBytes(2, hashedPassword);
-				
-				preparedStatementPasswords.executeUpdate();
-				
-				/*
-				 * Se l'inserimento della password nel database avviene senza errori, viene effettuato
-				 * il commit dell'intera transazione
-				 * 
-				 * */
-				
-				passwordsDBConnection.commit();
-				
-				return true;
+				userId = resultSetUsers.getInt(1);
 				
 			}
 			
-		} catch (SQLException e) {
+			passwordsStatement = connection.prepareStatement("INSERT INTO passwords_db.passwords(user_id, password) VALUES(" + userId + "," + password + ")", Statement.RETURN_GENERATED_KEYS);
+
+			passwordsStatement.setInt(1, userId);
+			passwordsStatement.setBytes(2, hashedPassword);
 			
-			/*
-			 * Se si verifica qualche errore nell'inserimento di dati nel database, che l'errore
-			 * riguardi il database degli utenti o quello delle password, l'intera transazione
-			 * viene annullata
-			 * 
-			 * */
+			int rowsAffectedPasswords = passwordsStatement.executeUpdate();
 			
-			if(passwordsDBConnection != null)
-				passwordsDBConnection.rollback();
+			if(rowsAffectedUsers == 1 && rowsAffectedPasswords == 1) {
+				
+				connection.commit();
+				return true;
+				
+			} else {
+				
+				connection.rollback();
+				return false;
+				
+			}
 			
+		} catch (Exception e) {
+
 			e.printStackTrace();
 			
-			return false;
+			if(connection != null)
+				connection.rollback();
 			
+			return false;
+		
 		} finally {
 			
-			if(usersDBConnection != null)
-				usersDBConnection.close();
+			if(connection != null)
+				connection.close();
 			
-			if(passwordsDBConnection != null)
-				passwordsDBConnection.close();
+			if(usersStatement != null)
+				usersStatement.close();
 			
-			if(preparedStatementUsers != null)
-				preparedStatementUsers.close();
+			if(passwordsStatement != null)
+				passwordsStatement.close();
 			
-			if(preparedStatementPasswords != null)
-				preparedStatementPasswords.close();
+			if(resultSetUsers != null)
+				resultSetUsers.close();
 			
 		}
-	
-		return true;
 		
 	}
+	
 }
