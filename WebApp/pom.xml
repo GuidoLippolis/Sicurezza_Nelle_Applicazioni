@@ -46,7 +46,13 @@
 	    <artifactId>mysql-connector-java</artifactId>
 	    <version>8.0.32</version>
 	</dependency>
-
+	
+	<dependency>
+	    <groupId>org.apache.tika</groupId>
+	    <artifactId>tika-core</artifactId>
+	    <version>1.24.1</version>
+	</dependency>
+	
   </dependencies>
 
   <build>
