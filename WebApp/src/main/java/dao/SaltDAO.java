@@ -22,9 +22,9 @@ public class SaltDAO {
 			
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/salts_db", "root", "WgAb_9114_2359");
 			
-			preparedStatement = connection.prepareStatement("SELECT salt FROM salt_user WHERE user_email = " + userEmail);
+			preparedStatement = connection.prepareStatement("SELECT salt FROM salt_user WHERE user_email = '" + userEmail + "'");
 			
-			preparedStatement.setString(1, userEmail);
+//			preparedStatement.setString(1, userEmail);
 			
 			resultSet = preparedStatement.executeQuery();
 			

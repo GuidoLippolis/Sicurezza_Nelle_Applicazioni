@@ -26,7 +26,6 @@ public class UserDAO {
 		PreparedStatement saltsStatement = null;
 		
 		ResultSet resultSetUsers = null;
-		ResultSet resultSetSalts = null;
 		
 		int userId = 0;
 		
@@ -51,10 +50,14 @@ public class UserDAO {
 			passwordsConnection.setAutoCommit(false);
 			saltsConnection.setAutoCommit(false);
 			
-			usersStatement = usersConnection.prepareStatement("INSERT INTO users(email, photo) VALUES(" + user.getEmail() + "," + user.getPhoto() + ")", Statement.RETURN_GENERATED_KEYS);
+			String sqlUsers = "INSERT INTO users (email,photo) VALUES ('" + user.getEmail() + "'," + user.getPhoto() + ")";
 			
-			usersStatement.setString(1, user.getEmail());
-			usersStatement.setBytes(2, user.getPhoto());
+			System.out.println("Query SQL per users = " + sqlUsers);
+			
+			usersStatement = usersConnection.prepareStatement(sqlUsers, Statement.RETURN_GENERATED_KEYS);
+			
+//			usersStatement.setString(1, user.getEmail());
+//			usersStatement.setBytes(2, user.getPhoto());
 			
 			int rowsAffectedUsers = usersStatement.executeUpdate();
 			
@@ -67,19 +70,19 @@ public class UserDAO {
 				
 				usersConnection.commit();
 				
-				passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES(" + userId + "," + password + ")");
+				passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES('" + userId + "','" + password + "')");
 
-				passwordsStatement.setInt(1, userId);
-				passwordsStatement.setBytes(2, hashedPassword);
+//				passwordsStatement.setInt(1, userId);
+//				passwordsStatement.setBytes(2, hashedPassword);
 				
 				passwordsStatement.executeUpdate();
 				
 				passwordsConnection.commit();
 				
-				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES(" + user.getEmail() + "," + salt + ")");
+				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES('" + user.getEmail() + "','" + salt + "')");
 				
-				saltsStatement.setString(1, user.getEmail());
-				saltsStatement.setBytes(2, salt);
+//				saltsStatement.setString(1, user.getEmail());
+//				saltsStatement.setBytes(2, salt);
 				
 				saltsStatement.executeUpdate();
 				

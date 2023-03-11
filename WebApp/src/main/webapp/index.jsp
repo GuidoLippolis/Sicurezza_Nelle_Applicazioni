@@ -32,7 +32,8 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="email" class="form-control form-control-lg" name = "email" placeholder="example@example.com" required />
+                <!-- <input type="email" class="form-control form-control-lg" name = "email" placeholder="example@example.com" required />  -->
+				<input type="text" class="form-control form-control-lg" name = "email" placeholder="example@example.com" />
 
               </div>
             </div>
@@ -47,7 +48,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="password" name = "password" class="form-control form-control-lg" required/>
+                <input type="password" name = "password" class="form-control form-control-lg"/>
 
               </div>
             </div>

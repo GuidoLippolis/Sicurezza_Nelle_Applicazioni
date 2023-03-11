@@ -22,9 +22,9 @@ public class PasswordDAO {
 			
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/passwords_db", "root", "WgAb_9114_2359");
 			
-			preparedStatement = connection.prepareStatement("SELECT * FROM passwords WHERE password = " + hashedPassword);
+			preparedStatement = connection.prepareStatement("SELECT * FROM passwords WHERE password = '" + hashedPassword + "'");
 			
-			preparedStatement.setBytes(1, hashedPassword);
+//			preparedStatement.setBytes(1, hashedPassword);
 			
 			resultSet = preparedStatement.executeQuery();
 			
