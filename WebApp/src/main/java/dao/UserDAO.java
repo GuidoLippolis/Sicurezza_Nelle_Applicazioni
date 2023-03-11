@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Base64;
 
 import model.User;
 import passwordUtils.PasswordUtils;
@@ -55,8 +56,16 @@ public class UserDAO {
 			passwordsConnection.setAutoCommit(false);
 			saltsConnection.setAutoCommit(false);
 			
-			if(user.getPhoto().length != 0)
-				sqlUsers = "INSERT INTO users (email,photo) VALUES ('" + user.getEmail() + "'," + user.getPhoto() + ")";
+			if(user.getPhoto().length != 0) {
+
+				StringBuilder hexStringPhoto = new StringBuilder();
+				
+				for (byte b : hashedPassword) 
+					hexStringPhoto.append(String.format("%02X", b));
+				
+				sqlUsers = "INSERT INTO users (email,photo) VALUES ('" + user.getEmail() + "',0x" + hexStringPhoto.toString() + ")";
+				
+			}
 			else
 				sqlUsers = "INSERT INTO users (email) VALUES ('" + user.getEmail() + "')";
 				
@@ -73,13 +82,23 @@ public class UserDAO {
 				
 				usersConnection.commit();
 				
-				passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES('" + userId + "','" + hashedPassword + "')");
+				StringBuilder hexStringHashedPassword = new StringBuilder();
+				
+				for (byte b : hashedPassword) 
+					hexStringHashedPassword.append(String.format("%02X", b));
+				
+				passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES(" + userId + ",0x" + hexStringHashedPassword.toString() + ")");
 
 				passwordsStatement.executeUpdate();
 				
 				passwordsConnection.commit();
 				
-				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES('" + user.getEmail() + "','" + salt + "')");
+				StringBuilder hexStringSalt = new StringBuilder();
+				
+				for (byte b : salt) 
+					hexStringSalt.append(String.format("%02X", b));
+				
+				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES('" + user.getEmail() + "',0x" + hexStringSalt.toString() + ")");
 				
 				saltsStatement.executeUpdate();
 				

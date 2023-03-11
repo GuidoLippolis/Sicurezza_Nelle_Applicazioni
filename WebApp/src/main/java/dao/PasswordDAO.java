@@ -20,11 +20,14 @@ public class PasswordDAO {
 		
 		try {
 			
+			StringBuilder hexStringHashedPassword = new StringBuilder();
+			
+			for (byte b : hashedPassword) 
+				hexStringHashedPassword.append(String.format("%02X", b));
+			
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/passwords_db", "root", "WgAb_9114_2359");
 			
-			preparedStatement = connection.prepareStatement("SELECT * FROM passwords WHERE password = '" + hashedPassword + "'");
-			
-//			preparedStatement.setBytes(1, hashedPassword);
+			preparedStatement = connection.prepareStatement("SELECT * FROM passwords WHERE password = " + "0x" + hexStringHashedPassword.toString());
 			
 			resultSet = preparedStatement.executeQuery();
 			
