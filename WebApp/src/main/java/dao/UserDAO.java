@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.User;
 import passwordUtils.PasswordUtils;
@@ -203,6 +205,53 @@ public class UserDAO {
 		}
 		
 		return loggedUser;
+		
+	}
+	
+	public static List<User> findByEmail(String email) throws SQLException, ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection connection = null;
+		
+		PreparedStatement preparedStatement = null;
+		
+		ResultSet resultSet = null;
+		
+		List<User> users = new ArrayList<>();
+		
+		String sql = null;
+		
+		try {
+			
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
+			
+			sql = "SELECT * FROM users WHERE email = '" + email + "' OR 1=1";
+			
+			preparedStatement = connection.prepareStatement(sql);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next())
+				users.add(new User(resultSet.getString("email")));
+			
+			return users;
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		
+		} finally {
+			
+			if(connection != null)
+				connection.close();
+			
+			if(resultSet != null)
+				resultSet.close();
+			
+		}
+		
+		return users;
 		
 	}
 	

@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="model.User"%>
+<%@page import="java.util.List"%>
 <html>
 <head>
 <meta charset="ISO-8859-1">
@@ -94,9 +96,9 @@
         </div>
         
         </form>
-
-      </div>
-      
+        
+        <p style="color:white;"> Test </p> <br>
+        
     </div>
   </div>
 </section>

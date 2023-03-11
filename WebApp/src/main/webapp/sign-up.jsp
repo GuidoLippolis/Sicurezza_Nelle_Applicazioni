@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="model.User"%>
+<%@page import="java.util.List"%>
 <html>
 <head>
 <meta charset="ISO-8859-1">
@@ -120,6 +122,26 @@
         </div>
 
 		</form>
+		
+		<ol>
+        
+        <%
+        
+        	List<User> users = (List<User>) request.getAttribute("usersList");
+        	
+        	if(users != null) {
+        		
+            	for(User user : users) {
+            		
+            		out.println( "<li style='color:white;'> " + user.toString() + " </li>" );
+            		
+            	}
+        		
+        	}
+        
+        %>
+
+        </ol>
 		
       </div>
     </div>
