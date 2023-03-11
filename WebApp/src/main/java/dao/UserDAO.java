@@ -1,33 +1,32 @@
 package dao;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.sql.Statement;
-
-import javax.naming.InitialContext;
 
 import model.User;
 import passwordUtils.PasswordUtils;
 
 public class UserDAO {
 	
-	public static boolean signUp(final User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
+	public static boolean signUp(User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
 		Connection usersConnection = null;
 		Connection passwordsConnection = null;
+		Connection saltsConnection = null;
 		
 		PreparedStatement usersStatement = null;
 		PreparedStatement passwordsStatement = null;
+		PreparedStatement saltsStatement = null;
 		
 		ResultSet resultSetUsers = null;
+		ResultSet resultSetSalts = null;
 		
 		int userId = 0;
 		
@@ -45,9 +44,11 @@ public class UserDAO {
 
 			usersConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
 			passwordsConnection= DriverManager.getConnection("jdbc:mysql://localhost:3306/passwords_db", "root", "WgAb_9114_2359");
+			saltsConnection= DriverManager.getConnection("jdbc:mysql://localhost:3306/salts_db", "root", "WgAb_9114_2359");
 			
 			usersConnection.setAutoCommit(false);
 			passwordsConnection.setAutoCommit(false);
+			saltsConnection.setAutoCommit(false);
 			
 			usersStatement = usersConnection.prepareStatement("INSERT INTO users(email, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 			
@@ -65,22 +66,41 @@ public class UserDAO {
 				
 				usersConnection.commit();
 				
-			}
-			
-			passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords_db.passwords(user_id, password) VALUES(?,?)");
+				passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES(?,?)");
 
-			passwordsStatement.setInt(1, userId);
-			passwordsStatement.setBytes(2, hashedPassword);
-			
-			passwordsStatement.executeUpdate();
-			
-			passwordsConnection.commit();
-			
-			return true;
+				passwordsStatement.setInt(1, userId);
+				passwordsStatement.setBytes(2, hashedPassword);
+				
+				passwordsStatement.executeUpdate();
+				
+				passwordsConnection.commit();
+				
+				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_id,salt) VALUES(?,?)");
+				
+				saltsStatement.setInt(1, userId);
+				saltsStatement.setBytes(2, salt);
+				
+				saltsStatement.executeUpdate();
+				
+				saltsConnection.commit();
+				
+				return true;
+				
+			}
 			
 		} catch (Exception e) {
 
+			if(usersConnection != null)
+				usersConnection.rollback();
+			
+			if(passwordsConnection != null)
+				passwordsConnection.rollback();
+			
+			if(saltsConnection != null)
+				saltsConnection.rollback();
+			
 			e.printStackTrace();
+			
 			return false;
 		
 		} finally {
@@ -88,20 +108,42 @@ public class UserDAO {
 			if(usersConnection != null)
 				usersConnection.close();
 			
-			if(usersConnection != null)
-				usersConnection.close();
+			if(passwordsConnection != null)
+				passwordsConnection.close();
+
+			if(saltsConnection != null)
+				saltsConnection.close();
 			
 			if(usersStatement != null)
 				usersStatement.close();
 			
 			if(passwordsStatement != null)
 				passwordsStatement.close();
+
+			if(saltsStatement != null)
+				saltsStatement.close();
 			
 			if(resultSetUsers != null)
 				resultSetUsers.close();
 			
 		}
 		
+		return false;
+		
+		
+	}
+	
+	public static boolean signIn(User user, byte[] password) throws ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection connection = null;
+		
+		PreparedStatement preparedStatement = null;
+		
+		ResultSet resultSet = null;
+
+		return true;
 		
 	}
 	
