@@ -44,7 +44,6 @@ public class PasswordUtils {
 		
 		clearArray(password);
 		clearArray(passwordAndSalt);
-		clearArray(salt);
 
 		return hashValue;
 		
