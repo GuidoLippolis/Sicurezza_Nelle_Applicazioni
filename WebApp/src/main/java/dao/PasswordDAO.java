@@ -30,8 +30,6 @@ public class PasswordDAO {
 			
 			boolean found = resultSet.next();
 			
-			System.out.println("Found = " + found);
-			
 			if(found)
 				return true;
 			else

@@ -41,10 +41,6 @@ public class UserDAO {
 		byte[] salt = PasswordUtils.createSalt(10);
 		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
 		
-		System.out.println("Salt al momento della registrazione = " + PasswordUtils.bytesToHex(salt));
-		
-		System.out.println("Hash della password salvata nel database = " + PasswordUtils.bytesToHex(hashedPassword));
-		
 		try {
 
 			usersConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
@@ -162,15 +158,13 @@ public class UserDAO {
 			
 			byte[] userSalt = SaltDAO.findSaltByUserEmail(user.getEmail());
 			
-			System.out.println("Salt ottenuto dal database = " + PasswordUtils.bytesToHex(userSalt));
-			
 			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, "SHA-256");
 			
-			System.out.println("Password inserita (hash) = " + PasswordUtils.bytesToHex(hashedPasswordAndSalt));
+//			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt);
 			
-			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt);
+//			return loggedUser;
 			
-			return loggedUser;
+			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
 			
 		} catch (Exception e) {
 
@@ -189,6 +183,8 @@ public class UserDAO {
 				resultSetPasswords.close();
 			
 		}
+		
+		return loggedUser;
 		
 	}
 	

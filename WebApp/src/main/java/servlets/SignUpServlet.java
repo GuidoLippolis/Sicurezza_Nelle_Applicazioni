@@ -65,16 +65,8 @@ public class SignUpServlet extends HttpServlet {
 		
 		try {
 			
-			System.out.println("Password prima di calcolare l'hash (registrazione) = " + PasswordUtils.bytesToHex(password));
-			
 			if(Arrays.equals(password, passwordToConfirm))
 				insertedUser = UserDAO.signUp(new User(email, photo), password);
-			
-			/*
-			 * FIXME: Risolvere l'errore java.lang.IllegalStateException: Cannot forward after response has been committed
-			 * quando si prova a fare la redirect
-			 * 
-			 * */
 			
 			if(insertedUser) {
 				
@@ -83,7 +75,7 @@ public class SignUpServlet extends HttpServlet {
 				 * 
 				 * */
 				
-				System.out.println("Transazione avvenuta con successo");
+				System.out.println("Inserimento avvenuto con successo");
 				
 			} else {
 				

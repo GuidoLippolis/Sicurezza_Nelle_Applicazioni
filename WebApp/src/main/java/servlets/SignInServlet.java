@@ -46,8 +46,6 @@ public class SignInServlet extends HttpServlet {
 		
 		try {
 			
-			System.out.println("Password prima di calcolare l'hash (login) = " + PasswordUtils.bytesToHex(password));
-			
 			logged = UserDAO.signIn(new User(email), password);
 			
 			if(logged)

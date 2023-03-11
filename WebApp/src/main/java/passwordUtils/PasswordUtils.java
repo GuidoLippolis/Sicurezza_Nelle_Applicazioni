@@ -89,40 +89,13 @@ public class PasswordUtils {
 	 * 
 	 * */
 	
-//	public static byte[] createSalt(int length) {
-//		
-//		byte[] bytes = new byte[length];
-//		SecureRandom random = new SecureRandom();
-//		random.nextBytes(bytes);
-//		return bytes;
-//		
-//	}
-	
-    public static byte[] createSalt(int length) {
-        SecureRandom random = new SecureRandom();
-        byte[] byteArray = new byte[length];
-        ByteBuffer buffer = ByteBuffer.wrap(byteArray);
-        while (buffer.hasRemaining()) {
-            if (buffer.remaining() >= 8) {
-                buffer.putLong(random.nextLong());
-            } else {
-                buffer.put((byte) random.nextInt(256));
-            }
-        }
-        return byteArray;
-    }
-	
-	public static String bytesToHex(byte[] bytes) {
-	    StringBuilder hexString = new StringBuilder();
-	    for (byte b : bytes) {
-	        String hex = Integer.toHexString(0xFF & b);
-	        if (hex.length() == 1) {
-	            hexString.append('0');
-	        }
-	        hexString.append(hex);
-	    }
-	    return hexString.toString();
+	public static byte[] createSalt(int length) {
+		
+		byte[] bytes = new byte[length];
+		SecureRandom random = new SecureRandom();
+		random.nextBytes(bytes);
+		return bytes;
+		
 	}
-
 	
 }
