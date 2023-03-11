@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.UserDAO;
 import model.User;
+import passwordUtils.PasswordUtils;
 
 /**
  * Servlet implementation class SignInServlet
@@ -44,6 +45,8 @@ public class SignInServlet extends HttpServlet {
 		boolean logged = false;
 		
 		try {
+			
+			System.out.println("Password inserita = " + PasswordUtils.bytesToHex(password));
 			
 			logged = UserDAO.signIn(new User(email), password);
 			

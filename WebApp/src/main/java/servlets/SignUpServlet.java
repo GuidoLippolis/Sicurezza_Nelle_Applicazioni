@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.UserDAO;
 import model.User;
+import passwordUtils.PasswordUtils;
 
 /**
  * Servlet implementation class SignUpServlet
@@ -55,6 +56,8 @@ public class SignUpServlet extends HttpServlet {
 		byte[] password = request.getParameter("password").getBytes();
 		byte[] passwordToConfirm = request.getParameter("confirm_password").getBytes();
 		byte[] photo = request.getParameter("photo").getBytes();
+		
+		System.out.println("Password inserita = " + PasswordUtils.bytesToHex(password));
 
 		boolean insertedUser = false;
 		

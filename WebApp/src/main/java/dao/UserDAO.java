@@ -29,6 +29,8 @@ public class UserDAO {
 		
 		int userId = 0;
 		
+		String sqlUsers = null;
+		
 		/*
 		 * TODO: Il parametro di createSalt va recuperato da un file .properties
 		 * TODO: Le query e l'algoritmo di hashing vanno anche recuperate da un file .properties
@@ -40,6 +42,9 @@ public class UserDAO {
 		byte[] salt = PasswordUtils.createSalt(10);
 		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
 		
+		System.out.println("Salt generato = " + PasswordUtils.bytesToHex(salt));
+		System.out.println("Hash(password) = " + PasswordUtils.bytesToHex(hashedPassword));
+		
 		try {
 
 			usersConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
@@ -50,14 +55,12 @@ public class UserDAO {
 			passwordsConnection.setAutoCommit(false);
 			saltsConnection.setAutoCommit(false);
 			
-			String sqlUsers = "INSERT INTO users (email,photo) VALUES ('" + user.getEmail() + "'," + user.getPhoto() + ")";
-			
-			System.out.println("Query SQL per users = " + sqlUsers);
-			
+			if(user.getPhoto().length != 0)
+				sqlUsers = "INSERT INTO users (email,photo) VALUES ('" + user.getEmail() + "'," + user.getPhoto() + ")";
+			else
+				sqlUsers = "INSERT INTO users (email) VALUES ('" + user.getEmail() + "')";
+				
 			usersStatement = usersConnection.prepareStatement(sqlUsers, Statement.RETURN_GENERATED_KEYS);
-			
-//			usersStatement.setString(1, user.getEmail());
-//			usersStatement.setBytes(2, user.getPhoto());
 			
 			int rowsAffectedUsers = usersStatement.executeUpdate();
 			
@@ -70,19 +73,13 @@ public class UserDAO {
 				
 				usersConnection.commit();
 				
-				passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES('" + userId + "','" + password + "')");
+				passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES('" + userId + "','" + hashedPassword + "')");
 
-//				passwordsStatement.setInt(1, userId);
-//				passwordsStatement.setBytes(2, hashedPassword);
-				
 				passwordsStatement.executeUpdate();
 				
 				passwordsConnection.commit();
 				
 				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES('" + user.getEmail() + "','" + salt + "')");
-				
-//				saltsStatement.setString(1, user.getEmail());
-//				saltsStatement.setBytes(2, salt);
 				
 				saltsStatement.executeUpdate();
 				
@@ -161,7 +158,11 @@ public class UserDAO {
 			
 			byte[] userSalt = SaltDAO.findSaltByUserEmail(user.getEmail());
 			
+			System.out.println("Salt recuperato dal database = " + PasswordUtils.bytesToHex(userSalt));
+			
 			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, "SHA-256");
+			
+			System.out.println("Hash(password) da cercare nel database = " + PasswordUtils.bytesToHex(hashedPasswordAndSalt));
 			
 			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
 			
