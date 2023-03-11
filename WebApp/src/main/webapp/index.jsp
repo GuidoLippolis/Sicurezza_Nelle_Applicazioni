@@ -19,6 +19,8 @@
 
         <h1 class="text-white mb-4">Accedi</h1>
 
+		<form action="SignInServlet" method="POST">
+
         <div class="card" style="border-radius: 15px;">
           <div class="card-body">
 
@@ -30,7 +32,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="email" class="form-control form-control-lg" placeholder="example@example.com" />
+                <input type="email" class="form-control form-control-lg" name = "email" placeholder="example@example.com" required />
 
               </div>
             </div>
@@ -45,7 +47,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="password" class="form-control form-control-lg" />
+                <input type="password" name = "password" class="form-control form-control-lg" required/>
 
               </div>
             </div>
@@ -57,29 +59,21 @@
             <!-- 
             
               <div class="col-md-3 ps-5">
-
                 <h6 class="mb-0">Full name</h6>
-
               </div>
             
               <div class="col-md-9 pe-5">
-
                 <textarea class="form-control" rows="3" placeholder="Message sent to the employer"></textarea>
-
               </div>
               
             <hr class="mx-n3">
             
             <div class="row align-items-center py-3">
               <div class="col-md-3 ps-5">
-
                 <h6 class="mb-0">Upload CV</h6>
-
               </div>
               <div class="col-md-9 pe-5">
-
                 <input class="form-control form-control-lg" id="formFileLg" type="file" />
-
               </div>
             </div>
             
@@ -97,8 +91,11 @@
 
           </div>
         </div>
+        
+        </form>
 
       </div>
+      
     </div>
   </div>
 </section>

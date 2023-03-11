@@ -36,15 +36,6 @@ public class PasswordUtils {
 		
 		byte[] hashValue = messageDigest.digest(passwordAndSalt);
 		
-		/*
-		 * Pulizia dei dati sensibili
-		 * 
-		 * */
-		
-		clearArray(password);
-		clearArray(passwordAndSalt);
-		clearArray(salt);
-
 		return hashValue;
 		
 	}
@@ -67,22 +58,6 @@ public class PasswordUtils {
 	    
 	}
 
-	/*
-	 * Il metodo clearArray(), dato un array di byte, permette
-	 * di cancellare ogni singola cella dell'array. In questo caso,
-	 * la password viene gestita come array di byte, così facendo
-	 * è possibile cancellare dalla memoria ogni singolo riferimento
-	 * ai dati sensibili
-	 * 
-	 * */
-	
-	private static void clearArray(byte[] array) {
-		
-		for(int i=0; i<array.length; i++)
-			array[i] = 0;
-		
-	}
-	
 	/*
 	 * Il metodo createSalt() permette di generare un valore casuale
 	 * di salt, dato un numero intero che rappresenta la sua lunghezza (in byte)

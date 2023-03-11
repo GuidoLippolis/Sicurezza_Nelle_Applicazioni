@@ -34,7 +34,7 @@
               
               <div class="col-md-9 pe-5">
 
-                <input type="email" name="email" class="form-control form-control-lg" placeholder="example@example.com" />
+                <input type="email" name="email" class="form-control form-control-lg" placeholder="example@example.com" required />
 
               </div>
             </div>
@@ -51,11 +51,28 @@
               
               <div class="col-md-9 pe-5">
 
-                <input type="password" name="password" class="form-control form-control-lg" />
+                <input type="password" name="password" class="form-control form-control-lg" required />
 
               </div>
             </div>
 
+            <hr class="mx-n3">
+            
+                        <div class="row align-items-center py-3">
+            
+              <div class="col-md-3 ps-5">
+
+                <h6 class="mb-0">Conferma password</h6>
+
+              </div>
+              
+              <div class="col-md-9 pe-5">
+
+                <input type="password" name="confirm_password" class="form-control form-control-lg" required />
+
+              </div>
+            </div>
+            
             <hr class="mx-n3">
 
             <div class="row align-items-center py-3">
@@ -63,15 +80,11 @@
             <!-- 
             
               <div class="col-md-3 ps-5">
-
                 <h6 class="mb-0">Full name</h6>
-
               </div>
             
               <div class="col-md-9 pe-5">
-
                 <textarea class="form-control" rows="3" placeholder="Message sent to the employer"></textarea>
-
               </div>
               
             <hr class="mx-n3">
