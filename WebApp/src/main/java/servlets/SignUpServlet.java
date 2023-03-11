@@ -11,13 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tika.exception.TikaException;
-import org.xml.sax.SAXException;
-
 import dao.UserDAO;
-import fileUtils.FileUtils;
 import model.User;
-import passwordUtils.PasswordUtils;
 
 /**
  * Servlet implementation class SignUpServlet
