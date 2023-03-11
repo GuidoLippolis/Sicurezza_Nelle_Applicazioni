@@ -17,6 +17,7 @@ import org.xml.sax.SAXException;
 import dao.UserDAO;
 import fileUtils.FileUtils;
 import model.User;
+import passwordUtils.PasswordUtils;
 
 /**
  * Servlet implementation class SignUpServlet
@@ -63,6 +64,8 @@ public class SignUpServlet extends HttpServlet {
 		boolean insertedUser = false;
 		
 		try {
+			
+			System.out.println("Password prima di calcolare l'hash (registrazione) = " + PasswordUtils.bytesToHex(password));
 			
 			if(Arrays.equals(password, passwordToConfirm))
 				insertedUser = UserDAO.signUp(new User(email, photo), password);

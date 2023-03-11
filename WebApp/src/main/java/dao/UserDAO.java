@@ -34,11 +34,16 @@ public class UserDAO {
 		 * TODO: Il parametro di createSalt va recuperato da un file .properties
 		 * TODO: Le query e l'algoritmo di hashing vanno anche recuperate da un file .properties
 		 * TODO: Aggiungere query INSERT sul database salts_db
+		 * TODO: Trasformare TUTTI i blocchi try-catch-finally in try-with-resources
 		 * 
 		 * */
 		
 		byte[] salt = PasswordUtils.createSalt(10);
 		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
+		
+		System.out.println("Salt al momento della registrazione = " + PasswordUtils.bytesToHex(salt));
+		
+		System.out.println("Hash della password salvata nel database = " + PasswordUtils.bytesToHex(hashedPassword));
 		
 		try {
 
@@ -75,9 +80,9 @@ public class UserDAO {
 				
 				passwordsConnection.commit();
 				
-				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_id,salt) VALUES(?,?)");
+				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES(?,?)");
 				
-				saltsStatement.setInt(1, userId);
+				saltsStatement.setString(1, user.getEmail());
 				saltsStatement.setBytes(2, salt);
 				
 				saltsStatement.executeUpdate();
@@ -133,17 +138,57 @@ public class UserDAO {
 		
 	}
 	
-	public static boolean signIn(User user, byte[] password) throws ClassNotFoundException {
+	public static boolean signIn(User user, byte[] password) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
-		Connection connection = null;
+		Connection passwordsConnection = null;
 		
-		PreparedStatement preparedStatement = null;
+		PreparedStatement passwordsStatement = null;
 		
-		ResultSet resultSet = null;
+		ResultSet resultSetPasswords = null;
+		
+		boolean loggedUser = false;
+		
+		try {
+			
+			/*
+			 * Recupero il salt dal database salts_db
+			 * Concateno il salt ottenuto alla password fornita in input
+			 * Calcolo l'hash dell'array di byte risultante
+			 * Uso il salt ottenuto per fare una query su passwords, se ottengo un risultato, vuol dire che l
+			 * 
+			 * */
+			
+			byte[] userSalt = SaltDAO.findSaltByUserEmail(user.getEmail());
+			
+			System.out.println("Salt ottenuto dal database = " + PasswordUtils.bytesToHex(userSalt));
+			
+			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, "SHA-256");
+			
+			System.out.println("Password inserita (hash) = " + PasswordUtils.bytesToHex(hashedPasswordAndSalt));
+			
+			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt);
+			
+			return loggedUser;
+			
+		} catch (Exception e) {
 
-		return true;
+			e.printStackTrace();
+			return false;
+		
+		} finally {
+			
+			if(passwordsConnection != null)
+				passwordsConnection.close();
+			
+			if(passwordsStatement != null)
+				passwordsStatement.close();
+			
+			if(resultSetPasswords != null)
+				resultSetPasswords.close();
+			
+		}
 		
 	}
 	

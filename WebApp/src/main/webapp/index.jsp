@@ -19,6 +19,8 @@
 
         <h1 class="text-white mb-4">Accedi</h1>
 
+		<form action="SignInServlet" method="POST">
+
         <div class="card" style="border-radius: 15px;">
           <div class="card-body">
 
@@ -30,7 +32,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="email" class="form-control form-control-lg" placeholder="example@example.com" required />
+                <input type="email" class="form-control form-control-lg" name = "email" placeholder="example@example.com" required />
 
               </div>
             </div>
@@ -45,7 +47,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="password" class="form-control form-control-lg" required/>
+                <input type="password" name = "password" class="form-control form-control-lg" required/>
 
               </div>
             </div>
@@ -97,8 +99,11 @@
 
           </div>
         </div>
+        
+        </form>
 
       </div>
+      
     </div>
   </div>
 </section>

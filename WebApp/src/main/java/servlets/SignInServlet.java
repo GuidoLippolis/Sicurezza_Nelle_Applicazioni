@@ -1,11 +1,16 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import dao.UserDAO;
+import model.User;
+import passwordUtils.PasswordUtils;
 
 /**
  * Servlet implementation class SignInServlet
@@ -33,6 +38,28 @@ public class SignInServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String email = request.getParameter("email");
+		byte[] password = request.getParameter("password").getBytes();
+		
+		boolean logged = false;
+		
+		try {
+			
+			System.out.println("Password prima di calcolare l'hash (login) = " + PasswordUtils.bytesToHex(password));
+			
+			logged = UserDAO.signIn(new User(email), password);
+			
+			if(logged)
+				System.out.println("Logged in");
+			else
+				System.out.println("Try again");
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			
+			e.printStackTrace();
+			
+		}
 		
 		doGet(request, response);
 	
