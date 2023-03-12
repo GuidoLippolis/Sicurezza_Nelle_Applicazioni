@@ -52,7 +52,7 @@ public class UserDAO {
 			
 			usersStatement = usersConnection.prepareStatement("INSERT INTO users(email, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 			
-			usersStatement.setString(1, user.getEmail());
+			usersStatement.setString(1, user.getUsername());
 			usersStatement.setBytes(2, user.getPhoto());
 			
 			int rowsAffectedUsers = usersStatement.executeUpdate();
@@ -77,7 +77,7 @@ public class UserDAO {
 				
 				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES(?,?)");
 				
-				saltsStatement.setString(1, user.getEmail());
+				saltsStatement.setString(1, user.getUsername());
 				saltsStatement.setBytes(2, salt);
 				
 				saltsStatement.executeUpdate();
@@ -155,7 +155,7 @@ public class UserDAO {
 			 * 
 			 * */
 			
-			byte[] userSalt = SaltDAO.findSaltByUserEmail(user.getEmail());
+			byte[] userSalt = SaltDAO.findSaltByUserEmail(user.getUsername());
 			
 			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, "SHA-256");
 			

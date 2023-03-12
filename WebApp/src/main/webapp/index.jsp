@@ -27,12 +27,12 @@
             <div class="row align-items-center pt-4 pb-3">
               <div class="col-md-3 ps-5">
 
-                <h6 class="mb-0">E-mail</h6>
+                <h6 class="mb-0">Username</h6>
 
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="email" class="form-control form-control-lg" name = "email" placeholder="example@example.com" required />
+                <input type="text" class="form-control form-control-lg" name = "username" placeholder="test" required />
 
               </div>
             </div>
