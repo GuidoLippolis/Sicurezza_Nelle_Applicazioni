@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.User;
 import passwordUtils.PasswordUtils;
@@ -50,7 +52,7 @@ public class UserDAO {
 			passwordsConnection.setAutoCommit(false);
 			saltsConnection.setAutoCommit(false);
 			
-			usersStatement = usersConnection.prepareStatement("INSERT INTO users(email, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
+			usersStatement = usersConnection.prepareStatement("INSERT INTO users(username, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			usersStatement.setString(1, user.getUsername());
 			usersStatement.setBytes(2, user.getPhoto());
@@ -75,7 +77,7 @@ public class UserDAO {
 				
 				passwordsConnection.commit();
 				
-				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES(?,?)");
+				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salts(username,salt) VALUES(?,?)");
 				
 				saltsStatement.setString(1, user.getUsername());
 				saltsStatement.setBytes(2, salt);
@@ -180,6 +182,53 @@ public class UserDAO {
 		}
 		
 		return loggedUser;
+		
+	}
+	
+	public static List<User> findByUsername(String username) throws SQLException, ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection connection = null;
+		
+		PreparedStatement preparedStatement = null;
+		
+		ResultSet resultSet = null;
+		
+		List<User> users = new ArrayList<>();
+		
+		String sql = null;
+		
+		try {
+			
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
+			
+			preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE username = '" + username + "'");
+			
+			preparedStatement.setString(1, username);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next())
+				users.add(new User(resultSet.getString("username")));
+			
+			return users;
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		
+		} finally {
+			
+			if(connection != null)
+				connection.close();
+			
+			if(resultSet != null)
+				resultSet.close();
+			
+		}
+		
+		return users;
 		
 	}
 	

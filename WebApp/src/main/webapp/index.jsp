@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="model.User"%>
+<%@page import="java.util.List"%>
 <html>
 <head>
 <meta charset="ISO-8859-1">
@@ -32,7 +34,8 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="text" class="form-control form-control-lg" name = "username" placeholder="test" required />
+                <!-- <input type="email" class="form-control form-control-lg" name = "email" placeholder="example@example.com" required />  -->
+				<input type="text" class="form-control form-control-lg" name = "username" placeholder="example@example.com" />
 
               </div>
             </div>
@@ -47,7 +50,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="password" name = "password" class="form-control form-control-lg" required/>
+                <input type="password" name = "password" class="form-control form-control-lg"/>
 
               </div>
             </div>
@@ -59,29 +62,21 @@
             <!-- 
             
               <div class="col-md-3 ps-5">
-
                 <h6 class="mb-0">Full name</h6>
-
               </div>
             
               <div class="col-md-9 pe-5">
-
                 <textarea class="form-control" rows="3" placeholder="Message sent to the employer"></textarea>
-
               </div>
               
             <hr class="mx-n3">
             
             <div class="row align-items-center py-3">
               <div class="col-md-3 ps-5">
-
                 <h6 class="mb-0">Upload CV</h6>
-
               </div>
               <div class="col-md-9 pe-5">
-
                 <input class="form-control form-control-lg" id="formFileLg" type="file" />
-
               </div>
             </div>
             
@@ -101,9 +96,9 @@
         </div>
         
         </form>
-
-      </div>
-      
+        
+        <p style="color:white;"> Test </p> <br>
+        
     </div>
   </div>
 </section>
