@@ -26,7 +26,6 @@ public class UserDAO {
 		PreparedStatement saltsStatement = null;
 		
 		ResultSet resultSetUsers = null;
-		ResultSet resultSetSalts = null;
 		
 		int userId = 0;
 		
@@ -160,10 +159,6 @@ public class UserDAO {
 			
 			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, "SHA-256");
 			
-//			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt);
-			
-//			return loggedUser;
-			
 			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
 			
 		} catch (Exception e) {
@@ -187,6 +182,12 @@ public class UserDAO {
 		return loggedUser;
 		
 	}
+	
+	/*
+	 * Garantisce l'integrità della transazione (se vi è un errore nell'inserimento nelle tabelle 
+	 * figlie, non viene fatto l'inserimento nemmeno nella tabella padre)
+	 * 
+	 * */
 	
 //	public static boolean signUp(final User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 //		
