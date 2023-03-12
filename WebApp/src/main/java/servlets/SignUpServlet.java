@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,6 +34,18 @@ public class SignUpServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		try {
+			
+			List<User> users = UserDAO.findByUsername(request.getParameter("username"));
+			
+			request.setAttribute("usersList", users);
+			
+		} catch (SQLException | ClassNotFoundException e) {
+
+			e.printStackTrace();
+			
+		}
+		
 		request.getRequestDispatcher("sign-up.jsp").forward(request, response);
 		
 	}

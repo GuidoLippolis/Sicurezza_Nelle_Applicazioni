@@ -97,8 +97,6 @@
         
         </form>
         
-        <p style="color:white;"> Test </p> <br>
-        
     </div>
   </div>
 </section>

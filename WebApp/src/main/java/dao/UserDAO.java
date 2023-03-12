@@ -203,7 +203,7 @@ public class UserDAO {
 			
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
 			
-			preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE username = '" + username + "'");
+			preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
 			
 			preparedStatement.setString(1, username);
 			
