@@ -30,13 +30,13 @@
             
               <div class="col-md-3 ps-5">
 
-                <h6 class="mb-0">E-mail</h6>
+                <h6 class="mb-0">Username</h6>
 
               </div>
               
               <div class="col-md-9 pe-5">
 
-                <input type="text" name="email" class="form-control form-control-lg" placeholder="example@example.com" />
+                <input type="text" name="username" class="form-control form-control-lg" placeholder="test" />
 
               </div>
             </div>

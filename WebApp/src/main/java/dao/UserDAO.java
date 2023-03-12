@@ -44,9 +44,6 @@ public class UserDAO {
 		byte[] salt = PasswordUtils.createSalt(10);
 		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
 		
-		System.out.println("Salt generato = " + PasswordUtils.bytesToHex(salt));
-		System.out.println("Hash(password) = " + PasswordUtils.bytesToHex(hashedPassword));
-		
 		try {
 
 			usersConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
@@ -64,11 +61,11 @@ public class UserDAO {
 				for (byte b : hashedPassword) 
 					hexStringPhoto.append(String.format("%02X", b));
 				
-				sqlUsers = "INSERT INTO users (email,photo) VALUES ('" + user.getEmail() + "',0x" + hexStringPhoto.toString() + ")";
+				sqlUsers = "INSERT INTO users (email,photo) VALUES ('" + user.getUsername() + "',0x" + hexStringPhoto.toString() + ")";
 				
 			}
 			else
-				sqlUsers = "INSERT INTO users (email) VALUES ('" + user.getEmail() + "')";
+				sqlUsers = "INSERT INTO users (email) VALUES ('" + user.getUsername() + "')";
 				
 			usersStatement = usersConnection.prepareStatement(sqlUsers, Statement.RETURN_GENERATED_KEYS);
 			
@@ -99,7 +96,7 @@ public class UserDAO {
 				for (byte b : salt) 
 					hexStringSalt.append(String.format("%02X", b));
 				
-				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES('" + user.getEmail() + "',0x" + hexStringSalt.toString() + ")");
+				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salt_user(user_email,salt) VALUES('" + user.getUsername() + "',0x" + hexStringSalt.toString() + ")");
 				
 				saltsStatement.executeUpdate();
 				
@@ -176,13 +173,9 @@ public class UserDAO {
 			 * 
 			 * */
 			
-			byte[] userSalt = SaltDAO.findSaltByUserEmail(user.getEmail());
-			
-			System.out.println("Salt recuperato dal database = " + PasswordUtils.bytesToHex(userSalt));
+			byte[] userSalt = SaltDAO.findSaltByUserEmail(user.getUsername());
 			
 			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, "SHA-256");
-			
-			System.out.println("Hash(password) da cercare nel database = " + PasswordUtils.bytesToHex(hashedPasswordAndSalt));
 			
 			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
 			

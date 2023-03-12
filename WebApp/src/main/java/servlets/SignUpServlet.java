@@ -65,7 +65,7 @@ public class SignUpServlet extends HttpServlet {
 		 * 
 		 * */
 		
-		String email = request.getParameter("email");
+		String username = request.getParameter("username");
 		byte[] password = request.getParameter("password").getBytes();
 		byte[] passwordToConfirm = request.getParameter("confirm_password").getBytes();
 		byte[] photo = request.getParameter("photo").getBytes();
@@ -77,7 +77,7 @@ public class SignUpServlet extends HttpServlet {
 		try {
 			
 			if(Arrays.equals(password, passwordToConfirm))
-				insertedUser = UserDAO.signUp(new User(email, photo), password);
+				insertedUser = UserDAO.signUp(new User(username, photo), password);
 			
 			if(insertedUser) {
 				
