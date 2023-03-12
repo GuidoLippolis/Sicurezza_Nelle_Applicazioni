@@ -226,7 +226,10 @@ public class UserDAO {
 			
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
 			
-			sql = "SELECT * FROM users WHERE email = '" + email + "' OR 1=1";
+//			sql = "SELECT * FROM users WHERE email = '" + email + "' OR 1=1";
+			sql = "SELECT * FROM users WHERE email = '" + email + "'";
+			
+			System.out.println(sql);
 			
 			preparedStatement = connection.prepareStatement(sql);
 			

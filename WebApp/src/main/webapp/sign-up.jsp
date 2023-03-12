@@ -36,7 +36,7 @@
               
               <div class="col-md-9 pe-5">
 
-                <input type="email" name="email" class="form-control form-control-lg" placeholder="example@example.com" required />
+                <input type="text" name="email" class="form-control form-control-lg" placeholder="example@example.com" />
 
               </div>
             </div>
