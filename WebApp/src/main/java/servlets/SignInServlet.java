@@ -40,7 +40,7 @@ public class SignInServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String email = request.getParameter("email");
+		String username = request.getParameter("username");
 		byte[] password = request.getParameter("password").getBytes();
 		
 		boolean logged = false;
@@ -49,7 +49,7 @@ public class SignInServlet extends HttpServlet {
 			
 			System.out.println("Password inserita = " + PasswordUtils.bytesToHex(password));
 			
-			logged = UserDAO.signIn(new User(email), password);
+			logged = UserDAO.signIn(new User(username), password);
 			
 			if(logged)
 				System.out.println("Logged in");
