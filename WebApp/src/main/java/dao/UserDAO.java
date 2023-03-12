@@ -219,7 +219,6 @@ public class UserDAO {
 			
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
 			
-//			sql = "SELECT * FROM users WHERE username = '" + username + "' OR 1=1";
 			sql = "SELECT * FROM users WHERE username = '" + username + "'";
 			
 			System.out.println(sql);
