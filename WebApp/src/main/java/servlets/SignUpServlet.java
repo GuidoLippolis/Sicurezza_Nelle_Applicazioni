@@ -37,7 +37,7 @@ public class SignUpServlet extends HttpServlet {
 
 		try {
 			
-			List<User> users = UserDAO.findByEmail(request.getParameter("email"));
+			List<User> users = UserDAO.findByUsername(request.getParameter("username"));
 			
 			request.setAttribute("usersList", users);
 			
