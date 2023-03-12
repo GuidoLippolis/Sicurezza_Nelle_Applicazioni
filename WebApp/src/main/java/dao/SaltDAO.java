@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class SaltDAO {
 	
-	public static byte[] findSaltByUserEmail(String username) throws ClassNotFoundException, SQLException {
+	public static byte[] findSaltByUsername(String username) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -22,7 +22,7 @@ public class SaltDAO {
 			
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/salts_db", "root", "WgAb_9114_2359");
 			
-			preparedStatement = connection.prepareStatement("SELECT salt FROM salt_user WHERE username = ?");
+			preparedStatement = connection.prepareStatement("SELECT salt FROM salts WHERE username = ?");
 			
 			preparedStatement.setString(1, username);
 			

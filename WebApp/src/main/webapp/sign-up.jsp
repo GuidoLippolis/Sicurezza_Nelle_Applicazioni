@@ -127,17 +127,19 @@
         
         <%
         
-        	List<User> users = (List<User>) request.getAttribute("usersList");
         	
-        	if(users != null) {
+        
+        	//List<User> users = (List<User>) request.getAttribute("usersList");
+        	
+        	//if(users != null) {
         		
-            	for(User user : users) {
+            //	for(User user : users) {
             		
-            		out.println( "<li style='color:white;'> " + user.toString() + " </li>" );
+            	//	out.println( "<li style='color:white;'> " + user.toString() + " </li>" );
             		
-            	}
+            	//}
         		
-        	}
+        	//}
         
         %>
 

@@ -35,7 +35,7 @@
               <div class="col-md-9 pe-5">
 
                 <!-- <input type="email" class="form-control form-control-lg" name = "email" placeholder="example@example.com" required />  -->
-				<input type="text" class="form-control form-control-lg" name = "username" placeholder="example@example.com" />
+				<input type="text" class="form-control form-control-lg" name = "username" placeholder="test" required />
 
               </div>
             </div>
@@ -50,7 +50,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input type="password" name = "password" class="form-control form-control-lg"/>
+                <input type="password" name = "password" class="form-control form-control-lg" required />
 
               </div>
             </div>

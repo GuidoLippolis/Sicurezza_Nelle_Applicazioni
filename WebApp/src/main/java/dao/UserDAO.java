@@ -157,7 +157,7 @@ public class UserDAO {
 			 * 
 			 * */
 			
-			byte[] userSalt = SaltDAO.findSaltByUserEmail(user.getUsername());
+			byte[] userSalt = SaltDAO.findSaltByUsername(user.getUsername());
 			
 			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, "SHA-256");
 			

@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dao.UserDAO;
 import model.User;
@@ -48,9 +49,26 @@ public class SignInServlet extends HttpServlet {
 			
 			logged = UserDAO.signIn(new User(username), password);
 			
-			if(logged)
+			if(logged) {
+				
 				System.out.println("Logged in");
-			else
+				
+				HttpSession oldSession = request.getSession(false);
+				
+				if(oldSession != null)
+					oldSession.invalidate();
+				
+				HttpSession currentSession = request.getSession();
+				
+				currentSession.setAttribute("user", username);
+				
+				currentSession.setMaxInactiveInterval(5*60);
+				
+				response.sendRedirect("./success.jsp");
+				
+				return;
+				
+			} else
 				System.out.println("Try again");
 			
 		} catch (ClassNotFoundException | SQLException e) {
