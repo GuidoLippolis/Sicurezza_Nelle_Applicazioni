@@ -87,6 +87,7 @@ public class SignUpServlet extends HttpServlet {
 				
 			} else {
 				
+				System.out.println("Inserimento annullato");
 				response.sendRedirect("./index.jsp");
 				return;
 				

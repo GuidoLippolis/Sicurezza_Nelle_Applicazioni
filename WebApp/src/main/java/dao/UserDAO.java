@@ -19,9 +19,7 @@ public class UserDAO {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
-		Connection usersConnection = null;
-		Connection passwordsConnection = null;
-		Connection saltsConnection = null;
+		Connection connection = null;
 		
 		PreparedStatement usersStatement = null;
 		PreparedStatement passwordsStatement = null;
@@ -34,8 +32,6 @@ public class UserDAO {
 		/*
 		 * TODO: Il parametro di createSalt va recuperato da un file .properties
 		 * TODO: Le query e l'algoritmo di hashing vanno anche recuperate da un file .properties
-		 * TODO: Aggiungere query INSERT sul database salts_db
-		 * TODO: Trasformare TUTTI i blocchi try-catch-finally in try-with-resources
 		 * 
 		 * */
 		
@@ -43,95 +39,79 @@ public class UserDAO {
 		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
 		
 		try {
-
-			usersConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
-			passwordsConnection= DriverManager.getConnection("jdbc:mysql://localhost:3306/passwords_db", "root", "WgAb_9114_2359");
-			saltsConnection= DriverManager.getConnection("jdbc:mysql://localhost:3306/salts_db", "root", "WgAb_9114_2359");
 			
-			usersConnection.setAutoCommit(false);
-			passwordsConnection.setAutoCommit(false);
-			saltsConnection.setAutoCommit(false);
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
 			
-			usersStatement = usersConnection.prepareStatement("INSERT INTO users(username, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
+			connection.setAutoCommit(false);
+			
+			usersStatement = connection.prepareStatement("INSERT INTO users_db.users(username, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			usersStatement.setString(1, user.getUsername());
 			usersStatement.setBytes(2, user.getPhoto());
 			
 			int rowsAffectedUsers = usersStatement.executeUpdate();
 			
-			if(rowsAffectedUsers > 0) {
+			if(rowsAffectedUsers == 1) {
 				
 				resultSetUsers = usersStatement.getGeneratedKeys();
 				resultSetUsers.next();
 				
 				userId = resultSetUsers.getInt(1);
 				
-				usersConnection.commit();
-				
-				passwordsStatement = passwordsConnection.prepareStatement("INSERT INTO passwords(user_id, password) VALUES(?,?)");
+				passwordsStatement = connection.prepareStatement("INSERT INTO passwords_db.passwords(user_id, password) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 
 				passwordsStatement.setInt(1, userId);
 				passwordsStatement.setBytes(2, hashedPassword);
 				
-				passwordsStatement.executeUpdate();
+				int rowsAffectedPasswords = passwordsStatement.executeUpdate();
 				
-				passwordsConnection.commit();
-				
-				saltsStatement = saltsConnection.prepareStatement("INSERT INTO salts(username,salt) VALUES(?,?)");
+				saltsStatement = connection.prepareStatement("INSERT INTO salts_db.salts(username,salt) VALUES(?,?)");
 				
 				saltsStatement.setString(1, user.getUsername());
 				saltsStatement.setBytes(2, salt);
 				
-				saltsStatement.executeUpdate();
+				int affectedRowsSalts = saltsStatement.executeUpdate();
 				
-				saltsConnection.commit();
-				
-				return true;
+				if(rowsAffectedUsers == 1 && rowsAffectedPasswords == 1 && affectedRowsSalts == 1) {
+					
+					connection.commit();
+					return true;
+					
+				} else {
+					
+					connection.rollback();
+					return false;
+					
+				}
 				
 			}
 			
 		} catch (Exception e) {
 
-			if(usersConnection != null)
-				usersConnection.rollback();
-			
-			if(passwordsConnection != null)
-				passwordsConnection.rollback();
-			
-			if(saltsConnection != null)
-				saltsConnection.rollback();
-			
 			e.printStackTrace();
+			
+			if(connection != null)
+				connection.rollback();
 			
 			return false;
 		
 		} finally {
 			
-			if(usersConnection != null)
-				usersConnection.close();
-			
-			if(passwordsConnection != null)
-				passwordsConnection.close();
-
-			if(saltsConnection != null)
-				saltsConnection.close();
+			if(connection != null)
+				connection.close();
 			
 			if(usersStatement != null)
 				usersStatement.close();
 			
 			if(passwordsStatement != null)
 				passwordsStatement.close();
-
-			if(saltsStatement != null)
-				saltsStatement.close();
 			
 			if(resultSetUsers != null)
 				resultSetUsers.close();
 			
 		}
 		
-		return false;
-		
+		return true;
 		
 	}
 	
@@ -197,8 +177,6 @@ public class UserDAO {
 		
 		List<User> users = new ArrayList<>();
 		
-		String sql = null;
-		
 		try {
 			
 			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
@@ -231,102 +209,5 @@ public class UserDAO {
 		return users;
 		
 	}
-	
-	/*
-	 * Garantisce l'integrità della transazione (se vi è un errore nell'inserimento nelle tabelle 
-	 * figlie, non viene fatto l'inserimento nemmeno nella tabella padre)
-	 * 
-	 * */
-	
-//	public static boolean signUp(final User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
-//		
-//		Class.forName("com.mysql.cj.jdbc.Driver");
-//		
-//		Connection connection = null;
-//		
-//		PreparedStatement usersStatement = null;
-//		PreparedStatement passwordsStatement = null;
-//		
-//		ResultSet resultSetUsers = null;
-//		
-//		int userId = 0;
-//		
-//		/*
-//		 * TODO: Il parametro di createSalt va recuperato da un file .properties
-//		 * TODO: Le query e l'algoritmo di hashing vanno anche recuperate da un file .properties
-//		 * TODO: Aggiungere query INSERT sul database salts_db
-//		 * 
-//		 * */
-//		
-//		byte[] salt = PasswordUtils.createSalt(10);
-//		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
-//		
-//		try {
-//			
-//			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
-//			
-//			connection.setAutoCommit(false);
-//			
-//			usersStatement = connection.prepareStatement("INSERT INTO users(email, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
-//			
-//			usersStatement.setString(1, user.getEmail());
-//			usersStatement.setBytes(2, user.getPhoto());
-//			
-//			int rowsAffectedUsers = usersStatement.executeUpdate();
-//			
-//			if(rowsAffectedUsers > 0) {
-//				
-//				resultSetUsers = usersStatement.getGeneratedKeys();
-//				resultSetUsers.next();
-//				
-//				userId = resultSetUsers.getInt(1);
-//				
-//			}
-//			
-//			passwordsStatement = connection.prepareStatement("INSERT INTO passwords_db.passwords(user_id, password) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
-//
-//			passwordsStatement.setInt(1, userId);
-//			passwordsStatement.setBytes(2, hashedPassword);
-//			
-//			int rowsAffectedPasswords = passwordsStatement.executeUpdate();
-//			
-//			if(rowsAffectedUsers == 1 && rowsAffectedPasswords == 1) {
-//				
-//				connection.commit();
-//				return true;
-//				
-//			} else {
-//				
-//				connection.rollback();
-//				return false;
-//				
-//			}
-//			
-//		} catch (Exception e) {
-//
-//			e.printStackTrace();
-//			
-//			if(connection != null)
-//				connection.rollback();
-//			
-//			return false;
-//		
-//		} finally {
-//			
-//			if(connection != null)
-//				connection.close();
-//			
-//			if(usersStatement != null)
-//				usersStatement.close();
-//			
-//			if(passwordsStatement != null)
-//				passwordsStatement.close();
-//			
-//			if(resultSetUsers != null)
-//				resultSetUsers.close();
-//			
-//		}
-//		
-//	}
 	
 }

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import dao.UserDAO;
 import model.User;
-import passwordUtils.PasswordUtils;
 
 /**
  * Servlet implementation class SignInServlet
@@ -30,7 +29,7 @@ public class SignInServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		
 		request.getRequestDispatcher("index.jsp").forward(request, response);
 	
 	}
@@ -68,8 +67,12 @@ public class SignInServlet extends HttpServlet {
 				
 				return;
 				
-			} else
+			} else {
+				
 				System.out.println("Try again");
+				response.sendRedirect("./index.jsp");
+				
+			}
 			
 		} catch (ClassNotFoundException | SQLException e) {
 			
