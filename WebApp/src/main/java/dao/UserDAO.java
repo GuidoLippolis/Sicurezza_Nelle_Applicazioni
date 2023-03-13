@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.FileInputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,11 +10,37 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import model.User;
-import passwordUtils.PasswordUtils;
+import utils.PasswordUtils;
 
 public class UserDAO {
+	
+	private static Properties prop;
+
+	static {
+		
+        prop = new Properties();
+        
+        try {
+			
+            prop = new Properties();
+            
+            FileInputStream in = new FileInputStream(System.getenv("PATH_TO_APPLICATION_PROPERTIES_FILE"));
+            
+            prop.load(in);
+            in.close();
+
+            String url = prop.getProperty("TEST");
+            
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+		}
+
+	}
 	
 	public static boolean signUp(User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 		
@@ -162,55 +189,6 @@ public class UserDAO {
 		}
 		
 		return loggedUser;
-		
-	}
-	
-	public static boolean readPhotoAndWriteToFileSystem(String username) throws ClassNotFoundException, SQLException {
-		
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		
-		Connection connection = null;
-		
-		PreparedStatement preparedStatement = null;
-		
-		ResultSet resultSet = null;
-		
-		try {
-			
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
-			
-			preparedStatement = connection.prepareStatement("SELECT * FROM users_db.users WHERE username = ?");
-			
-			preparedStatement.setString(1, username);
-			
-			resultSet = preparedStatement.executeQuery();
-
-			boolean hasNext = resultSet.next();
-			
-			if(hasNext) {
-				
-				byte[] photo = resultSet.getBytes("photo");
-				
-			}
-			
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		
-		} finally {
-			
-			if(connection != null)
-				connection.close();
-			
-			if(preparedStatement != null)
-				preparedStatement.close();
-			
-			if(resultSet != null)
-				resultSet.close();
-			
-		}
-		
-		return true;
 		
 	}
 	

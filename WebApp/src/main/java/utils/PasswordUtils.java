@@ -1,6 +1,5 @@
-package passwordUtils;
+package utils;
 
-import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
