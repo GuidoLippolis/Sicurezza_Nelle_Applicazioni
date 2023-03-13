@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import enumeration.PropertiesKeys;
 import model.User;
 import utils.PasswordUtils;
 
@@ -30,10 +31,9 @@ public class UserDAO {
             FileInputStream in = new FileInputStream(System.getenv("PATH_TO_APPLICATION_PROPERTIES_FILE"));
             
             prop.load(in);
+
             in.close();
 
-            String url = prop.getProperty("TEST");
-            
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -67,7 +67,13 @@ public class UserDAO {
 		
 		try {
 			
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
+			connection = DriverManager.getConnection(
+					
+					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.USERS_DB_NAME.toString()), 
+					prop.getProperty(PropertiesKeys.USERS_DB_USERNAME.toString()), 
+					prop.getProperty(PropertiesKeys.USERS_DB_PASSWORD.toString())
+					
+			);
 			
 			connection.setAutoCommit(false);
 			
@@ -206,7 +212,13 @@ public class UserDAO {
 		
 		try {
 			
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
+			connection = DriverManager.getConnection(
+					
+					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.USERS_DB_NAME.toString()), 
+					prop.getProperty(PropertiesKeys.USERS_DB_USERNAME.toString()), 
+					prop.getProperty(PropertiesKeys.USERS_DB_PASSWORD.toString())
+					
+			);
 			
 			preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
 			

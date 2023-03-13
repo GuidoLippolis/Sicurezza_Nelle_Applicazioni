@@ -1,13 +1,41 @@
 package dao;
 
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
+
+import enumeration.PropertiesKeys;
 
 public class PasswordDAO {
 
+	private static Properties prop;
+
+	static {
+		
+        prop = new Properties();
+        
+        try {
+			
+            prop = new Properties();
+            
+            FileInputStream in = new FileInputStream(System.getenv("PATH_TO_APPLICATION_PROPERTIES_FILE"));
+            
+            prop.load(in);
+
+            in.close();
+
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+		}
+
+	}
+	
 	public static boolean findUserByPassword(byte[] hashedPassword) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
@@ -19,8 +47,14 @@ public class PasswordDAO {
 		ResultSet resultSet = null;
 		
 		try {
-			
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/passwords_db", "root", "WgAb_9114_2359");
+
+			connection = DriverManager.getConnection(
+					
+					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.PASSWORDS_DB_NAME.toString()), 
+					prop.getProperty(PropertiesKeys.PASSWORDS_DB_USERNAME.toString()), 
+					prop.getProperty(PropertiesKeys.PASSWORDS_DB_PASSWORD.toString())
+					
+			);
 			
 			preparedStatement = connection.prepareStatement("SELECT * FROM passwords WHERE password = ?");
 			
