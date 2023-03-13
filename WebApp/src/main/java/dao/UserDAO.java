@@ -165,6 +165,55 @@ public class UserDAO {
 		
 	}
 	
+	public static boolean readPhotoAndWriteToFileSystem(String username) throws ClassNotFoundException, SQLException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection connection = null;
+		
+		PreparedStatement preparedStatement = null;
+		
+		ResultSet resultSet = null;
+		
+		try {
+			
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/users_db", "root", "WgAb_9114_2359");
+			
+			preparedStatement = connection.prepareStatement("SELECT * FROM users_db.users WHERE username = ?");
+			
+			preparedStatement.setString(1, username);
+			
+			resultSet = preparedStatement.executeQuery();
+
+			boolean hasNext = resultSet.next();
+			
+			if(hasNext) {
+				
+				byte[] photo = resultSet.getBytes("photo");
+				
+			}
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		
+		} finally {
+			
+			if(connection != null)
+				connection.close();
+			
+			if(preparedStatement != null)
+				preparedStatement.close();
+			
+			if(resultSet != null)
+				resultSet.close();
+			
+		}
+		
+		return true;
+		
+	}
+	
 	public static List<User> findByUsername(String username) throws SQLException, ClassNotFoundException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");

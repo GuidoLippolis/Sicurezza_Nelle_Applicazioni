@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import dao.UserDAO;
 import model.User;
 
@@ -20,8 +22,11 @@ import model.User;
  */
 @WebServlet("/sign-up")
 public class SignUpServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
-       
+	
+	private static final Logger log = Logger.getLogger(SignUpServlet.class);
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -68,7 +73,7 @@ public class SignUpServlet extends HttpServlet {
 		byte[] password = request.getParameter("password").getBytes();
 		byte[] passwordToConfirm = request.getParameter("confirm_password").getBytes();
 		byte[] photo = request.getParameter("photo").getBytes();
-
+		
 		boolean insertedUser = false;
 		
 		try {
@@ -83,6 +88,7 @@ public class SignUpServlet extends HttpServlet {
 				 * 
 				 * */
 				
+				log.info("Inserimento avvenuto con successo");
 				System.out.println("Inserimento avvenuto con successo");
 				
 			} else {
