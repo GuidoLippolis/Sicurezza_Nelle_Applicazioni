@@ -32,4 +32,11 @@ public enum PropertiesKeys {
 	SALTS_DB_PASSWORD,
 	SALTS_DB_NAME,
 	
+	/*
+	 * Algoritmo di hashing
+	 * 
+	 * */
+	
+	HASHING_ALGORITHM
+	
 }

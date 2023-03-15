@@ -61,7 +61,7 @@ public class UserDAO {
 		 * */
 		
 		byte[] salt = PasswordUtils.createSalt(10);
-		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, "SHA-256");
+		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, prop.getProperty(PropertiesKeys.HASHING_ALGORITHM.toString()));
 		
 		try {
 			
@@ -170,7 +170,7 @@ public class UserDAO {
 			
 			byte[] userSalt = SaltDAO.findSaltByUsername(user.getUsername());
 			
-			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, "SHA-256");
+			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, prop.getProperty(PropertiesKeys.HASHING_ALGORITHM.toString()));
 			
 			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
 			
