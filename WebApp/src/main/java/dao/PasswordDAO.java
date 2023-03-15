@@ -16,13 +16,11 @@ public class PasswordDAO {
 
 	static {
 		
-        prop = new Properties();
-        
         try {
 			
             prop = new Properties();
             
-            FileInputStream in = new FileInputStream(System.getenv("PATH_TO_APPLICATION_PROPERTIES_FILE"));
+            FileInputStream in = new FileInputStream(System.getenv(PropertiesKeys.PATH_TO_PROPERTIES_FILE.toString()));
             
             prop.load(in);
 

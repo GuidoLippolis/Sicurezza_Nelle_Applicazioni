@@ -22,13 +22,11 @@ public class UserDAO {
 
 	static {
 		
-        prop = new Properties();
-        
         try {
 			
             prop = new Properties();
             
-            FileInputStream in = new FileInputStream(System.getenv("PATH_TO_APPLICATION_PROPERTIES_FILE"));
+            FileInputStream in = new FileInputStream(System.getenv(PropertiesKeys.PATH_TO_PROPERTIES_FILE.toString()));
             
             prop.load(in);
 
@@ -105,7 +103,7 @@ public class UserDAO {
 				
 				int affectedRowsSalts = saltsStatement.executeUpdate();
 				
-				if(rowsAffectedUsers == 1 && rowsAffectedPasswords == 1 && affectedRowsSalts == 1) {
+				if(rowsAffectedPasswords == 1 && affectedRowsSalts == 1) {
 					
 					connection.commit();
 					return true;

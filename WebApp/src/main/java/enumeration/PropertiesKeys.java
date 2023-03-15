@@ -3,6 +3,7 @@ package enumeration;
 public enum PropertiesKeys {
 
 	JDCB_URL,
+	PATH_TO_PROPERTIES_FILE,
 	
 	/*
 	 * Properties per il database degli utenti
@@ -23,7 +24,7 @@ public enum PropertiesKeys {
 	PASSWORDS_DB_NAME,
 	
 	/*
-	 * Properties per il database delle password
+	 * Properties per il database dei salt
 	 * 
 	 * */
 	
