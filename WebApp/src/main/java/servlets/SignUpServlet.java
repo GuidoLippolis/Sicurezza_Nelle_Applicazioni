@@ -88,19 +88,21 @@ public class SignUpServlet extends HttpServlet {
 				 * 
 				 * */
 				
-				log.info("Inserimento avvenuto con successo");
-				System.out.println("Inserimento avvenuto con successo");
+				log.info("Registrazione avvenuta con successo");
 				
 			} else {
 				
-				System.out.println("Inserimento annullato");
+				log.info("Errore nella registrazione");
+				
 				response.sendRedirect("./index.jsp");
+				
 				return;
 				
 			}
 			
 		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException e) {
 			
+			log.info("Errore in SignUpServlet: ", e);
 			e.printStackTrace();
 			
 		}

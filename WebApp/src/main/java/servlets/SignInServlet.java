@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import dao.UserDAO;
 import model.User;
 
@@ -16,7 +18,10 @@ import model.User;
  * Servlet implementation class SignInServlet
  */
 public class SignInServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
+	
+	private static final Logger log = Logger.getLogger(SignUpServlet.class);
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -50,7 +55,7 @@ public class SignInServlet extends HttpServlet {
 			
 			if(logged) {
 				
-				System.out.println("Logged in");
+				log.info("Login effettuato con successo");
 				
 				HttpSession oldSession = request.getSession(false);
 				
@@ -61,7 +66,7 @@ public class SignInServlet extends HttpServlet {
 				
 				currentSession.setAttribute("user", username);
 				
-				currentSession.setMaxInactiveInterval(5*60);
+				currentSession.setMaxInactiveInterval(60);
 				
 				response.sendRedirect("./success.jsp");
 				
@@ -69,13 +74,17 @@ public class SignInServlet extends HttpServlet {
 				
 			} else {
 				
-				System.out.println("Try again");
+				log.info("Errore durante il login");
+				
 				response.sendRedirect("./index.jsp");
+				
+				return;
 				
 			}
 			
 		} catch (ClassNotFoundException | SQLException e) {
 			
+			log.info("Errore in SignInServlet: ", e);
 			e.printStackTrace();
 			
 		}
