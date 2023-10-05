@@ -2,6 +2,8 @@ DROP DATABASE IF EXISTS passwords_db;
 DROP DATABASE IF EXISTS salts_db;
 DROP DATABASE IF EXISTS users_db;
 
+-- Creazione dei vari database ciascuno contenente una tabella
+
 CREATE DATABASE IF NOT EXISTS users_db;
 CREATE DATABASE IF NOT EXISTS passwords_db;
 CREATE DATABASE IF NOT EXISTS salts_db;
@@ -35,3 +37,9 @@ CREATE TABLE IF NOT EXISTS salts (
     FOREIGN KEY (username) REFERENCES users_db.users(username)
 
 );
+
+-- Creazione utenti (esguire tramite utente root)
+
+CREATE USER 'users_usr'@'localhost' IDENTIFIED BY 'users_usr_password';
+CREATE USER 'passwords_usr'@'localhost' IDENTIFIED BY 'passwords_usr_password';
+CREATE USER 'salts_usr'@'localhost' IDENTIFIED BY 'salts_usr_password';
