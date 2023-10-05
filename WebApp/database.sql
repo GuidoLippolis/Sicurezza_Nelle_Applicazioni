@@ -43,3 +43,13 @@ CREATE TABLE IF NOT EXISTS salts (
 CREATE USER 'users_usr'@'localhost' IDENTIFIED BY 'users_usr_password';
 CREATE USER 'passwords_usr'@'localhost' IDENTIFIED BY 'passwords_usr_password';
 CREATE USER 'salts_usr'@'localhost' IDENTIFIED BY 'salts_usr_password';
+
+/*
+	Per la tabella degli utenti, fornisco all'utente "users_usr@localhost"
+	il permesso di INSERT
+
+*/
+
+GRANT INSERT ON users_db.users TO 'users_usr'@'localhost';
+GRANT INSERT ON passwords_db.passwords TO 'users_usr'@'localhost';
+GRANT INSERT ON salts_db.salts TO 'users_usr'@'localhost';
