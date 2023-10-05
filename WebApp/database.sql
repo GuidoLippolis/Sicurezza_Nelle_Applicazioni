@@ -46,10 +46,29 @@ CREATE USER 'salts_usr'@'localhost' IDENTIFIED BY 'salts_usr_password';
 
 /*
 	Per la tabella degli utenti, fornisco all'utente "users_usr@localhost"
-	il permesso di INSERT
+	il permesso di INSERT sui database: users_db (tabella users); passwords_db
+	(tabella passwords) e salts_db (tabella salts). Fornisco inoltre il permesso
+	di SELECT sul database users_db (tabella users)
 
 */
 
 GRANT INSERT ON users_db.users TO 'users_usr'@'localhost';
 GRANT INSERT ON passwords_db.passwords TO 'users_usr'@'localhost';
 GRANT INSERT ON salts_db.salts TO 'users_usr'@'localhost';
+GRANT SELECT ON users_db.users TO 'users_usr'@'localhost';
+
+/*
+	Per la tabella dei valori di valori di salt (tabella salts) fornisco all'utente 
+	"salts_usr@localhost" il permesso di SELECT
+
+*/
+
+GRANT SELECT ON salts_db.salts TO 'salts_usr'@'localhost';
+
+/*
+	Per la tabella dei valori di valori delle password (tabella passwords) fornisco all'utente 
+	"passwords_usr@localhost" il permesso di SELECT
+
+*/
+
+GRANT SELECT ON passwords_db.passwords TO 'passwords_usr'@'localhost';

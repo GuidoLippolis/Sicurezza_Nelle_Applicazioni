@@ -129,9 +129,9 @@
         
         	
         
-        	List<User> users = (List<User>) request.getAttribute("usersList");
+        	/* List<User> users = (List<User>) request.getAttribute("usersList"); */
         	
-        	if(users != null) {
+        	/* if(users != null) {
         		
             	for(User user : users) {
             		
@@ -139,7 +139,7 @@
             		
             	}
         		
-        	}
+        	} */
         
         %>
 

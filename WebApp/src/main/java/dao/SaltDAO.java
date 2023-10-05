@@ -48,10 +48,6 @@ public class SaltDAO {
 		
 		try {
 			
-			System.out.println("URL = " + prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.SALTS_DB_NAME.toString()));
-			System.out.println("USERNAME = " + prop.getProperty(PropertiesKeys.SALTS_DB_USERNAME.toString()));
-			System.out.println("PASSWORD = " + prop.getProperty(PropertiesKeys.SALTS_DB_PASSWORD.toString()));
-			
 			connection = DriverManager.getConnection(
 					
 					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.SALTS_DB_NAME.toString()), 
