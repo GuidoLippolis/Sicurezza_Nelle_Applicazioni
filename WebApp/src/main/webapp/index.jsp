@@ -54,36 +54,22 @@
 
               </div>
             </div>
-
+            
             <hr class="mx-n3">
+            
+            <!-- REMEMBER ME -->
+            
+            <div class="row align-items-center py-3">
+				    <div class="col-md-9 pe-5">
+				        <div class="form-check">
+				            <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberme">
+				            <label class="form-check-label" for="rememberMe">Remember me</label>
+				        </div>
+				    </div>
+			</div>
 
             <div class="row align-items-center py-3">
             
-            <!-- 
-            
-              <div class="col-md-3 ps-5">
-                <h6 class="mb-0">Full name</h6>
-              </div>
-            
-              <div class="col-md-9 pe-5">
-                <textarea class="form-control" rows="3" placeholder="Message sent to the employer"></textarea>
-              </div>
-              
-            <hr class="mx-n3">
-            
-            <div class="row align-items-center py-3">
-              <div class="col-md-3 ps-5">
-                <h6 class="mb-0">Upload CV</h6>
-              </div>
-              <div class="col-md-9 pe-5">
-                <input class="form-control form-control-lg" id="formFileLg" type="file" />
-              </div>
-            </div>
-            
-            <hr class="mx-n3">
-            
-             -->
-              
             </div>
 
             <div class="px-5 py-4">

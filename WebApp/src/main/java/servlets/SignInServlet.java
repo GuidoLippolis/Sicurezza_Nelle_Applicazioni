@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import dao.UserDAO;
 import model.User;
+import utils.Utils;
 
 /**
  * Servlet implementation class SignInServlet
@@ -48,6 +50,7 @@ public class SignInServlet extends HttpServlet {
 		
 		String username = request.getParameter("username");
 		byte[] password = request.getParameter("password").getBytes();
+		boolean rememberMe = "on".equals(request.getParameter("rememberme"));
 		
 		boolean logged = false;
 		
@@ -56,6 +59,14 @@ public class SignInServlet extends HttpServlet {
 			logged = UserDAO.signIn(new User(username), password);
 			
 			if(logged) {
+				
+				if(rememberMe) {
+					
+					Cookie rememberMeCookie = new Cookie("rememberMe", Utils.generateRandomToken(username));
+					rememberMeCookie.setMaxAge(2 * 60);
+					response.addCookie(rememberMeCookie);
+					
+				}
 				
 				log.info("Login effettuato con successo");
 				
@@ -86,7 +97,7 @@ public class SignInServlet extends HttpServlet {
 			
 		} catch (ClassNotFoundException | SQLException e) {
 			
-			log.info("Errore in SignInServlet: ", e);
+			log.error("Errore in SignInServlet: ", e);
 			e.printStackTrace();
 			
 		}
