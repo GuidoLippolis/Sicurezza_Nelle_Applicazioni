@@ -33,6 +33,15 @@ public enum PropertiesKeys {
 	SALTS_DB_NAME,
 	
 	/*
+	 * Properties per il database dei cookie
+	 * 
+	 * */
+	
+	COOKIES_DB_USERNAME,
+	COOKIES_DB_PASSWORD,
+	COOKIES_DB_NAME,
+	
+	/*
 	 * Algoritmo di hashing
 	 * 
 	 * */

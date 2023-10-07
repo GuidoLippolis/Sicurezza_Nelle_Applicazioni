@@ -12,7 +12,7 @@ public class AESEncryption {
 	
     private static SecretKeySpec secretKeySpec;
 
-    public static void setKey(String secret) throws Exception {
+    private static void setKey(String secret) throws Exception {
     	
         MessageDigest sha = MessageDigest.getInstance("SHA-256");
         
@@ -24,13 +24,15 @@ public class AESEncryption {
         
     }
 
-    public static String encrypt(String plainText) throws Exception {
+    public static String encrypt(String plainText, String passPhrase) throws Exception {
     	
-        if (secretKeySpec == null) 
+    	setKey(passPhrase);
+    	
+        if (secretKeySpec == null)
             throw new IllegalStateException("Key is not set. Call setKey() first.");
 
         Cipher cipher = Cipher.getInstance("AES");
-        
+
         cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 
         byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
@@ -42,10 +44,10 @@ public class AESEncryption {
     }
 
     public static String decrypt(String encryptedText) throws Exception {
-    	
-        if (secretKeySpec == null) 
+        
+        if (secretKeySpec == null)
             throw new IllegalStateException("Key is not set. Call setKey() first.");
-
+    	
         Cipher cipher = Cipher.getInstance("AES");
         
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
@@ -57,6 +59,7 @@ public class AESEncryption {
         String decryptedString = new String(decryptedBytes, StandardCharsets.UTF_8);
 
         return decryptedString;
+        
     }
 
 }

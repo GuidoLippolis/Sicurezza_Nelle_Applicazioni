@@ -12,17 +12,24 @@ public class User {
 		super();
 	}
 
-	public User(String email) {
+	public User(String username) {
 		super();
-		this.username = email;
+		this.username = username;
 	}
 
-	public User(String email, byte[] photo) {
+	public User(String username, byte[] photo) {
 		super();
-		this.username = email;
+		this.username = username;
 		this.photo = photo;
 	}
 	
+	
+	public User(int id, String username) {
+		super();
+		this.id = id;
+		this.username = username;
+	}
+
 	public User(int id, String email, byte[] photo) {
 		super();
 		this.id = id;
@@ -56,7 +63,7 @@ public class User {
 	
 	@Override
 	public String toString() {
-		return "User [email=" + username + ", photo=" + Arrays.toString(photo) + "]";
+		return "User [username=" + username + ", photo=" + Arrays.toString(photo) + "]";
 	}
 	
 }

@@ -196,7 +196,7 @@ public class UserDAO {
 		
 	}
 	
-	public static List<User> findByUsername(String username) throws SQLException, ClassNotFoundException {
+	public static User findByUsername(String username) throws SQLException, ClassNotFoundException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -225,13 +225,14 @@ public class UserDAO {
 			resultSet = preparedStatement.executeQuery();
 			
 			while(resultSet.next())
-				users.add(new User(resultSet.getString("username")));
+				users.add(new User(resultSet.getInt("id"), resultSet.getString("username")));
 			
-			return users;
+			return users.get(0);
 			
 		} catch (Exception e) {
 
 			e.printStackTrace();
+			return new User();
 		
 		} finally {
 			
@@ -242,8 +243,6 @@ public class UserDAO {
 				resultSet.close();
 			
 		}
-		
-		return users;
 		
 	}
 	

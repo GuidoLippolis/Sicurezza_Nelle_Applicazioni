@@ -1,7 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,8 +12,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import dao.CookieDAO;
 import dao.UserDAO;
 import model.User;
+import utils.AESEncryption;
 import utils.Utils;
 
 /**
@@ -39,6 +40,36 @@ public class SignInServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		try {
+			
+	        Cookie[] cookies = request.getCookies();
+	        String decryptedCookieValue = null;
+	        
+	        /*
+	         * Prima di verificare che le credenziali dell'utente 
+	         * 
+	         * */
+	        
+	        if (cookies != null) {
+	        	
+	            for (Cookie cookie : cookies) {
+	            	
+	                if (cookie.getName().equals("rememberMe")) {
+	                	
+	                    decryptedCookieValue = AESEncryption.decrypt(cookie.getValue());
+	                    break;
+	                    
+	                }
+	                
+	            }
+	        }
+	        
+		} catch (Exception e) {
+
+			log.error("Eccezione in SignInServlet: ", e);
+			
+		}
+		
 		request.getRequestDispatcher("index.jsp").forward(request, response);
 	
 	}
@@ -52,19 +83,37 @@ public class SignInServlet extends HttpServlet {
 		byte[] password = request.getParameter("password").getBytes();
 		boolean rememberMe = "on".equals(request.getParameter("rememberme"));
 		
-		boolean logged = false;
+		boolean loggedUser = false;
+		boolean savedCookie = false;
 		
 		try {
 			
-			logged = UserDAO.signIn(new User(username), password);
+			loggedUser = UserDAO.signIn(new User(username), password);
 			
-			if(logged) {
+			if(loggedUser) {
+				
+				/*
+				 * Se l'utente ha selezionato l'opzione "Remember Me" al momento
+				 * del login, viene creato un nuovo Cookie per l'utente il cui
+				 * nome è una stringa randomica derivante dallo username dell'utente
+				 * stesso. Viene settata la durata massima del Cookie e quest'ultimo
+				 * viene aggiunto alla risposta del server
+				 * 
+				 * */
 				
 				if(rememberMe) {
 					
 					Cookie rememberMeCookie = new Cookie("rememberMe", Utils.generateRandomToken(username));
+					
 					rememberMeCookie.setMaxAge(2 * 60);
+					
 					response.addCookie(rememberMeCookie);
+
+					User user = UserDAO.findByUsername(username);
+					
+					savedCookie = CookieDAO.saveCookie(rememberMeCookie, user);
+					
+					log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie non è stato memorizzato correttamente nel database");
 					
 				}
 				
@@ -95,9 +144,9 @@ public class SignInServlet extends HttpServlet {
 				
 			}
 			
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (Exception e) {
 			
-			log.error("Errore in SignInServlet: ", e);
+			log.error("Eccezione in SignInServlet: ", e);
 			e.printStackTrace();
 			
 		}

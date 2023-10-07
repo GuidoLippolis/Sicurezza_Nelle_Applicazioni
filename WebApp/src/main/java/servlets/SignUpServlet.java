@@ -39,18 +39,6 @@ public class SignUpServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-//		try {
-//			
-//			List<User> users = UserDAO.findByUsername(request.getParameter("username"));
-//			
-//			request.setAttribute("usersList", users);
-//			
-//		} catch (SQLException | ClassNotFoundException e) {
-//
-//			e.printStackTrace();
-//			
-//		}
-		
 		request.getRequestDispatcher("sign-up.jsp").forward(request, response);
 		
 	}
