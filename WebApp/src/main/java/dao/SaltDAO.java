@@ -1,6 +1,5 @@
 package dao;
 
-import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,33 +8,12 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import enumeration.PropertiesKeys;
+import utils.ApplicationPropertiesLoader;
 
 public class SaltDAO {
 	
-	private static Properties prop;
+	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
-	static {
-		
-        prop = new Properties();
-        
-        try {
-			
-            prop = new Properties();
-            
-            FileInputStream in = new FileInputStream(System.getenv(PropertiesKeys.PATH_TO_PROPERTIES_FILE.toString()));
-            
-            prop.load(in);
-
-            in.close();
-
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-			
-		}
-
-	}
-	
 	public static byte[] findSaltByUsername(String username) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");

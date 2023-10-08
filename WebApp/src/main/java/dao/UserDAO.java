@@ -1,6 +1,5 @@
 package dao;
 
-import java.io.FileInputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,34 +13,15 @@ import java.util.Properties;
 
 import enumeration.PropertiesKeys;
 import model.User;
+import utils.ApplicationPropertiesLoader;
 import utils.PasswordUtils;
 
 public class UserDAO {
 	
-	private static Properties prop;
+	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
-	static {
-		
-        try {
-			
-            prop = new Properties();
-            
-            FileInputStream in = new FileInputStream(System.getenv(PropertiesKeys.PATH_TO_PROPERTIES_FILE.toString()));
-            
-            prop.load(in);
-
-            in.close();
-
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-			
-		}
-
-	}
-	
 	public static boolean signUp(User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
-		
+		System.out.println("hello world");
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
 		Connection connection = null;

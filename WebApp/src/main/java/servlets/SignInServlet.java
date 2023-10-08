@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +17,7 @@ import org.apache.log4j.Logger;
 import dao.CookieDAO;
 import dao.UserDAO;
 import model.User;
-import utils.AESEncryption;
+import utils.EncryptionUtils;
 import utils.Utils;
 
 /**
@@ -43,7 +45,6 @@ public class SignInServlet extends HttpServlet {
 		try {
 			
 	        Cookie[] cookies = request.getCookies();
-	        String decryptedCookieValue = null;
 	        
 	        /*
 	         * Prima di verificare che le credenziali dell'utente 
@@ -56,9 +57,25 @@ public class SignInServlet extends HttpServlet {
 	            	
 	                if (cookie.getName().equals("rememberMe")) {
 	                	
-	                    decryptedCookieValue = AESEncryption.decrypt(cookie.getValue());
-	                    break;
-	                    
+	                	/*
+	                	 * L'utente invia il cookie in chiaro
+	                	 * Il metodo findCookieByValue() cripta ciò che manda l'utente e cerca corrispondenza nel DB
+	                	 * Restituisco ciò che trovo nel DB e lo decripto
+	                	 * Se il valore decriptato è uguale a quello che ha inviato il client, l'utente viene autenticato
+	                	 * 
+	                	 * */
+	                	
+	                	String foundCookie = CookieDAO.findCookieByValue(EncryptionUtils.encrypt(cookie.getValue(), "secret"));
+	                	
+	                	String test = Base64.getEncoder().encodeToString(foundCookie.getBytes(StandardCharsets.UTF_8));
+	                	
+	                	String decryptedCookieFromDB = EncryptionUtils.decrypt(foundCookie);
+	                	
+	                	if(decryptedCookieFromDB.equals(cookie.getValue()))
+	                		log.info("Cookie valido");
+	                	else
+	                		log.info("Cookie NON valido");
+	                	
 	                }
 	                
 	            }
@@ -105,13 +122,15 @@ public class SignInServlet extends HttpServlet {
 					
 					Cookie rememberMeCookie = new Cookie("rememberMe", Utils.generateRandomToken(username));
 					
-					rememberMeCookie.setMaxAge(2 * 60);
+					rememberMeCookie.setMaxAge(15 * 60);
 					
 					response.addCookie(rememberMeCookie);
 
 					User user = UserDAO.findByUsername(username);
 					
-					savedCookie = CookieDAO.saveCookie(rememberMeCookie, user);
+					String encryptedCookie = EncryptionUtils.encrypt(rememberMeCookie.getValue(), "secret");
+					
+					savedCookie = CookieDAO.saveCookie(encryptedCookie, user);
 					
 					log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie non è stato memorizzato correttamente nel database");
 					
