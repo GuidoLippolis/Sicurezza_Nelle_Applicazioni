@@ -6,6 +6,17 @@ import java.util.Properties;
 
 import enumeration.PropertiesKeys;
 
+/*
+ * Questa classe ha lo scopo di inizializzare l'oggetto prop
+ * all'avvio dell'applicazione. In questo modo, all'interno
+ * delle altre classi sarà possibile accedere alle properties
+ * del file application.properties senza dover leggere ogni
+ * volta il file. Il percorso al file è stato impostato come
+ * variabile d'ambiente, in modo tale da non avere alcun
+ * riferimento a esso nel codice sorgente
+ * 
+ * */
+
 public class ApplicationPropertiesLoader {
 	
     private static Properties prop = new Properties();
@@ -28,7 +39,9 @@ public class ApplicationPropertiesLoader {
     }
 
     public static Properties getProperties() {
+    	
         return prop;
+        
     }
     
 }
