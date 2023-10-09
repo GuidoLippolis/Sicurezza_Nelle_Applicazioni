@@ -73,6 +73,11 @@ public class SignInServlet extends HttpServlet {
 	                	 * */
 
 	                	String cookieValueFromDB = CookieDAO.findCookieByUserId(Utils.getUserIdFromCookie(cookie.getValue()));
+
+	                	/*
+	                	 * TODO: Implementare controllo di scadenza password (con cancellazione del cookie dal database)
+	                	 * 
+	                	 * */
 	                	
 	                	if(cookieValueFromDB != null) {
 	                		
@@ -144,7 +149,21 @@ public class SignInServlet extends HttpServlet {
 				
 				if(rememberMe) {
 					
-					// Cookie
+					/*
+					 * GESTIONE DEI COOKIE:
+					 * 
+					 * - Recupero l'utente tramite lo username
+					 * 
+					 * - Genero un token derivante dallo username, al quale concateno una stringa casuale
+					 * 
+					 * - La stringa casuale ha il seguente pattern: username#randomstring@@@userid@@@. In questo
+					 *   modo, quando l'utente raggiungerà nuovamente l'applicazione, tramite il metodo
+					 *   getUserIdFromCookie viene eseguita una query mirata al database per recuperare
+					 *   il cookie associato all'utente. Se viene trovato un record nel database e se il cookie
+					 *   in questione non è scaduto, l'utente raggiunge la pagina success.jsp, altrimenti viene
+					 *   reindirizzato alla pagina di login
+					 * 
+					 * */
 					
 					User user = UserDAO.findByUsername(username);
 					
@@ -152,7 +171,7 @@ public class SignInServlet extends HttpServlet {
 					
 					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 					
-					rememberMeCookie.setMaxAge(600000000);
+					rememberMeCookie.setMaxAge(60 * 15);
 
 					savedCookie = CookieDAO.saveCookie(EncryptionUtils.encrypt(rememberMeCookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())), rememberMeCookie.getMaxAge(), user);
 					
