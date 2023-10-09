@@ -5,9 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Utils {
 	
-	private static int tokenLength = 20;
-	
-	public static String generateRandomToken(String input) {
+	public static String generateRandomToken(String input, int tokenLength) {
 		
 		return input + "#" + RandomStringUtils.randomAlphanumeric(tokenLength);
 		

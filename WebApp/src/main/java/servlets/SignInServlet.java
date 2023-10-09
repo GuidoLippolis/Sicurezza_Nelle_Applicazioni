@@ -148,7 +148,7 @@ public class SignInServlet extends HttpServlet {
 					
 					User user = UserDAO.findByUsername(username);
 					
-					String randomCookieValue = Utils.generateRandomToken(username) + "@@@" + user.getId() + "@@@";
+					String randomCookieValue = Utils.generateRandomToken(username, 20) + "@@@" + user.getId() + "@@@";
 					
 					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 					
