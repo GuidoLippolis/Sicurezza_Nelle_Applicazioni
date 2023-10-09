@@ -12,7 +12,7 @@ public class EncryptionUtils {
 	
     private static SecretKeySpec secretKeySpec;
 
-    public static void setKey(String secret) throws Exception {
+    private static void setKey(String secret) throws Exception {
         
     	MessageDigest sha = MessageDigest.getInstance("SHA-256");
         
