@@ -45,8 +45,8 @@ USE cookies_db;
 CREATE TABLE IF NOT EXISTS cookies (
 
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    cookie_value VARCHAR(50) NOT NULL UNIQUE,
-    expiration_date DATE NOT NULL,
+    cookie_value VARCHAR(500) NOT NULL UNIQUE,
+    expiration_date BIGINT NOT NULL,
 	user_id INT UNSIGNED NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users_db.users(id) ON DELETE CASCADE
 
@@ -99,5 +99,3 @@ GRANT SELECT ON cookies_db.cookies TO 'cookies_usr'@'localhost';
 
 select * from users_db.users; select * from passwords_db.passwords; select * from salts_db.salts; select * from cookies_db.cookies;
 DELETE FROM passwords_db.passwords; DELETE FROM salts_db.salts; DELETE FROM cookies_db.cookies; DELETE FROM users_db.users;
-
-

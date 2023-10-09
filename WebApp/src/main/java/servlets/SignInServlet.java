@@ -1,8 +1,7 @@
 package servlets;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +15,9 @@ import org.apache.log4j.Logger;
 
 import dao.CookieDAO;
 import dao.UserDAO;
+import enumeration.PropertiesKeys;
 import model.User;
+import utils.ApplicationPropertiesLoader;
 import utils.EncryptionUtils;
 import utils.Utils;
 
@@ -29,6 +30,8 @@ public class SignInServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private static final Logger log = Logger.getLogger(SignUpServlet.class);
+	
+	private static Properties prop = ApplicationPropertiesLoader.getProperties();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -41,7 +44,7 @@ public class SignInServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		try {
 			
 	        Cookie[] cookies = request.getCookies();
@@ -58,27 +61,35 @@ public class SignInServlet extends HttpServlet {
 	                if (cookie.getName().equals("rememberMe")) {
 	                	
 	                	/*
-	                	 * L'utente invia il cookie in chiaro
-	                	 * Il metodo findCookieByValue() cripta ciò che manda l'utente e cerca corrispondenza nel DB
-	                	 * Restituisco ciò che trovo nel DB e lo decripto
-	                	 * Se il valore decriptato è uguale a quello che ha inviato il client, l'utente viene autenticato
+	                	 * Quando l'utente raggiunge l'applicazione, si controlla se
+	                	 * esso è già in possesso di un Cookie. Se tale condizione è
+	                	 * verificata, allora l'utente viene autenticato senza la
+	                	 * necessità di fornire le credenziali di accesso
+	                	 * 
+	                	 * 1. Recupero dell'ID dell'utente del database dal valore del Cookie
+	                	 * 2. Esecuzione di una query mirata a recuperare l'utente tramite l'ID nella tabella dei cookies
+	                	 * 3. Calcolo della data di scadenza e confronto di quest'ultima con la data corrente
 	                	 * 
 	                	 * */
+
+	                	String cookieValueFromDB = CookieDAO.findCookieByUserId(Utils.getUserIdFromCookie(cookie.getValue()));
 	                	
-	                	String foundCookie = CookieDAO.findCookieByValue(EncryptionUtils.encrypt(cookie.getValue(), "secret"));
-	                	
-	                	String test = Base64.getEncoder().encodeToString(foundCookie.getBytes(StandardCharsets.UTF_8));
-	                	
-	                	String decryptedCookieFromDB = EncryptionUtils.decrypt(foundCookie);
-	                	
-	                	if(decryptedCookieFromDB.equals(cookie.getValue()))
-	                		log.info("Cookie valido");
-	                	else
-	                		log.info("Cookie NON valido");
+	                	if(cookieValueFromDB != null) {
+	                		
+	                		response.sendRedirect("./success.jsp");
+	                		return;
+	                		
+	                	} else {
+	                		
+	                		response.sendRedirect("./index.jsp");
+	                		return;
+	                		
+	                	}
 	                	
 	                }
 	                
 	            }
+	            
 	        }
 	        
 		} catch (Exception e) {
@@ -109,6 +120,19 @@ public class SignInServlet extends HttpServlet {
 			
 			if(loggedUser) {
 				
+				// Sessione
+				
+				HttpSession oldSession = request.getSession(false);
+				
+				if(oldSession != null)
+					oldSession.invalidate();
+				
+				HttpSession currentSession = request.getSession();
+				
+				currentSession.setMaxInactiveInterval(60);
+				
+				currentSession.setAttribute("user", username);
+				
 				/*
 				 * Se l'utente ha selezionato l'opzione "Remember Me" al momento
 				 * del login, viene creato un nuovo Cookie per l'utente il cui
@@ -120,34 +144,25 @@ public class SignInServlet extends HttpServlet {
 				
 				if(rememberMe) {
 					
-					Cookie rememberMeCookie = new Cookie("rememberMe", Utils.generateRandomToken(username));
+					// Cookie
 					
-					rememberMeCookie.setMaxAge(15 * 60);
-					
-					response.addCookie(rememberMeCookie);
-
 					User user = UserDAO.findByUsername(username);
 					
-					String encryptedCookie = EncryptionUtils.encrypt(rememberMeCookie.getValue(), "secret");
+					String randomCookieValue = Utils.generateRandomToken(username) + "@@@" + user.getId() + "@@@";
 					
-					savedCookie = CookieDAO.saveCookie(encryptedCookie, user);
+					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
+					
+					rememberMeCookie.setMaxAge(600000000);
+
+					savedCookie = CookieDAO.saveCookie(EncryptionUtils.encrypt(rememberMeCookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())), rememberMeCookie.getMaxAge(), user);
+					
+					response.addCookie(rememberMeCookie);
 					
 					log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie non è stato memorizzato correttamente nel database");
 					
 				}
 				
 				log.info("Login effettuato con successo");
-				
-				HttpSession oldSession = request.getSession(false);
-				
-				if(oldSession != null)
-					oldSession.invalidate();
-				
-				HttpSession currentSession = request.getSession();
-				
-				currentSession.setAttribute("user", username);
-				
-				currentSession.setMaxInactiveInterval(60);
 				
 				response.sendRedirect("./success.jsp");
 				

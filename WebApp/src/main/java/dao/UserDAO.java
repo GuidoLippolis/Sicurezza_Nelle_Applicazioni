@@ -21,7 +21,7 @@ public class UserDAO {
 	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
 	public static boolean signUp(User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
-		System.out.println("hello world");
+		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
 		Connection connection = null;

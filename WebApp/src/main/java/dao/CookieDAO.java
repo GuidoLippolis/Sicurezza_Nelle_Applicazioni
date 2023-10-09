@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import javax.servlet.http.Cookie;
+
 import org.apache.log4j.Logger;
 
 import enumeration.PropertiesKeys;
@@ -21,7 +23,7 @@ public class CookieDAO {
 	
 	private static final Logger log = Logger.getLogger(CookieDAO.class);
 
-	public static boolean saveCookie(String encryptedCookie, User user) throws ClassNotFoundException, SQLException {
+	public static boolean saveCookie(String encryptedCookieValue, int maxAge, User user) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -41,11 +43,11 @@ public class CookieDAO {
 			
 			connection.setAutoCommit(false);
 			
-			cookiesStatement = connection.prepareStatement("INSERT INTO cookies_db.cookies(cookie_value, user_id) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
+			cookiesStatement = connection.prepareStatement("INSERT INTO cookies_db.cookies(cookie_value, expiration_date, user_id) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			
-//			cookiesStatement.setBytes(1, AESEncryption.encryptByteArray(cookie.getValue().getBytes(), "secret"));
-			cookiesStatement.setString(1, EncryptionUtils.encrypt(encryptedCookie, "secret"));
-			cookiesStatement.setInt(2, user.getId());
+			cookiesStatement.setString(1, encryptedCookieValue);
+			cookiesStatement.setInt(2, maxAge);
+			cookiesStatement.setInt(3, user.getId());
 			
 			int rowsAffectedCookies = cookiesStatement.executeUpdate();
 			
@@ -73,7 +75,7 @@ public class CookieDAO {
 		
 	}
 	
-	public static String findCookieByValue(String encryptedCookieValueToSearch) throws Exception {
+	public static String findCookieByUserId(int userId) throws Exception {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -95,19 +97,16 @@ public class CookieDAO {
 					
 			);
 			
-			connection.setAutoCommit(false);
+			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE user_id = ?");
 			
-			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE cookie_value = ?", Statement.RETURN_GENERATED_KEYS);
+			cookiesStatement.setInt(1, userId);
 			
-//			cookiesStatement.setBytes(1, decryptedCookieValueToSearch.getBytes(StandardCharsets.UTF_8));
-			cookiesStatement.setString(1, encryptedCookieValueToSearch);
-			
-			resultSetCookies = cookiesStatement.getGeneratedKeys();
+			resultSetCookies = cookiesStatement.executeQuery();
 			
 			boolean hasNext = resultSetCookies.next();
 			
 			if(hasNext)
-				outputCookieValue = resultSetCookies.getString(1);
+				outputCookieValue = resultSetCookies.getString("cookie_value");
 			
 			return outputCookieValue;
 			

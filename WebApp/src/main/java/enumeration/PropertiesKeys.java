@@ -46,6 +46,13 @@ public enum PropertiesKeys {
 	 * 
 	 * */
 	
-	HASHING_ALGORITHM
+	HASHING_ALGORITHM,
+	
+	/*
+	 * Passphrase per crittografia
+	 * 
+	 * */
+	
+	PASSPHRASE
 	
 }

@@ -39,7 +39,9 @@ public class EncryptionUtils {
         
     }
 
-    public static String decrypt(String ciphertext) throws Exception {
+    public static String decrypt(String ciphertext, String passphrase) throws Exception {
+    	
+    	setKey(passphrase);
     	
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         
@@ -51,26 +53,4 @@ public class EncryptionUtils {
         
     }
 
-//    public static byte[] encrypt(byte[] plaintext, String passphrase) throws Exception {
-//    	
-//        setKey(passphrase);
-//        
-//        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-//        
-//        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-//
-//        return cipher.doFinal(plaintext);
-//        
-//    }
-//
-//    public static byte[] decrypt(byte[] ciphertext) throws Exception {
-//    	
-//        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-//        
-//        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-//
-//        return cipher.doFinal(ciphertext);
-//        
-//    }
-    
 }

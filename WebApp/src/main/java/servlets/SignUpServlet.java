@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -69,16 +68,11 @@ public class SignUpServlet extends HttpServlet {
 			if(Arrays.equals(password, passwordToConfirm))
 				insertedUser = UserDAO.signUp(new User(username, photo), password);
 			
-			if(insertedUser) {
-				
-				/*
-				 * TODO: Sostituire con log
-				 * 
-				 * */
+			if(insertedUser) 
 				
 				log.info("Registrazione avvenuta con successo");
 				
-			} else {
+			 else {
 				
 				log.info("Errore nella registrazione");
 				
