@@ -45,6 +45,9 @@ public class SignInServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		boolean isCookieValid = false;
+		boolean deletedCookie = false;
+		
 		try {
 			
 	        Cookie[] cookies = request.getCookies();
@@ -72,20 +75,24 @@ public class SignInServlet extends HttpServlet {
 	                	 * 
 	                	 * */
 
-	                	String cookieValueFromDB = CookieDAO.findCookieByUserId(Utils.getUserIdFromCookie(cookie.getValue()));
+	                	String cookieValueFromDB = CookieDAO.findCookieByValue(EncryptionUtils.encrypt(cookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())));
 
+	                	System.out.println("cookie from db = " + cookieValueFromDB);
+	                	
 	                	/*
 	                	 * TODO: Implementare controllo di scadenza password (con cancellazione del cookie dal database)
 	                	 * 
 	                	 * */
 	                	
-	                	if(cookieValueFromDB != null) {
+	                	if(cookieValueFromDB != null && isCookieValid) {
 	                		
 	                		response.sendRedirect("./success.jsp");
 	                		return;
 	                		
 	                	} else {
 	                		
+	                		deletedCookie = CookieDAO.deleteCookieByValue(cookieValueFromDB);
+	                		System.out.println("cookie cancellato = " + deletedCookie);
 	                		response.sendRedirect("./index.jsp");
 	                		return;
 	                		
@@ -167,11 +174,11 @@ public class SignInServlet extends HttpServlet {
 					
 					User user = UserDAO.findByUsername(username);
 					
-					String randomCookieValue = Utils.generateRandomToken(username, 20) + "@@@" + user.getId() + "@@@";
+					String randomCookieValue = Utils.generateRandomToken(username, 20);
 					
 					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 					
-					rememberMeCookie.setMaxAge(60 * 15);
+					rememberMeCookie.setMaxAge(600000000);
 
 					savedCookie = CookieDAO.saveCookie(EncryptionUtils.encrypt(rememberMeCookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())), rememberMeCookie.getMaxAge(), user);
 					

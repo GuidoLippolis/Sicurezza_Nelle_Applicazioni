@@ -10,22 +10,6 @@ public class Utils {
 		return input + "#" + RandomStringUtils.randomAlphanumeric(tokenLength);
 		
 	}
-	
-    public static int getUserIdFromCookie(String cookieValue) {
-    	
-        String[] parts = cookieValue.split("@@@");
-        
-        String lastPart = parts[parts.length - 1];
-        
-        String[] useridPart = lastPart.split("@@@");
-        
-        String userid = useridPart[0];
-        
-        userid = userid.replace("@", "");
-        
-        return Integer.parseInt(userid);
-        
-    }
     
     public static String getUsernameFromCookie(String cookieValue) {
     	

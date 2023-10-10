@@ -90,12 +90,13 @@ GRANT SELECT ON passwords_db.passwords TO 'passwords_usr'@'localhost';
 
 /*
 	Per la tabella dei cookie (tabella cookies) fornisco all'utente 
-	"cookies_usr@localhost" il permesso di INSERT
+	"cookies_usr@localhost" i permessi di INSERT, SELECT e DELETE
 
 */
 
 GRANT INSERT ON cookies_db.cookies TO 'cookies_usr'@'localhost';
 GRANT SELECT ON cookies_db.cookies TO 'cookies_usr'@'localhost';
+GRANT DELETE ON cookies_db.cookies TO 'cookies_usr'@'localhost';
 
 select * from users_db.users; select * from passwords_db.passwords; select * from salts_db.salts; select * from cookies_db.cookies;
 DELETE FROM passwords_db.passwords; DELETE FROM salts_db.salts; DELETE FROM cookies_db.cookies; DELETE FROM users_db.users;

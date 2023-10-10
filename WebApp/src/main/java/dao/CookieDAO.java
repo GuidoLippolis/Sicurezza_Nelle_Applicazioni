@@ -75,7 +75,7 @@ public class CookieDAO {
 		
 	}
 	
-	public static String findCookieByUserId(int userId) throws Exception {
+	public static String findCookieByValue(String cookieValue) throws Exception {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -97,9 +97,9 @@ public class CookieDAO {
 					
 			);
 			
-			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE user_id = ?");
+			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE cookie_value = ?");
 			
-			cookiesStatement.setInt(1, userId);
+			cookiesStatement.setString(1, cookieValue);
 			
 			resultSetCookies = cookiesStatement.executeQuery();
 			
@@ -125,6 +125,61 @@ public class CookieDAO {
 			
 			if(resultSetCookies != null)
 				resultSetCookies.close();
+			
+		}
+		
+	}
+	
+	public static boolean deleteCookieByValue(String encryptedCookieValue) throws SQLException {
+		
+		Connection connection = null;
+		
+		PreparedStatement cookiesStatement = null;
+		
+		try {
+			
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			
+			connection = DriverManager.getConnection(
+					
+					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
+					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
+					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+					
+			);
+			
+			connection.setAutoCommit(false);
+			
+			cookiesStatement = connection.prepareStatement("DELETE FROM cookies_db.cookies WHERE cookie_value = ?");
+			
+			cookiesStatement.setString(1, encryptedCookieValue);
+			
+			int rowsAffectedCookies = cookiesStatement.executeUpdate();
+			
+			if(rowsAffectedCookies == 1) {
+				
+				connection.commit();
+				return true;
+				
+			} else {			
+				
+				connection.rollback();
+				return false;
+				
+			}
+			
+		} catch (Exception e) {
+
+			log.error("Eccezione in CookieDAO: ", e);
+			return false;
+			
+		} finally {
+			
+			if(connection != null)
+				connection.close();
+			
+			if(cookiesStatement != null)
+				cookiesStatement.close();
 			
 		}
 		
