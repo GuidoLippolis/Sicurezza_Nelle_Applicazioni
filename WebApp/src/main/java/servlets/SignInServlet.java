@@ -70,7 +70,7 @@ public class SignInServlet extends HttpServlet {
 	                	 * 
 	                	 * */
 
-	                	String cookieValueFromDB = CookieDAO.findCookieByValue(EncryptionUtils.encrypt(cookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())));
+	                	String cookieValueFromDB = CookieDAO.findCookieByValue(new EncryptionUtils(prop.getProperty(PropertiesKeys.PASSPHRASE.toString())).encrypt(cookie.getValue()) );
 
 	                	/*
 	                	 * Viene recuperata la data di scadenza (in secondi) dal database sulla base del valore del cookie.
@@ -81,7 +81,7 @@ public class SignInServlet extends HttpServlet {
 	                	
 	                	long expirationDateForCookie = CookieDAO.findExpirationDateByCookieValue(cookieValueFromDB);
 	                	
-	                	if(cookieValueFromDB != null && !Utils.isCookieExpired(System.currentTimeMillis(), expirationDateForCookie)) {
+	                	if(cookieValueFromDB != null && Utils.isCookieValid(System.currentTimeMillis(), expirationDateForCookie)) {
 	                		
 	                		response.sendRedirect("./success.jsp");
 	                		return;
@@ -176,7 +176,8 @@ public class SignInServlet extends HttpServlet {
 					
 					rememberMeCookie.setMaxAge(600000000);
 
-					savedCookie = CookieDAO.saveCookie(EncryptionUtils.encrypt(rememberMeCookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())), rememberMeCookie.getMaxAge(), user);
+//					savedCookie = CookieDAO.saveCookie(EncryptionUtils.encrypt(rememberMeCookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())), rememberMeCookie.getMaxAge(), user);
+					savedCookie = CookieDAO.saveCookie(new EncryptionUtils(prop.getProperty(PropertiesKeys.PASSPHRASE.toString())).encrypt(rememberMeCookie.getValue()), rememberMeCookie.getMaxAge(), user);
 					
 					response.addCookie(rememberMeCookie);
 					
