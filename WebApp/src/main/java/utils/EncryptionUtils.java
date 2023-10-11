@@ -39,18 +39,4 @@ public class EncryptionUtils {
         
     }
 
-    public static String decrypt(String ciphertext, String passphrase) throws Exception {
-    	
-    	setKey(passphrase);
-    	
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(ciphertext));
-        
-        return new String(decryptedBytes, StandardCharsets.UTF_8);
-        
-    }
-
 }

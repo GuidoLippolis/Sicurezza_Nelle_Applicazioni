@@ -1,7 +1,6 @@
 package utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class Utils {
 	
@@ -14,6 +13,12 @@ public class Utils {
     public static String getUsernameFromCookie(String cookieValue) {
     	
     	return cookieValue.split("#")[0];
+    	
+    }
+    
+    public static boolean isCookieExpired(long currentTime, long expirationTime) {
+    	
+    	return expirationTime < currentTime;
     	
     }
 

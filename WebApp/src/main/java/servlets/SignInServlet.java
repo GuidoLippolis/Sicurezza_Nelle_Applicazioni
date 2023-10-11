@@ -45,7 +45,6 @@ public class SignInServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		boolean isCookieValid = false;
 		boolean deletedCookie = false;
 		
 		try {
@@ -69,22 +68,20 @@ public class SignInServlet extends HttpServlet {
 	                	 * verificata, allora l'utente viene autenticato senza la
 	                	 * necessità di fornire le credenziali di accesso
 	                	 * 
-	                	 * 1. Recupero dell'ID dell'utente del database dal valore del Cookie
-	                	 * 2. Esecuzione di una query mirata a recuperare l'utente tramite l'ID nella tabella dei cookies
-	                	 * 3. Calcolo della data di scadenza e confronto di quest'ultima con la data corrente
-	                	 * 
 	                	 * */
 
 	                	String cookieValueFromDB = CookieDAO.findCookieByValue(EncryptionUtils.encrypt(cookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())));
 
-	                	System.out.println("cookie from db = " + cookieValueFromDB);
-	                	
 	                	/*
-	                	 * TODO: Implementare controllo di scadenza password (con cancellazione del cookie dal database)
+	                	 * Viene recuperata la data di scadenza (in secondi) dal database sulla base del valore del cookie.
+	                	 * Se il cookie esiste nel database e, allo stesso tempo, non è scaduto, allora l'utente viene
+	                	 * autenticato con successo. Altrimenti, il cookie viene cancellato dal database
 	                	 * 
 	                	 * */
 	                	
-	                	if(cookieValueFromDB != null && isCookieValid) {
+	                	long expirationDateForCookie = CookieDAO.findExpirationDateByCookieValue(cookieValueFromDB);
+	                	
+	                	if(cookieValueFromDB != null && !Utils.isCookieExpired(System.currentTimeMillis(), expirationDateForCookie)) {
 	                		
 	                		response.sendRedirect("./success.jsp");
 	                		return;
@@ -92,7 +89,6 @@ public class SignInServlet extends HttpServlet {
 	                	} else {
 	                		
 	                		deletedCookie = CookieDAO.deleteCookieByValue(cookieValueFromDB);
-	                		System.out.println("cookie cancellato = " + deletedCookie);
 	                		response.sendRedirect("./index.jsp");
 	                		return;
 	                		

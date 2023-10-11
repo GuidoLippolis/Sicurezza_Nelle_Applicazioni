@@ -8,14 +8,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import javax.servlet.http.Cookie;
-
 import org.apache.log4j.Logger;
 
 import enumeration.PropertiesKeys;
 import model.User;
 import utils.ApplicationPropertiesLoader;
-import utils.EncryptionUtils;
 
 public class CookieDAO {
 	
@@ -75,7 +72,7 @@ public class CookieDAO {
 		
 	}
 	
-	public static String findCookieByValue(String cookieValue) throws Exception {
+	public static String findCookieByValue(String cookieValue) throws SQLException, ClassNotFoundException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -130,15 +127,15 @@ public class CookieDAO {
 		
 	}
 	
-	public static boolean deleteCookieByValue(String encryptedCookieValue) throws SQLException {
+	public static boolean deleteCookieByValue(String encryptedCookieValue) throws SQLException, ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		
 		Connection connection = null;
 		
 		PreparedStatement cookiesStatement = null;
 		
 		try {
-			
-			Class.forName("com.mysql.cj.jdbc.Driver");
 			
 			connection = DriverManager.getConnection(
 					
@@ -173,6 +170,56 @@ public class CookieDAO {
 			log.error("Eccezione in CookieDAO: ", e);
 			return false;
 			
+		} finally {
+			
+			if(connection != null)
+				connection.close();
+			
+			if(cookiesStatement != null)
+				cookiesStatement.close();
+			
+		}
+		
+	}
+	
+	public static long findExpirationDateByCookieValue(String encryptedCookieValue) throws SQLException, ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection connection = null;
+		
+		PreparedStatement cookiesStatement = null;
+		
+		ResultSet resultSetCookies = null;
+		
+		try {
+			
+			connection = DriverManager.getConnection(
+					
+					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
+					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
+					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+					
+			);
+			
+			cookiesStatement = connection.prepareStatement("SELECT expiration_date FROM cookies_db.cookies WHERE cookie_value = ?");
+			
+			cookiesStatement.setString(1, encryptedCookieValue);
+			
+			resultSetCookies = cookiesStatement.executeQuery();
+			
+			boolean hasNext = resultSetCookies.next();
+			
+			if(hasNext)
+				return resultSetCookies.getLong("expiration_date");
+			else
+				return 0;
+			
+		} catch (Exception e) {
+
+			log.error("Eccezione in CookieDAO: ", e);
+			return 0;
+		
 		} finally {
 			
 			if(connection != null)
