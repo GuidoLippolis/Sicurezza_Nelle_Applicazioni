@@ -14,7 +14,7 @@
         }
 
         header {
-            background-color: #333;
+            background-color: #2779e2;
             color: #fff;
             text-align: center;
             padding: 20px 0;
@@ -53,7 +53,7 @@
         }
 
         th {
-            background-color: #333;
+            background-color: #2779e2;
             color: #fff;
         }
     </style>
@@ -64,74 +64,49 @@
     </header>
     <div class="container">
         <h2>Carica qui i tuoi file</h2>
-        <form action="upload.jsp" method="post" enctype="multipart/form-data">
+        <form action="FileUploadServlet" method="POST" enctype="multipart/form-data">
             <input type="file" name="file" id="file">
-            <input type="submit" value="Upload File">
+            <input type="submit" value="Invia file">
         </form>
 
-        <h2>User Table</h2>
-        
+        <h2>Elenco dei file caricati per utente</h2>
         <table>
-	        
-        
             <tr>
-            
-                <th>User</th>
-                <th>File Uploaded by This User</th>
-                
+                <th>Utente</th>
+                <th>Nome file</th>
             </tr>
             
-            <tr>
-            
             <%
-            
             String user = (String) session.getAttribute("user");
             String rememberedUser = null;
 
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
-            	
                 for (Cookie cookie : cookies) {
-                	
                     if (cookie.getName().equals("rememberMe")) {
-                    	
                         String cookieValue = cookie.getValue();
-                        
                         rememberedUser = Utils.getUsernameFromCookie(cookieValue);
-                        
                         break;
-                        
                     }
                 }
             }
             
-            if(user != null) {
-            
+            if (user != null) {
+                // Check if the user has uploaded a file, and if so, add it to the table
+                String uploadedFileName = request.getParameter("file");
+                if (uploadedFileName != null) {
             %>
-				
-				<td> <%= user %> </td>                
-                <td>file1.txt</td>
-                
-            </tr>
-            
             <tr>
-            
-            <%
-            
-            } else {
-            	
-            	response.sendRedirect("./index.jsp");
-            }
-            
-            %>
-
+                <td><%= user %></td>
+                <td><%= uploadedFileName %></td>
             </tr>
-            
-            
+            <%
+                }
+            } else {
+                response.sendRedirect("./index.jsp");
+            }
+            %>
         </table>
-        
-        
-        
     </div>
 </body>
 </html>
