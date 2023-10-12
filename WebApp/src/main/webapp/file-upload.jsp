@@ -124,8 +124,7 @@
             }
             
             %>
-                <td>User 2</td>
-                <td>file2.png</td>
+
             </tr>
             
             
