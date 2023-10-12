@@ -23,6 +23,12 @@
   	<description></description>
   	<servlet-class>servlets.LogoutServlet</servlet-class>
   </servlet>
+   <servlet>
+  	<servlet-name>FileUploadServlet</servlet-name>
+  	<display-name>FileUploadServlet</display-name>
+  	<description></description>
+  	<servlet-class>servlets.FileUploadServlet</servlet-class>
+  </servlet>
   
    <servlet-mapping>
   
@@ -43,6 +49,13 @@
 	   
    	<servlet-name>LogoutServlet</servlet-name>
    	<url-pattern>/LogoutServlet</url-pattern>
+   	
+   </servlet-mapping>
+   
+    <servlet-mapping>
+	   
+   	<servlet-name>FileUploadServlet</servlet-name>
+   	<url-pattern>/FileUploadServlet</url-pattern>
    	
    </servlet-mapping>
   
