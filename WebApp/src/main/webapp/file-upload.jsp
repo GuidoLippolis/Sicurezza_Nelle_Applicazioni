@@ -1,3 +1,4 @@
+<%@page import="utils.Utils"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -69,21 +70,69 @@
         </form>
 
         <h2>User Table</h2>
+        
         <table>
+	        
+        
             <tr>
+            
                 <th>User</th>
                 <th>File Uploaded by This User</th>
+                
             </tr>
+            
             <tr>
-                <td>User 1</td>
+            
+            <%
+            
+            String user = (String) session.getAttribute("user");
+            String rememberedUser = null;
+
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+            	
+                for (Cookie cookie : cookies) {
+                	
+                    if (cookie.getName().equals("rememberMe")) {
+                    	
+                        String cookieValue = cookie.getValue();
+                        
+                        rememberedUser = Utils.getUsernameFromCookie(cookieValue);
+                        
+                        break;
+                        
+                    }
+                }
+            }
+            
+            if(user != null) {
+            
+            %>
+				
+				<td> <%= user %> </td>                
                 <td>file1.txt</td>
+                
             </tr>
+            
             <tr>
+            
+            <%
+            
+            } else {
+            	
+            	response.sendRedirect("./index.jsp");
+            }
+            
+            %>
                 <td>User 2</td>
                 <td>file2.png</td>
             </tr>
-            <!-- Add more rows as needed -->
+            
+            
         </table>
+        
+        
+        
     </div>
 </body>
 </html>
