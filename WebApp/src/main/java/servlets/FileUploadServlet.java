@@ -127,7 +127,7 @@ public class FileUploadServlet extends HttpServlet {
 	        
 		} catch (Exception e) {
 
-			log.error("Eccezione in SignInServlet: ", e);
+			log.error("Eccezione in FileUploadServlet: ", e);
 			
 		}
 		
@@ -149,6 +149,7 @@ public class FileUploadServlet extends HttpServlet {
     			
     			if(cookie.getName().equals("rememberMe"))
     				userId = Utils.extractUserId(cookie.getValue());
+    				
     			
     		}
     		
@@ -170,6 +171,10 @@ public class FileUploadServlet extends HttpServlet {
             
             Part filePart = request.getPart("file");
             
+    		HttpSession currentSession = request.getSession(false);
+    		
+    		currentSession.setAttribute("uploadedFileName", getFileName(filePart));
+            
             FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), userId);
             
 		} catch (Exception e) {
@@ -181,90 +186,6 @@ public class FileUploadServlet extends HttpServlet {
         doGet(request, response);
         
     }
-	
-//	/**
-//	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-//	 */
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//       
-//    	String uploadDirectory = "C:\\Users\\Guido\\Universita\\Sicurezza_Nelle_Applicazioni\\webapp-project\\uploaded_files";
-//    	
-//    	Cookie[] cookies = request.getCookies();
-//    	int userId = 0;
-//    	int countFiles = 0;
-//    	
-//    	if(cookies != null) {
-//    		
-//    		for(Cookie cookie : cookies) {
-//    			
-//    			if(cookie.getName().equals("rememberMe"))
-//    				userId = Utils.extractUserId(cookie.getValue());
-//    			
-//    		}
-//    		
-//    	}
-//    	
-//    	try {
-//			
-//            File uploadDir = new File(uploadDirectory);
-//            
-//            if (!uploadDir.exists())
-//                uploadDir.mkdir();
-//            
-//            for (Part part : request.getParts()) {
-//            	
-//                if (part.getContentType() != null && part.getContentType().equals("text/plain")) {
-//                	
-//                    String fileName = getFileName(part);
-//                    String filePath = uploadDirectory + File.separator + fileName;
-//
-//                    try (InputStream fileContent = part.getInputStream()) {
-//                    	
-//                    	for(File file : Arrays.asList(uploadDir.listFiles())) {
-//                    		
-//                    		countFiles++;
-//                    		
-//                    		if(file.exists()) {
-//                    			
-//                    			filePath.concat("_" + countFiles);
-//                        		Files.copy(fileContent, Paths.get(filePath));
-//                        		FileUploadDAO.saveFileToDatabase(fileName, filePath, userId);
-//                    			
-//                    		} else {
-//                    			
-//                        		Files.copy(fileContent, Paths.get(filePath));
-//                        		FileUploadDAO.saveFileToDatabase(fileName, filePath, userId);
-//                    			
-//                    		}
-//                    		
-//                    	}
-//                    	
-////                    	if(!Files.exists(Paths.get(filePath))) {
-////                    		
-////                    		Files.copy(fileContent, Paths.get(filePath));
-////                    		FileUploadDAO.saveFileToDatabase(fileName, filePath, userId);
-////                    		
-////                    	} else {
-////                    		
-////                    		Files.copy(fileContent, Paths.get(filePath));
-////                    		FileUploadDAO.saveFileToDatabase(fileName, filePath, userId);
-////                    		
-////                    	}
-//                        
-//                    }
-//                    
-//                }
-//            }
-//    		
-//		} catch (Exception e) {
-//
-//			log.error("Eccezione in FileUploadServlet: ", e);
-//		
-//		}
-//    	
-//        doGet(request, response);
-//        
-//    }
     
     private String getFileName(Part part) {
     	

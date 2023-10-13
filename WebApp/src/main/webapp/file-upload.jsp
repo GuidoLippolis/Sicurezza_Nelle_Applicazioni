@@ -78,6 +78,7 @@
             
             <%
             String user = (String) session.getAttribute("user");
+            String fileFromUser = (String) session.getAttribute("uploadedFileName");
             String rememberedUser = null;
 
             Cookie[] cookies = request.getCookies();
@@ -93,15 +94,15 @@
             
             if (user != null) {
                 // Check if the user has uploaded a file, and if so, add it to the table
-                String uploadedFileName = request.getParameter("file");
-                if (uploadedFileName != null) {
+                // String uploadedFileName = request.getParameter("file");
+               if (fileFromUser != null) {
             %>
-            <tr>
+			 <tr>
                 <td><%= user %></td>
-                <td><%= uploadedFileName %></td>
+                <td><%= fileFromUser %></td>
             </tr>
             <%
-                }
+               }
             } else {
                 response.sendRedirect("./index.jsp");
             }
