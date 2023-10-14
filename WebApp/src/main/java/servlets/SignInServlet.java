@@ -141,6 +141,10 @@ public class SignInServlet extends HttpServlet {
 				
 				currentSession.setAttribute("user", username);
 				
+				String userName = (String) currentSession.getAttribute("user");
+				
+				System.out.println();
+				
 				/*
 				 * Se l'utente ha selezionato l'opzione "Remember Me" al momento
 				 * del login, viene creato un nuovo Cookie per l'utente il cui

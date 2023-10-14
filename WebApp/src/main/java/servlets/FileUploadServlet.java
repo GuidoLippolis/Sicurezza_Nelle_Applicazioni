@@ -158,7 +158,7 @@ public class FileUploadServlet extends HttpServlet {
     		
     	}
     	
-    	sessionUsername = (String) request.getAttribute("user");
+    	sessionUsername = (String) request.getSession(false).getAttribute("user");
     	
     	if(cookieUsername == null && request.getSession(false) == null) {
     		
@@ -179,6 +179,8 @@ public class FileUploadServlet extends HttpServlet {
     		HttpSession currentSession = request.getSession(false);
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
+    		
+    		FileUtils.printMetadata(getFileName(filePart));
     		
             FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), finalUsername);
             
