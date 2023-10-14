@@ -22,19 +22,4 @@ public class Utils {
     	
     }
     
-    public static int extractUserId(String input) {
-    	
-        String[] parts = input.split("@@@");
-        
-        String lastPart = parts[parts.length - 1];
-        
-        String[] useridPart = lastPart.split("@@@");
-        
-        String userid = useridPart[0];
-        
-        userid = userid.replace("@", "");
-        
-        return Integer.parseInt(userid);
-    }
-
 }

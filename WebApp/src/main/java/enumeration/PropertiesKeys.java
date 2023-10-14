@@ -60,6 +60,6 @@ public enum PropertiesKeys {
 	 * 
 	 * */
 	
-	PERCORSO_FILE
+	PATH_UPLOADED_FILES
 	
 }

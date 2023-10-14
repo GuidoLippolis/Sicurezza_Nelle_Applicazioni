@@ -52,7 +52,10 @@ public class SignInServlet extends HttpServlet {
 	        Cookie[] cookies = request.getCookies();
 	        
 	        /*
-	         * Prima di verificare che le credenziali dell'utente 
+	         * Prima di verificare che le credenziali dell'utente siano corrette, viene verificata la
+	         * presenza di un cookie chiamato "rememberMe". Se presente, viene letto il suo valore e
+	         * quest'ultimo viene criptato, in modo tale da eseguire una query mirata al database filtrando
+	         * il cookie per valore (essendo stato memorizzato criptato nel database).
 	         * 
 	         * */
 	        
@@ -62,14 +65,6 @@ public class SignInServlet extends HttpServlet {
 	            	
 	                if (cookie.getName().equals("rememberMe")) {
 	                	
-	                	/*
-	                	 * Quando l'utente raggiunge l'applicazione, si controlla se
-	                	 * esso è già in possesso di un Cookie. Se tale condizione è
-	                	 * verificata, allora l'utente viene autenticato senza la
-	                	 * necessità di fornire le credenziali di accesso
-	                	 * 
-	                	 * */
-
 	                	String cookieValueFromDB = CookieDAO.findCookieByValue(new EncryptionUtils(prop.getProperty(PropertiesKeys.PASSPHRASE.toString())).encrypt(cookie.getValue()) );
 
 	                	/*
@@ -81,7 +76,7 @@ public class SignInServlet extends HttpServlet {
 	                	
 	                	long expirationDateForCookie = CookieDAO.findExpirationDateByCookieValue(cookieValueFromDB);
 	                	
-	                	if(cookieValueFromDB != null && Utils.isCookieValid(System.currentTimeMillis(), expirationDateForCookie)) {
+	                	if((!cookieValueFromDB.isBlank() || cookieValueFromDB != null) && Utils.isCookieValid(System.currentTimeMillis(), expirationDateForCookie)) {
 	                		
 	                		response.sendRedirect("./success.jsp");
 	                		return;
@@ -112,7 +107,7 @@ public class SignInServlet extends HttpServlet {
 		request.getRequestDispatcher("index.jsp").forward(request, response);
 	
 	}
-
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -127,68 +122,69 @@ public class SignInServlet extends HttpServlet {
 		
 		try {
 			
+			/*
+			 * Il metodo signIn() verifica l'esistenza nel database di un utente con
+			 * lo username e la password forniti in input. Se l'utente è presente,
+			 * viene aperta una nuova sessione HTTP
+			 * 
+			 * */
+			
 			loggedUser = UserDAO.signIn(new User(username), password);
 			
-			if(loggedUser) {
-				
-				// Sessione
-				
-				HttpSession oldSession = request.getSession(false);
-				
-				if(oldSession != null)
-					oldSession.invalidate();
-				
-				HttpSession currentSession = request.getSession();
-				
-				currentSession.setMaxInactiveInterval(60 * 10);
-				
-				currentSession.setAttribute("user", username);
-				
-				System.out.println();
+			HttpSession oldSession = request.getSession(false);
+			
+			if(oldSession != null)
+				oldSession.invalidate();
+			
+			HttpSession currentSession = request.getSession();
+			
+			currentSession.setMaxInactiveInterval(60 * 10);
+			
+			currentSession.setAttribute("user", username);
+			
+			/*
+			 * Se l'utente ha selezionato l'opzione "Remember Me" al momento
+			 * del login, viene creato un nuovo Cookie per l'utente il cui
+			 * nome è una stringa randomica derivante dallo username dell'utente
+			 * stesso. Viene settata la durata massima del Cookie e quest'ultimo
+			 * viene aggiunto alla risposta del server
+			 * 
+			 * */
+			
+			if(rememberMe) {
 				
 				/*
-				 * Se l'utente ha selezionato l'opzione "Remember Me" al momento
-				 * del login, viene creato un nuovo Cookie per l'utente il cui
-				 * nome è una stringa randomica derivante dallo username dell'utente
-				 * stesso. Viene settata la durata massima del Cookie e quest'ultimo
-				 * viene aggiunto alla risposta del server
+				 * GESTIONE DEI COOKIE:
+				 * 
+				 * - Recupero l'utente tramite lo username
+				 * 
+				 * - Genero un token derivante dallo username, al quale concateno una stringa casuale
+				 * 
+				 * - La stringa casuale ha il seguente pattern: username#randomstring@@@userid@@@. In questo
+				 *   modo, quando l'utente raggiungerà l'applicazione e proverà a caricare un file di proposta
+				 *   progettuale, verrà estrapolato lo username tramite il metodo getUsernameFromCookie, il
+				 *   quale verrà memorizzato nel database e associato al nome del file relativo alla proposta
+				 *   progettuale
 				 * 
 				 * */
 				
-				if(rememberMe) {
-					
-					/*
-					 * GESTIONE DEI COOKIE:
-					 * 
-					 * - Recupero l'utente tramite lo username
-					 * 
-					 * - Genero un token derivante dallo username, al quale concateno una stringa casuale
-					 * 
-					 * - La stringa casuale ha il seguente pattern: username#randomstring@@@userid@@@. In questo
-					 *   modo, quando l'utente raggiungerà nuovamente l'applicazione, tramite il metodo
-					 *   getUserIdFromCookie viene eseguita una query mirata al database per recuperare
-					 *   il cookie associato all'utente. Se viene trovato un record nel database e se il cookie
-					 *   in questione non è scaduto, l'utente raggiunge la pagina success.jsp, altrimenti viene
-					 *   reindirizzato alla pagina di login
-					 * 
-					 * */
-					
-					User user = UserDAO.findByUsername(username);
-					
-					String randomCookieValue = Utils.generateRandomToken(username, 20) + "@@@" + user.getId() + "@@@";
-					
-					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
-					
-					rememberMeCookie.setMaxAge(600000000);
+				User user = UserDAO.findByUsername(username);
+				
+				String randomCookieValue = Utils.generateRandomToken(username, 20) + "@@@" + user.getId() + "@@@";
+				
+				Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
+				
+				rememberMeCookie.setMaxAge(600000000);
 
-//					savedCookie = CookieDAO.saveCookie(EncryptionUtils.encrypt(rememberMeCookie.getValue(), prop.getProperty(PropertiesKeys.PASSPHRASE.toString())), rememberMeCookie.getMaxAge(), user);
-					savedCookie = CookieDAO.saveCookie(new EncryptionUtils(prop.getProperty(PropertiesKeys.PASSPHRASE.toString())).encrypt(rememberMeCookie.getValue()), rememberMeCookie.getMaxAge(), user);
-					
-					response.addCookie(rememberMeCookie);
-					
-					log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie non è stato memorizzato correttamente nel database");
-					
-				}
+				savedCookie = CookieDAO.saveCookie(new EncryptionUtils(prop.getProperty(PropertiesKeys.PASSPHRASE.toString())).encrypt(rememberMeCookie.getValue()), rememberMeCookie.getMaxAge(), user);
+				
+				response.addCookie(rememberMeCookie);
+				
+				log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie non è stato memorizzato correttamente nel database");
+				
+			}
+			
+			if(loggedUser) {
 				
 				log.info("Login effettuato con successo");
 				

@@ -141,10 +141,10 @@ public class UserDAO {
 		try {
 			
 			/*
-			 * Recupero il salt dal database salts_db
-			 * Concateno il salt ottenuto alla password fornita in input
-			 * Calcolo l'hash dell'array di byte risultante
-			 * Uso il salt ottenuto per fare una query su passwords, se ottengo un risultato, vuol dire che l
+			 * Per autenticare l'utente vengono eseguiti i seguenti step:
+			 * 
+			 * - Recupero del valore del salt associato all'utente
+			 * - Generazione del valore hash della concatenazione di password e salt
 			 * 
 			 * */
 			
