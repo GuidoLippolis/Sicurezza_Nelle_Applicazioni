@@ -29,6 +29,12 @@
   	<description></description>
   	<servlet-class>servlets.FileUploadServlet</servlet-class>
   </servlet>
+   <servlet>
+   	<servlet-name>FileDownloadServlet</servlet-name>
+   	<display-name>FileDownloadServlet</display-name>
+   	<description>Servlet used to display txt files content to the screen</description>
+   	<servlet-class>servlets.FileDownloadServlet</servlet-class>
+   </servlet>
   
    <servlet-mapping>
   
@@ -58,5 +64,9 @@
    	<url-pattern>/FileUploadServlet</url-pattern>
    	
    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>FileDownloadServlet</servlet-name>
+    	<url-pattern>/file-download</url-pattern>
+    </servlet-mapping>
   
 </web-app>

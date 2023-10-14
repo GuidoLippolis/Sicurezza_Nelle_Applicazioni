@@ -180,4 +180,56 @@ public class FileUploadDAO {
 		
 	}
 	
+	public static byte[] getFileContent(String username, String fileName) throws ClassNotFoundException, SQLException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection connection = null;
+		
+		PreparedStatement uploaedFilesStatement = null;
+		
+		ResultSet resultSetUploadedFiles = null;
+		
+		try {
+			
+			connection = DriverManager.getConnection(
+					
+					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.USERS_DB_NAME.toString()), 
+					prop.getProperty(PropertiesKeys.USERS_DB_USERNAME.toString()), 
+					prop.getProperty(PropertiesKeys.USERS_DB_PASSWORD.toString())
+					
+			);
+			
+			uploaedFilesStatement = connection.prepareStatement("SELECT * FROM users_db.uploaded_files WHERE username = ? AND file_name = ?");
+			
+			uploaedFilesStatement.setString(1, username);
+			uploaedFilesStatement.setString(2, fileName);
+			
+			resultSetUploadedFiles = uploaedFilesStatement.executeQuery();
+			
+			if(resultSetUploadedFiles.next())
+				return resultSetUploadedFiles.getBytes("file_data");
+			
+		} catch (Exception e) {
+
+			log.error(e.getMessage());
+			return new byte[0];
+		
+		} finally {
+			
+			if(connection != null)
+				connection.close();
+			
+			if(uploaedFilesStatement != null)
+				uploaedFilesStatement.close();
+			
+			if(resultSetUploadedFiles != null)
+				resultSetUploadedFiles.close();
+			
+		}
+		
+		return new byte[0];
+		
+	}
+	
 }

@@ -123,7 +123,7 @@
 			<tr>
 			
 				<td><%= file.getUsername() %></td>
-				<td><%= file.getFileName() %></td>
+				<td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&fileName=<%= file.getFileName() %>"><%= file.getFileName() %></a></td>
 			
 			</tr>
 			
