@@ -19,6 +19,7 @@ import dao.CookieDAO;
 import dao.FileUploadDAO;
 import enumeration.PropertiesKeys;
 import exception.FileTooBigException;
+import exception.ForbiddenFileTypeException;
 import utils.ApplicationPropertiesLoader;
 import utils.EncryptionUtils;
 import utils.FileUtils;
@@ -176,15 +177,18 @@ public class FileUploadServlet extends HttpServlet {
             
             Part filePart = request.getPart("file");
             
+            String fileName = getFileName(filePart);
+            
     		HttpSession currentSession = request.getSession(false);
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
-    		FileUtils.printMetadata(getFileName(filePart));
+    		if(FileUtils.isFileTypeForbidden(fileName))
+    			throw new ForbiddenFileTypeException(fileName);
     		
             FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), finalUsername);
             
-            currentSession.setAttribute("uploadedFileName", getFileName(filePart));
+            currentSession.setAttribute("uploadedFileName", fileName);
             
 		} catch (Exception e) {
 			
