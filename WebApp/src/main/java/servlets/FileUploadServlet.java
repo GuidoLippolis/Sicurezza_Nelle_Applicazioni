@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import dao.CookieDAO;
 import dao.FileUploadDAO;
 import enumeration.PropertiesKeys;
+import exception.FileTooBigException;
 import utils.ApplicationPropertiesLoader;
 import utils.EncryptionUtils;
 import utils.FileUtils;
@@ -27,12 +28,8 @@ import utils.Utils;
  * Servlet implementation class FileUploadServlet
  */
 @WebServlet("/file-upload")
-//@MultipartConfig(
-//	    fileSizeThreshold = 1024 * 1024, // 1 MB
-//	    maxFileSize = 1024 * 1024 * 5,  // 5 MB
-//	    maxRequestSize = 1024 * 1024 * 10) // 10 MB
 @MultipartConfig(
-	    maxFileSize = 1024 * 1024 * 5,  // 5 MB
+	    maxFileSize = 1024 * 1024 * 2,  // 5 MB
 	    maxRequestSize = 1024 * 1024 * 10) // 10 MB
 public class FileUploadServlet extends HttpServlet {
 	
@@ -145,24 +142,25 @@ public class FileUploadServlet extends HttpServlet {
        
     	Cookie[] cookies = request.getCookies();
     	int userId = 0;
-    	String username = null;
+    	String cookieUsername = null;
+    	String sessionUsername = null;
     	
     	if(cookies != null) {
     		
     		for(Cookie cookie : cookies) {
     			
-    			if(cookie.getName().equals("rememberMe")) {
+    			if(cookie.getName().equals("rememberMe")) 
     				
-    				username = Utils.getUsernameFromCookie(cookie.getValue());
+    				cookieUsername = Utils.getUsernameFromCookie(cookie.getValue());
 
-    			}
-    				
     			
     		}
     		
     	}
     	
-    	if(username == null) {
+    	sessionUsername = (String) request.getAttribute("user");
+    	
+    	if(cookieUsername == null && request.getSession(false) == null) {
     		
 			request.getRequestDispatcher("index.jsp").forward(request, response);
 			return;
@@ -180,15 +178,17 @@ public class FileUploadServlet extends HttpServlet {
             
     		HttpSession currentSession = request.getSession(false);
     		
-            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), username);
+    		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
+    		
+            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), finalUsername);
             
             currentSession.setAttribute("uploadedFileName", getFileName(filePart));
             
 		} catch (Exception e) {
-
-			log.error("Eccezione in FileUploadServlet: ", e);
-		
-		}
+			
+			log.error(e.getMessage());
+			
+		} 
     	
         doGet(request, response);
         
