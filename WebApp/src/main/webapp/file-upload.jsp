@@ -82,35 +82,61 @@
         </tr>
 	    
 		<%
-		String rememberedUser = (String) session.getAttribute("user");
 		
-		if (rememberedUser == null) {
-		    Cookie[] cookies = request.getCookies();
+		// Recupero l'utente dall'oggetto session
+		String sessionUser = (String) session.getAttribute("user");
+		String rememberedUser = null;
+		
+		Cookie[] cookies = null;
+		
+		/*
+		
+			Se non vi è alcuna sessione aperta per nessun utente,
+			si cerca nella lista di cookies della richiesta e, se
+			viene trovato un cookie valido per tale utente, allora
+			la variabile "username" viene valorizzata
+		
+		*/
+		
+		if (sessionUser == null) {
+			
+		    cookies = request.getCookies();
+		    
 		    for (Cookie cookie : cookies) {
+		    	
 		        if (cookie.getName().equals("rememberMe")) {
 		            rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
 		            break;
+		            
 		        }
 		    }
 		}
 		
-		if (rememberedUser != null) {
-		    // List<UploadedFile> uploadedFiles = FileUploadDAO.getFilesForUser(rememberedUser);
-		    List<UploadedFile> uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
+		if(sessionUser != null || cookies != null) {
+			
+			List<UploadedFile> uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
+			
+			for (UploadedFile file : uploadedFiles) {
+			
+		%>
 		
-		    for (UploadedFile file : uploadedFiles) {
-		%>
-		    <tr>
-		        <td><%= file.getUsername() %></td>
-		        <td><%= file.getFileName() %></td>
-		    </tr>
+			<tr>
+			
+				<td><%= file.getUsername() %></td>
+				<td><%= file.getFileName() %></td>
+			
+			</tr>
+			
 		<%
-		    }
-		} else {
-		    response.sendRedirect("./index.jsp");
-		}
-		%>
+		
+			}
+			
+		} else 
 
+			response.sendRedirect("./index.jsp");
+			
+		%>
+		
 	    </table>
     </div>
 </body>

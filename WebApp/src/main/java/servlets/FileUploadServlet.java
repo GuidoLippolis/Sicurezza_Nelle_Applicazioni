@@ -27,8 +27,11 @@ import utils.Utils;
  * Servlet implementation class FileUploadServlet
  */
 @WebServlet("/file-upload")
+//@MultipartConfig(
+//	    fileSizeThreshold = 1024 * 1024, // 1 MB
+//	    maxFileSize = 1024 * 1024 * 5,  // 5 MB
+//	    maxRequestSize = 1024 * 1024 * 10) // 10 MB
 @MultipartConfig(
-	    fileSizeThreshold = 1024 * 1024, // 1 MB
 	    maxFileSize = 1024 * 1024 * 5,  // 5 MB
 	    maxRequestSize = 1024 * 1024 * 10) // 10 MB
 public class FileUploadServlet extends HttpServlet {
