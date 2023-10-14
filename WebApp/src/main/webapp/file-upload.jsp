@@ -81,24 +81,34 @@
                <th>Nome file</th>
         </tr>
 	    
-			<%
-			String rememberedUser = (String) session.getAttribute("user");
-			
-			if (rememberedUser != null) {
-			    List<UploadedFile> uploadedFiles = FileUploadDAO.getFilesForUser(rememberedUser);
-			
-			    for (UploadedFile file : uploadedFiles) {
-			%>
-			    <tr>
-			        <td><%= rememberedUser %></td>
-			        <td><%= file.getFileName() %></td>
-			    </tr>
-			<%
-			    }
-			} else {
-			    response.sendRedirect("./index.jsp");
-			}
-			%>
+		<%
+		String rememberedUser = (String) session.getAttribute("user");
+		
+		if (rememberedUser == null) {
+		    Cookie[] cookies = request.getCookies();
+		    for (Cookie cookie : cookies) {
+		        if (cookie.getName().equals("rememberMe")) {
+		            rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
+		            break;
+		        }
+		    }
+		}
+		
+		if (rememberedUser != null) {
+		    List<UploadedFile> uploadedFiles = FileUploadDAO.getFilesForUser(rememberedUser);
+		
+		    for (UploadedFile file : uploadedFiles) {
+		%>
+		    <tr>
+		        <td><%= rememberedUser %></td>
+		        <td><%= file.getFileName() %></td>
+		    </tr>
+		<%
+		    }
+		} else {
+		    response.sendRedirect("./index.jsp");
+		}
+		%>
 
 	    </table>
     </div>
