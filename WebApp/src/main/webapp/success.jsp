@@ -38,17 +38,35 @@
             border-radius: 5px;
             width: 150px;
             transition: background-color 0.3s ease;
+            position: relative; /* Add relative positioning */
         }
 
         a:hover {
             background-color: #0058a0;
+        }
+
+        .button-container {
+            text-align: center;
+            display: flex; /* Use flexbox to control layout */
+            justify-content: center; /* Center align the buttons horizontally */
+        }
+
+        .button-container a {
+            margin: 0 10px; /* Add margin to separate the buttons horizontally */
+        }
+
+        .center-label {
+            position: absolute; /* Absolute positioning to center the label */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center horizontally and vertically */
         }
     </style>
 </head>
 
 <body>
 
-<h1> Login Successfull </h1>
+<h1> Login Successful </h1>
 
 <%
     String user = (String) session.getAttribute("user");
@@ -56,11 +74,11 @@
 
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
-    	
+        
         for (Cookie cookie : cookies) {
-        	
+            
             if (cookie.getName().equals("rememberMe")) {
-            	
+                
                 String cookieValue = cookie.getValue();
                 
                 rememberedUser = Utils.getUsernameFromCookie(cookieValue);
@@ -75,19 +93,26 @@
         // User is logged in via session
 %>
         <h3> Hi, <%= user %> </h3> <br>
-        <a href="LogoutServlet"> Logout </a>
+        <div class="button-container">
+            <a href="LogoutServlet">
+                <span class="center-label">Logout</span>
+            </a>
+            <a href="FileUploadServlet"> Carica proposta progettuale </a>
+        </div>
 <%
     } else if (rememberedUser != null) {
 %>
         <h3> Hi, <%= rememberedUser %> </h3> <br>
-        <a href="LogoutServlet"> Logout </a>
+        <div class="button-container">
+            <a href="LogoutServlet">
+                <span class="center-label">Logout</span>
+            </a>
+            <a href="FileUploadServlet"> Carica proposta progettuale </a>
+        </div>
 <%
     } else
-    	
         response.sendRedirect("./index.jsp");
-    
 %>
-
 
 </body>
 </html>
