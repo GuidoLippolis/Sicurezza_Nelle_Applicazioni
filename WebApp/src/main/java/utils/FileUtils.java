@@ -54,28 +54,45 @@ public class FileUtils {
 		
 	}
 
-	public static byte[] getFileContent(Part filePart) {
-		
-        byte[] buffer = new byte[1024];
-        
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        
-        try (InputStream fileContent = filePart.getInputStream()) {
-        	
-            int bytesRead;
-            
-            while ((bytesRead = fileContent.read(buffer)) != -1) 
-                byteArrayOutputStream.write(buffer, 0, bytesRead);
-            
-            return byteArrayOutputStream.toByteArray();
-            
-        } catch (IOException e) {
-        	
-			e.printStackTrace();
-			return new byte[0];
-			
-		}
-		
+	public static byte[] getFileContent(File file) {
+	    byte[] buffer = new byte[1024];
+	    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+	    try (InputStream fileContent = new FileInputStream(file)) {
+	        int bytesRead;
+
+	        while ((bytesRead = fileContent.read(buffer)) != -1)
+	            byteArrayOutputStream.write(buffer, 0, bytesRead);
+
+	        return byteArrayOutputStream.toByteArray();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        return new byte[0];
+	    }
 	}
+	
+//	public static byte[] getFileContent(Part filePart) {
+//		
+//        byte[] buffer = new byte[1024];
+//        
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        
+//        try (InputStream fileContent = filePart.getInputStream()) {
+//        	
+//            int bytesRead;
+//            
+//            while ((bytesRead = fileContent.read(buffer)) != -1) 
+//                byteArrayOutputStream.write(buffer, 0, bytesRead);
+//            
+//            return byteArrayOutputStream.toByteArray();
+//            
+//        } catch (IOException e) {
+//        	
+//			e.printStackTrace();
+//			return new byte[0];
+//			
+//		}
+//		
+//	}
 
 }

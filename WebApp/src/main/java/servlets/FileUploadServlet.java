@@ -1,5 +1,6 @@
 package servlets;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -179,14 +180,17 @@ public class FileUploadServlet extends HttpServlet {
             
             String fileName = getFileName(filePart);
             
+            filePart.write(prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName);
+            
     		HttpSession currentSession = request.getSession(false);
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
-    		if(FileUtils.isFileTypeForbidden(fileName))
-    			throw new ForbiddenFileTypeException(fileName);
+    		if(FileUtils.isFileTypeForbidden(prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName))
+    			throw new ForbiddenFileTypeException(prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName);
     		
-            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), finalUsername);
+//            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), finalUsername);
+            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(new File(prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName)), finalUsername);
             
             currentSession.setAttribute("uploadedFileName", fileName);
             

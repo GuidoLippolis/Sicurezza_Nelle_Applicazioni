@@ -53,6 +53,13 @@ public enum PropertiesKeys {
 	 * 
 	 * */
 	
-	PASSPHRASE
+	PASSPHRASE,
+	
+	/*
+	 * Percorso per i file
+	 * 
+	 * */
+	
+	PERCORSO_FILE
 	
 }
