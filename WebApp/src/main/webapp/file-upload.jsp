@@ -77,8 +77,8 @@
 	    <table>
 	    
 	    <tr>
-               <th>Utente</th>
-               <th>Nome file</th>
+              <th>Utente</th>
+              <th>Nome file</th>
         </tr>
 	    
 		<%
@@ -95,12 +95,13 @@
 		}
 		
 		if (rememberedUser != null) {
-		    List<UploadedFile> uploadedFiles = FileUploadDAO.getFilesForUser(rememberedUser);
+		    // List<UploadedFile> uploadedFiles = FileUploadDAO.getFilesForUser(rememberedUser);
+		    List<UploadedFile> uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
 		
 		    for (UploadedFile file : uploadedFiles) {
 		%>
 		    <tr>
-		        <td><%= rememberedUser %></td>
+		        <td><%= file.getUsername() %></td>
 		        <td><%= file.getFileName() %></td>
 		    </tr>
 		<%
