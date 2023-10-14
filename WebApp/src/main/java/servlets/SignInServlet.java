@@ -89,6 +89,9 @@ public class SignInServlet extends HttpServlet {
 	                	} else {
 	                		
 	                		deletedCookie = CookieDAO.deleteCookieByValue(cookieValueFromDB);
+	                		
+	                		log.info(deletedCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");
+	                		
 	                		response.sendRedirect("./index.jsp");
 	                		return;
 	                		
@@ -140,8 +143,6 @@ public class SignInServlet extends HttpServlet {
 				currentSession.setMaxInactiveInterval(60 * 10);
 				
 				currentSession.setAttribute("user", username);
-				
-				String userName = (String) currentSession.getAttribute("user");
 				
 				System.out.println();
 				
