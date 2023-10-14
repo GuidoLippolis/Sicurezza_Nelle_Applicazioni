@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import dao.CookieDAO;
 import dao.FileUploadDAO;
 import enumeration.PropertiesKeys;
-import exception.FileTooBigException;
 import exception.ForbiddenFileTypeException;
 import utils.ApplicationPropertiesLoader;
 import utils.EncryptionUtils;
@@ -116,6 +115,9 @@ public class FileUploadServlet extends HttpServlet {
 	                	} else {
 	                		
 	                		deletedCookie = CookieDAO.deleteCookieByValue(cookieValueFromDB);
+	                		
+	                		log.info(deletedCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");
+	                		
 	                		response.sendRedirect("./index.jsp");
 	                		return;
 	                		
@@ -143,7 +145,6 @@ public class FileUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
        
     	Cookie[] cookies = request.getCookies();
-    	int userId = 0;
     	String cookieUsername = null;
     	String sessionUsername = null;
     	
@@ -180,17 +181,18 @@ public class FileUploadServlet extends HttpServlet {
             
             String fileName = getFileName(filePart);
             
-            filePart.write(prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName);
+            String finalPath = prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName;
+            
+            filePart.write(finalPath);
             
     		HttpSession currentSession = request.getSession(false);
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
-    		if(FileUtils.isFileTypeForbidden(prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName))
-    			throw new ForbiddenFileTypeException(prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName);
+    		if(FileUtils.isFileTypeForbidden(finalPath))
+    			throw new ForbiddenFileTypeException(finalPath);
     		
-//            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), finalUsername);
-            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(new File(prop.getProperty(PropertiesKeys.PERCORSO_FILE.toString()) + File.separator + fileName)), finalUsername);
+            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);
             
             currentSession.setAttribute("uploadedFileName", fileName);
             
