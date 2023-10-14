@@ -1,3 +1,6 @@
+<%@page import="model.UploadedFile"%>
+<%@page import="dao.FileUploadDAO"%>
+<%@page import="java.util.List"%>
 <%@page import="utils.Utils"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -70,44 +73,34 @@
         </form>
 
         <h2>Elenco dei file caricati per utente</h2>
-        <table>
-            <tr>
-                <th>Utente</th>
-                <th>Nome file</th>
-            </tr>
-            
-            <%
-            String user = (String) session.getAttribute("user");
-            String fileFromUser = (String) session.getAttribute("uploadedFileName");
-            String rememberedUser = null;
+	    <!-- Display Table of Uploaded Files -->
+	    <table>
+	    
+	    <tr>
+               <th>Utente</th>
+               <th>Nome file</th>
+        </tr>
+	    
+			<%
+			String rememberedUser = (String) session.getAttribute("user");
+			
+			if (rememberedUser != null) {
+			    List<UploadedFile> uploadedFiles = FileUploadDAO.getFilesForUser(rememberedUser);
+			
+			    for (UploadedFile file : uploadedFiles) {
+			%>
+			    <tr>
+			        <td><%= rememberedUser %></td>
+			        <td><%= file.getFileName() %></td>
+			    </tr>
+			<%
+			    }
+			} else {
+			    response.sendRedirect("./index.jsp");
+			}
+			%>
 
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("rememberMe")) {
-                        String cookieValue = cookie.getValue();
-                        rememberedUser = Utils.getUsernameFromCookie(cookieValue);
-                        break;
-                    }
-                }
-            }
-            
-            if (user != null) {
-                // Check if the user has uploaded a file, and if so, add it to the table
-                // String uploadedFileName = request.getParameter("file");
-               if (fileFromUser != null) {
-            %>
-			 <tr>
-                <td><%= user %></td>
-                <td><%= fileFromUser %></td>
-            </tr>
-            <%
-               }
-            } else {
-                response.sendRedirect("./index.jsp");
-            }
-            %>
-        </table>
+	    </table>
     </div>
 </body>
 </html>

@@ -22,8 +22,8 @@ CREATE TABLE uploaded_files (
     id INT AUTO_INCREMENT PRIMARY KEY,
     file_name VARCHAR(255) NOT NULL,
     file_data LONGBLOB NOT NULL,
-    user_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    username VARCHAR(50) NOT NULL,
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
 );
 
 USE passwords_db;
@@ -77,6 +77,7 @@ CREATE USER 'cookies_usr'@'localhost' IDENTIFIED BY 'cookies_usr_password';
 
 GRANT INSERT ON users_db.users TO 'users_usr'@'localhost';
 GRANT INSERT ON users_db.uploaded_files TO 'users_usr'@'localhost';
+GRANT SELECT ON users_db.uploaded_files TO 'users_usr'@'localhost';
 GRANT INSERT ON passwords_db.passwords TO 'users_usr'@'localhost';
 GRANT INSERT ON salts_db.salts TO 'users_usr'@'localhost';
 GRANT SELECT ON users_db.users TO 'users_usr'@'localhost';

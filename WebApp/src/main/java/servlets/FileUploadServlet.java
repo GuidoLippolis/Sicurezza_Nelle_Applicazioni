@@ -142,20 +142,24 @@ public class FileUploadServlet extends HttpServlet {
        
     	Cookie[] cookies = request.getCookies();
     	int userId = 0;
+    	String username = null;
     	
     	if(cookies != null) {
     		
     		for(Cookie cookie : cookies) {
     			
-    			if(cookie.getName().equals("rememberMe"))
-    				userId = Utils.extractUserId(cookie.getValue());
+    			if(cookie.getName().equals("rememberMe")) {
+    				
+    				username = Utils.getUsernameFromCookie(cookie.getValue());
+
+    			}
     				
     			
     		}
     		
     	}
     	
-    	if(userId == 0) {
+    	if(username == null) {
     		
 			request.getRequestDispatcher("index.jsp").forward(request, response);
 			return;
@@ -173,9 +177,9 @@ public class FileUploadServlet extends HttpServlet {
             
     		HttpSession currentSession = request.getSession(false);
     		
-    		currentSession.setAttribute("uploadedFileName", getFileName(filePart));
+            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), username);
             
-            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(filePart), userId);
+            currentSession.setAttribute("uploadedFileName", getFileName(filePart));
             
 		} catch (Exception e) {
 
