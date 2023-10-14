@@ -92,7 +92,7 @@
     if (user != null) {
         // User is logged in via session
 %>
-        <h3> Hi, <%= user %> </h3> <br>
+        <h3> Benvenuto, <%= user %> </h3> <br>
         <div class="button-container">
             <a href="LogoutServlet">
                 <span class="center-label">Logout</span>
