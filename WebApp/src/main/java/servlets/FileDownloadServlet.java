@@ -30,14 +30,13 @@ public class FileDownloadServlet extends HttpServlet {
 	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-        String username = request.getParameter("username");
-        String fileName = request.getParameter("fileName");
+    	int id = Integer.parseInt(request.getParameter("id"));
 
-        if (username != null && fileName != null) {
+        if (id != 0) {
         	
             try {
             	
-                byte[] fileContent = FileUploadDAO.getFileContent(username, fileName);
+                byte[] fileContent = FileUploadDAO.getFileContent(id);
                 
                 if (fileContent != null) {
                     

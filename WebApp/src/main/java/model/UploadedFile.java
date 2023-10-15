@@ -2,6 +2,7 @@ package model;
 
 public class UploadedFile {
 
+	private int id;
 	private String fileName;
 	private byte[] fileData;
 	private String username;
@@ -15,6 +16,22 @@ public class UploadedFile {
 		this.fileName = fileName;
 		this.fileData = fileData;
 		this.username = username;
+	}
+	
+	public UploadedFile(int id, String fileName, byte[] fileData, String username) {
+		super();
+		this.id = id;
+		this.fileName = fileName;
+		this.fileData = fileData;
+		this.username = username;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getFileName() {

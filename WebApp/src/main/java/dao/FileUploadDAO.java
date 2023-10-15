@@ -155,8 +155,12 @@ public class FileUploadDAO {
 			
 			resultSetUploadedFiles = uploaedFilesStatement.executeQuery();
 			
-			while(resultSetUploadedFiles.next())
-				uploadedFilesList.add(new UploadedFile(resultSetUploadedFiles.getString("file_name"), resultSetUploadedFiles.getBytes("file_data"), resultSetUploadedFiles.getString("username")));
+			while(resultSetUploadedFiles.next()) {
+				
+				System.out.println(resultSetUploadedFiles.getInt("id"));
+				uploadedFilesList.add(new UploadedFile(resultSetUploadedFiles.getInt("id"), resultSetUploadedFiles.getString("file_name"), resultSetUploadedFiles.getBytes("file_data"), resultSetUploadedFiles.getString("username")));
+			
+			}
 			
 			return uploadedFilesList;
 			
@@ -180,7 +184,7 @@ public class FileUploadDAO {
 		
 	}
 	
-	public static byte[] getFileContent(String username, String fileName) throws ClassNotFoundException, SQLException {
+	public static byte[] getFileContent(int id) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -200,10 +204,9 @@ public class FileUploadDAO {
 					
 			);
 			
-			uploaedFilesStatement = connection.prepareStatement("SELECT * FROM users_db.uploaded_files WHERE username = ? AND file_name = ?");
+			uploaedFilesStatement = connection.prepareStatement("SELECT * FROM users_db.uploaded_files WHERE id = ?");
 			
-			uploaedFilesStatement.setString(1, username);
-			uploaedFilesStatement.setString(2, fileName);
+			uploaedFilesStatement.setInt(1, id);
 			
 			resultSetUploadedFiles = uploaedFilesStatement.executeQuery();
 			

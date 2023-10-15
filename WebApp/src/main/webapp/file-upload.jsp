@@ -86,6 +86,7 @@
 		// Recupero l'utente dall'oggetto session
 		String sessionUser = (String) session.getAttribute("user");
 		String rememberedUser = null;
+		boolean isRememberMePresent = false;
 		
 		Cookie[] cookies = null;
 		
@@ -106,13 +107,14 @@
 		    	
 		        if (cookie.getName().equals("rememberMe")) {
 		            rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
+		            isRememberMePresent = true;
 		            break;
 		            
 		        }
 		    }
 		}
 		
-		if(sessionUser != null || cookies != null) {
+		if(sessionUser != null || isRememberMePresent) {
 			
 			List<UploadedFile> uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
 			
@@ -123,7 +125,7 @@
 			<tr>
 			
 				<td><%= file.getUsername() %></td>
-				<td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&fileName=<%= file.getFileName() %>"><%= file.getFileName() %></a></td>
+				<td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
 			
 			</tr>
 			
