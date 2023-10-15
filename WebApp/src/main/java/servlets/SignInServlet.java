@@ -76,7 +76,7 @@ public class SignInServlet extends HttpServlet {
 	                	
 	                	long expirationDateForCookie = CookieDAO.findExpirationDateByCookieValue(cookieValueFromDB);
 	                	
-	                	if(cookieValueFromDB != null && Utils.isCookieValid(System.currentTimeMillis(), expirationDateForCookie)) {
+	                	if(!cookieValueFromDB.isBlank() || (cookieValueFromDB != null) && Utils.isCookieValid(System.currentTimeMillis(), expirationDateForCookie)) {
 	                		
 	                		response.sendRedirect("./success.jsp");
 	                		return;

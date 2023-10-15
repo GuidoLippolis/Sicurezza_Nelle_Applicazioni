@@ -69,7 +69,7 @@
 <h1> Login Successful </h1>
 
 <%
-    String user = (String) session.getAttribute("user");
+    String sessionUser = (String) session.getAttribute("user");
     String rememberedUser = null;
 
     Cookie[] cookies = request.getCookies();
@@ -89,10 +89,10 @@
         }
     }
 
-    if (user != null) {
+    if (sessionUser != null) {
         // User is logged in via session
 %>
-        <h3> Benvenuto, <%= user %> </h3> <br>
+        <h3> Benvenuto, <%= sessionUser %> </h3> <br>
         <div class="button-container">
             <a href="LogoutServlet">
                 <span class="center-label">Logout</span>
