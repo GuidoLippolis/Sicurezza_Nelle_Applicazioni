@@ -157,7 +157,6 @@ public class FileUploadDAO {
 			
 			while(resultSetUploadedFiles.next()) {
 				
-				System.out.println(resultSetUploadedFiles.getInt("id"));
 				uploadedFilesList.add(new UploadedFile(resultSetUploadedFiles.getInt("id"), resultSetUploadedFiles.getString("file_name"), resultSetUploadedFiles.getBytes("file_data"), resultSetUploadedFiles.getString("username")));
 			
 			}

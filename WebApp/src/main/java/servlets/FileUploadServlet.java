@@ -182,7 +182,6 @@ public class FileUploadServlet extends HttpServlet {
             
             String fileName = getFileName(filePart);
             
-//            String finalPath = prop.getProperty(PropertiesKeys.PATH_UPLOADED_FILES.toString()) + File.separator + fileName;
             String finalPath = getServletContext().getRealPath("/") + File.separator + Utils.transformFileName(fileName);
             
             System.out.println("REAL PATH = " + getServletContext().getRealPath("/") + File.separator + fileName);
