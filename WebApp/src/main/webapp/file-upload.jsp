@@ -35,6 +35,7 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
+            position: relative;
         }
 
         input[type="file"] {
@@ -60,6 +61,26 @@
             background-color: #2779e2;
             color: #fff;
         }
+
+        .logout-button {
+            background-color: #2779e2;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .logout-button:hover {
+            background-color: #1a5dab;
+        }
     </style>
 </head>
 <body>
@@ -72,34 +93,30 @@
             <input type="file" name="file" id="file">
             <input type="submit" value="Invia file">
         </form>
+        
+        <!-- Logout Button within the same section and aligned to the right -->
+        <form action="LogoutServlet" method="POST">
+            <input type="submit" value="Logout" class="logout-button">
+        </form>
 
         <h2>Elenco dei file caricati per utente</h2>
-	    <!-- Display Table of Uploaded Files -->
+        <!-- Display Table of Uploaded Files -->
         <table>
             <tr>
                 <th>Utente</th>
                 <th>Nome file</th>
             </tr>
-            
-			<%
-			
-			List<UploadedFile> uploadedFiles = (List<UploadedFile>) request.getAttribute("uploadedFiles");
-			
-			for (UploadedFile file : uploadedFiles) {
-				
-			%>
-			
-			<tr>
-			    <td><%= file.getUsername() %></td>
-			    <td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
-			</tr>
-			
-			<%
-			
-			}
-			
-			%>
-
+            <%
+            List<UploadedFile> uploadedFiles = (List<UploadedFile>) request.getAttribute("uploadedFiles");
+            for (UploadedFile file : uploadedFiles) {
+            %>
+            <tr>
+                <td><%= file.getUsername() %></td>
+                <td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
+            </tr>
+            <%
+            }
+            %>
         </table>
     </div>
 </body>
