@@ -159,8 +159,6 @@ public class FileUploadServlet extends HttpServlet {
             
             String finalPath = getServletContext().getRealPath("/") + File.separator + Utils.transformFileName(fileName);
             
-            System.out.println("REAL PATH = " + getServletContext().getRealPath("/") + File.separator + fileName);
-            
             filePart.write(finalPath);
             
     		HttpSession currentSession = request.getSession(false);
