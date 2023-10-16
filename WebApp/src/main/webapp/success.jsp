@@ -69,50 +69,61 @@
 <h1> Login Successful </h1>
 
 <%
-    String sessionUser = (String) session.getAttribute("user");
-    String rememberedUser = null;
+	// Recupero l'utente dall'oggetto session
+	String sessionUser = (String) session.getAttribute("user");
+	String rememberedUser = null;
+	boolean isRememberMePresent = false;
 
-    Cookie[] cookies = request.getCookies();
-    if (cookies != null) {
+	Cookie[] cookies = null;
+	
+	/*
+	
+		Se non vi è alcuna sessione aperta per nessun utente,
+		si cerca nella lista di cookies della richiesta e, se
+		viene trovato un cookie valido per tale utente, allora
+		la variabile "username" viene valorizzata
+
+	*/
+
+	if (sessionUser == null) {
+		
+	    cookies = request.getCookies();
+	    
+	    for (Cookie cookie : cookies) {
+	    	
+	        if (cookie.getName().equals("rememberMe")) {
+	            rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
+	            isRememberMePresent = true;
+	            break;
+	        }
+	        
+	    }
+	    
+	}
+	
+	if(sessionUser != null || isRememberMePresent) {
+	
+%>
+
+	    <h3> Benvenuto, <%= sessionUser %> </h3> <br>
+	    
+        <div class="button-container">
         
-        for (Cookie cookie : cookies) {
+            <a href="LogoutServlet">
+                <span class="center-label">Logout</span>
+            </a>
             
-            if (cookie.getName().equals("rememberMe")) {
-                
-                String cookieValue = cookie.getValue();
-                
-                rememberedUser = Utils.getUsernameFromCookie(cookieValue);
-                
-                break;
-                
-            }
-        }
-    }
-
-    if (sessionUser != null) {
-        // User is logged in via session
-%>
-        <h3> Benvenuto, <%= sessionUser %> </h3> <br>
-        <div class="button-container">
-            <a href="LogoutServlet">
-                <span class="center-label">Logout</span>
-            </a>
             <a href="FileUploadServlet"> Carica proposta progettuale </a>
+            
         </div>
-<%
-    } else if (rememberedUser != null) {
-%>
-        <h3> Hi, <%= rememberedUser %> </h3> <br>
-        <div class="button-container">
-            <a href="LogoutServlet">
-                <span class="center-label">Logout</span>
-            </a>
-            <a href="FileUploadServlet"> Carica proposta progettuale </a>
-        </div>
-<%
-    } else
-        response.sendRedirect("./index.jsp");
-%>
-
+        
+        <%
+        
+		} else
+			
+			response.sendRedirect("./index.jsp");
+		
+        %>
+        
 </body>
 </html>

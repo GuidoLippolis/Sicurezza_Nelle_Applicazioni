@@ -3,6 +3,7 @@
 <%@page import="java.util.List"%>
 <%@page import="utils.Utils"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,72 +75,32 @@
 
         <h2>Elenco dei file caricati per utente</h2>
 	    <!-- Display Table of Uploaded Files -->
-	    <table>
-	    
-	    <tr>
-              <th>Utente</th>
-              <th>Nome file</th>
-        </tr>
-	    
-		<%
-		
-		// Recupero l'utente dall'oggetto session
-		String sessionUser = (String) session.getAttribute("user");
-		String rememberedUser = null;
-		boolean isRememberMePresent = false;
-		
-		Cookie[] cookies = null;
-		
-		/*
-		
-			Se non vi è alcuna sessione aperta per nessun utente,
-			si cerca nella lista di cookies della richiesta e, se
-			viene trovato un cookie valido per tale utente, allora
-			la variabile "username" viene valorizzata
-		
-		*/
-		
-		if (sessionUser == null) {
+        <table>
+            <tr>
+                <th>Utente</th>
+                <th>Nome file</th>
+            </tr>
+            
+			<%
 			
-		    cookies = request.getCookies();
-		    
-		    for (Cookie cookie : cookies) {
-		    	
-		        if (cookie.getName().equals("rememberMe")) {
-		            rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
-		            isRememberMePresent = true;
-		            break;
-		            
-		        }
-		    }
-		}
-		
-		if(sessionUser != null || isRememberMePresent) {
-			
-			List<UploadedFile> uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
+			List<UploadedFile> uploadedFiles = (List<UploadedFile>) request.getAttribute("uploadedFiles");
 			
 			for (UploadedFile file : uploadedFiles) {
+				
+			%>
 			
-		%>
-		
 			<tr>
-			
-				<td><%= file.getUsername() %></td>
-				<td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
-			
+			    <td><%= file.getUsername() %></td>
+			    <td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
 			</tr>
 			
-		<%
-		
+			<%
+			
 			}
 			
-		} else 
+			%>
 
-			response.sendRedirect("./index.jsp");
-			
-		%>
-		
-	    </table>
+        </table>
     </div>
 </body>
 </html>

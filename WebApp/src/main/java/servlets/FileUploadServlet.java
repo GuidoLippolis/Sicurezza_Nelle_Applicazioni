@@ -2,7 +2,9 @@ package servlets;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -21,6 +23,7 @@ import dao.CookieDAO;
 import dao.FileUploadDAO;
 import enumeration.PropertiesKeys;
 import exception.ForbiddenFileTypeException;
+import model.UploadedFile;
 import utils.ApplicationPropertiesLoader;
 import utils.EncryptionUtils;
 import utils.FileUtils;
@@ -51,95 +54,67 @@ public class FileUploadServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		boolean deletedCookie = false;
-		boolean isUserAuthenticated = false;
-		
-		HttpSession currentSession = request.getSession(false);
-		
-		if(currentSession != null) {
-			
-			String user = (String) currentSession.getAttribute("user");
-			
-			if(user != null)
-				isUserAuthenticated = true;
-			
-		}
-		
-		if(isUserAuthenticated) {
-			
-			request.getRequestDispatcher("file-upload.jsp").forward(request, response);
-			return;
-			
-		}
-		
-		try {
-			
-	        Cookie[] cookies = request.getCookies();
-	        
-	        /*
-	         * Prima di verificare che le credenziali dell'utente 
-	         * 
-	         * */
-	        
-	        if (cookies != null) {
-	        	
-	            for (Cookie cookie : cookies) {
-	            	
-	                if (cookie.getName().equals("rememberMe")) {
-	                	
-	                	/*
-	                	 * Quando l'utente raggiunge l'applicazione, si controlla se
-	                	 * esso è già in possesso di un Cookie. Se tale condizione è
-	                	 * verificata, allora l'utente viene autenticato senza la
-	                	 * necessità di fornire le credenziali di accesso
-	                	 * 
-	                	 * */
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Verifica se l'utente è loggato o ha un cookie "Remember Me" valido
+        // Se non lo è, reindirizza alla pagina di accesso
 
-	                	String cookieValueFromDB = CookieDAO.findCookieByValue(new EncryptionUtils(prop.getProperty(PropertiesKeys.PASSPHRASE.toString())).encrypt(cookie.getValue()) );
+        String sessionUser = (String) request.getSession().getAttribute("user");
+        boolean isRememberMePresent = false;
 
-	                	/*
-	                	 * Viene recuperata la data di scadenza (in secondi) dal database sulla base del valore del cookie.
-	                	 * Se il cookie esiste nel database e, allo stesso tempo, non è scaduto, allora l'utente viene
-	                	 * autenticato con successo. Altrimenti, il cookie viene cancellato dal database
-	                	 * 
-	                	 * */
-	                	
-	                	long expirationDateForCookie = CookieDAO.findExpirationDateByCookieValue(cookieValueFromDB);
-	                	
-	                	if(cookieValueFromDB != null && Utils.isCookieValid(System.currentTimeMillis(), expirationDateForCookie)) {
-	                		
-	                		response.sendRedirect("./file-upload.jsp");
-	                		return;
-	                		
-	                	} else {
-	                		
-	                		deletedCookie = CookieDAO.deleteCookieByValue(cookieValueFromDB);
-	                		
-	                		log.info(deletedCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");
-	                		
-	                		response.sendRedirect("./index.jsp");
-	                		return;
-	                		
-	                	}
-	                	
-	                }
-	                
-	            }
-	            
-	        }
-	        
-		} catch (Exception e) {
+        if (sessionUser == null) {
+        	
+            Cookie[] cookies = request.getCookies();
 
-			log.error("Eccezione in FileUploadServlet: ", e);
-			
-		}
-		
-		request.getRequestDispatcher("file-upload.jsp").forward(request, response);
-		
-	}
-	
+            if (cookies != null) {
+            	
+                for (Cookie cookie : cookies) {
+                	
+                    if (cookie.getName().equals("rememberMe")) {
+                    	
+                        String rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
+                        
+                        sessionUser = rememberedUser;
+                        
+                        isRememberMePresent = true;
+                        
+                        break;
+                        
+                    }
+                }
+            }
+        }
+
+        if (sessionUser != null || isRememberMePresent) {
+        	
+            // Recupera i file dal database per tutti gli utenti
+        	
+            List<UploadedFile> uploadedFiles = null;
+            
+			try {
+				
+				uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
+				
+			} catch (ClassNotFoundException e) {
+
+				log.error(e.getMessage());
+				
+			} catch (SQLException e) {
+
+				log.error(e.getMessage());
+				
+			}
+
+            request.setAttribute("uploadedFiles", uploadedFiles);
+            
+            request.getRequestDispatcher("file-upload.jsp").forward(request, response);
+            
+        } else 
+        	
+            response.sendRedirect("./index.jsp");
+        
+    }
+    
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
