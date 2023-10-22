@@ -38,9 +38,9 @@ public class Utils {
     	
     }
     
-    public static String getUserIdFromCookieValue(String cookieValue) {
+    public static int getUserIdFromCookieValue(String cookieValue) {
     	
-    	return cookieValue.split("@@@")[1];
+    	return Integer.parseInt(cookieValue.split("@@@")[1]);
     	
     }
     
