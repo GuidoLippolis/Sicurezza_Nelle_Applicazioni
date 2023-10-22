@@ -119,7 +119,7 @@ public class SignInServlet extends HttpServlet {
 				Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 				
 				// Setting della durata massima del Cookie in secondi
-				rememberMeCookie.setMaxAge(600000000);
+				rememberMeCookie.setMaxAge(60 * 15);
 
 				// Crittografia simmetrica del valore del Cookie
 				String passphrase = prop.getProperty(PropertiesKeys.PASSPHRASE.toString());
