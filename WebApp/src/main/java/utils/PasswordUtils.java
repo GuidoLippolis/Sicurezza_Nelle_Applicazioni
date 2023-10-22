@@ -43,8 +43,6 @@ public class PasswordUtils {
 		 * */
 		
 		clearArray(password);
-		clearArray(salt);
-		clearArray(passwordAndSalt);
 
 		return hashValue;
 		

@@ -89,8 +89,6 @@ public class SignUpServlet extends HttpServlet {
 				
 			}
 			
-			PasswordUtils.clearArray(passwordToConfirm);
-			
 		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException e) {
 			
 			log.error("Errore in SignUpServlet: ", e);
