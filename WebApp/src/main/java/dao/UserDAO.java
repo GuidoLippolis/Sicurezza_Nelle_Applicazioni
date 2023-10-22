@@ -112,6 +112,8 @@ public class UserDAO {
 		
 		} finally {
 			
+			PasswordUtils.clearArray(salt);
+			
 			if(connection != null)
 				connection.close();
 			

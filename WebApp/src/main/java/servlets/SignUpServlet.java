@@ -72,14 +72,24 @@ public class SignUpServlet extends HttpServlet {
 			 * 
 			 * */
 			
-			if(Arrays.equals(password, passwordToConfirm))
+			if(Arrays.equals(password, passwordToConfirm)) {
+				
 				insertedUser = UserDAO.signUp(new User(username, photo), password);
+				
+				// Pulizia dei dati sensibili
+				PasswordUtils.clearArray(passwordToConfirm);
+				
+			}
 			
-			if(insertedUser) 
+			if(insertedUser) {
 				
 				log.info("Registrazione avvenuta con successo");
 				
-			 else {
+				response.sendRedirect("./index.jsp");
+				
+				return;
+				
+			}  else {
 				
 				log.info("Errore nella registrazione: le password non corrispondono");
 				
