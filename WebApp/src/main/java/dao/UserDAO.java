@@ -112,6 +112,8 @@ public class UserDAO {
 		
 		} finally {
 			
+			PasswordUtils.clearArray(hashedPassword);
+			
 			if(connection != null)
 				connection.close();
 			

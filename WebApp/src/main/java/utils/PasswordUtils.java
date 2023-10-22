@@ -77,7 +77,7 @@ public class PasswordUtils {
 	 * 
 	 * */
 	
-	private static void clearArray(byte[] array) {
+	public static void clearArray(byte[] array) {
 		
 		Arrays.fill(array, (byte)0);
 		

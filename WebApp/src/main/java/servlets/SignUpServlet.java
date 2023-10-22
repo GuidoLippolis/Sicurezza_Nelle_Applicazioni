@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import dao.UserDAO;
 import model.User;
+import utils.PasswordUtils;
 
 /**
  * Servlet implementation class SignUpServlet
@@ -87,6 +88,8 @@ public class SignUpServlet extends HttpServlet {
 				return;
 				
 			}
+			
+			PasswordUtils.clearArray(passwordToConfirm);
 			
 		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException e) {
 			
