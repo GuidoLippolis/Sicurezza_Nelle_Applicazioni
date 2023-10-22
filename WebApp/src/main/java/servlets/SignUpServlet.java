@@ -90,7 +90,7 @@ public class SignUpServlet extends HttpServlet {
 			
 		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException e) {
 			
-			log.info("Errore in SignUpServlet: ", e);
+			log.error("Errore in SignUpServlet: ", e);
 			e.printStackTrace();
 			
 		}
