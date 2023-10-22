@@ -18,7 +18,9 @@ public class EncryptionUtils {
     private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
     public EncryptionUtils(String passphrase) throws Exception {
+    	
         setKey(passphrase);
+        
     }
     
     private static void setKey(String secret) throws Exception {
@@ -32,6 +34,7 @@ public class EncryptionUtils {
             keyBytes = Arrays.copyOf(keyBytes, 16);
             
             secretKeySpec = new SecretKeySpec(keyBytes, prop.getProperty(PropertiesKeys.SYMMETRIC_ENCRYPTION_ALGORITM.toString()));
+            
         }
         
     }
