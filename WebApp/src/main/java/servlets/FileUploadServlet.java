@@ -85,11 +85,11 @@ public class FileUploadServlet extends HttpServlet {
 				
 			} catch (ClassNotFoundException e) {
 
-				log.error(e.getMessage());
+				log.error("Eccezione in FileUploadServlet: " + e.getMessage());
 				
 			} catch (SQLException e) {
 
-				log.error(e.getMessage());
+				log.error("Eccezione in FileUploadServlet: " + e.getMessage());
 				
 			}
 
@@ -163,7 +163,7 @@ public class FileUploadServlet extends HttpServlet {
             
 		} catch (Exception e) {
 			
-			log.error(e.getMessage());
+			log.error("Eccezione in FileUploadServlet: " + e.getMessage());
 			
 		} 
     	

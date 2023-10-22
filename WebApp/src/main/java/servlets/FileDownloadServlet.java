@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import dao.FileUploadDAO;
 
 /**
@@ -16,7 +18,10 @@ import dao.FileUploadDAO;
  */
 @WebServlet("/FileDownloadServlet")
 public class FileDownloadServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
+	
+	private static final Logger log = Logger.getLogger(FileDownloadServlet.class);
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -53,7 +58,7 @@ public class FileDownloadServlet extends HttpServlet {
                 
             } catch (Exception e) {
                 
-                e.printStackTrace();
+                log.error("Eccezione in FileDownloadServlet: " + e.getMessage());
                 response.getWriter().write("Error occurred");
                 
             }
