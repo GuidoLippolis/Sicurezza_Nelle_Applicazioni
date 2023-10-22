@@ -11,12 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import enumeration.PropertiesKeys;
 import model.User;
 import utils.ApplicationPropertiesLoader;
 import utils.PasswordUtils;
 
 public class UserDAO {
+	
+	private static final Logger log = Logger.getLogger(UserDAO.class);
 	
 	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
@@ -99,7 +103,7 @@ public class UserDAO {
 			
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			log.error("Eccezione in UserDAO: " + e.getMessage());
 			
 			if(connection != null)
 				connection.rollback();
@@ -156,7 +160,7 @@ public class UserDAO {
 			
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			log.error("Eccezione in UserDAO: " + e.getMessage());
 			return false;
 		
 		} finally {
@@ -211,7 +215,7 @@ public class UserDAO {
 			
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			log.error("Eccezione in UserDAO: " + e.getMessage());
 			return new User();
 		
 		} finally {

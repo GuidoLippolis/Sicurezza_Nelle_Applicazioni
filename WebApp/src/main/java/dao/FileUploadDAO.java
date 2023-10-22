@@ -18,9 +18,9 @@ import utils.ApplicationPropertiesLoader;
 
 public class FileUploadDAO {
 	
-	private static Properties prop = ApplicationPropertiesLoader.getProperties();
-	
 	private static final Logger log = Logger.getLogger(FileUploadDAO.class);
+	
+	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
 	public static boolean saveFileToDatabase(String fileName, byte[] fileContent, String username) throws ClassNotFoundException, SQLException {
 		
@@ -214,7 +214,7 @@ public class FileUploadDAO {
 			
 		} catch (Exception e) {
 
-			log.error(e.getMessage());
+			log.error("Eccezione in FileUploadDAO: " + e.getMessage());
 			return new byte[0];
 		
 		} finally {

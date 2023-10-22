@@ -7,11 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import enumeration.PropertiesKeys;
 import utils.ApplicationPropertiesLoader;
 
 public class PasswordDAO {
 
+	private static final Logger log = Logger.getLogger(PasswordDAO.class);
+	
 	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
 	public static boolean findUserByPassword(byte[] hashedPassword) throws ClassNotFoundException, SQLException {
@@ -49,7 +53,7 @@ public class PasswordDAO {
 			
 		} catch (Exception e) {
 			
-			e.printStackTrace();
+			log.error("Eccezione in PasswordDAO: " + e.getMessage());
 			return false;
 			
 		} finally {

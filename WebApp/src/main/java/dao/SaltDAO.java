@@ -7,10 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import enumeration.PropertiesKeys;
 import utils.ApplicationPropertiesLoader;
 
 public class SaltDAO {
+	
+	private static final Logger log = Logger.getLogger(SaltDAO.class);
 	
 	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
@@ -45,7 +49,7 @@ public class SaltDAO {
 			
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			log.error("Eccezione in SaltDAO: " + e.getMessage());
 			return new byte[0];
 			
 		} finally {
