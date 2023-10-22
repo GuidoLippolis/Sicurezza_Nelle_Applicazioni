@@ -72,7 +72,62 @@ public class CookieDAO {
 		
 	}
 	
-	public static String findCookieByValue(String cookieValue) throws SQLException, ClassNotFoundException {
+//	public static String findCookieByValue(String cookieValue) throws SQLException, ClassNotFoundException {
+//		
+//		Class.forName("com.mysql.cj.jdbc.Driver");
+//		
+//		Connection connection = null;
+//		
+//		PreparedStatement cookiesStatement = null;
+//		
+//		ResultSet resultSetCookies = null;
+//		
+//		String outputCookieValue = null;
+//		
+//		try {
+//			
+//			connection = DriverManager.getConnection(
+//					
+//					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
+//					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
+//					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+//					
+//			);
+//			
+//			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE cookie_value = ?");
+//			
+//			cookiesStatement.setString(1, cookieValue);
+//			
+//			resultSetCookies = cookiesStatement.executeQuery();
+//			
+//			boolean hasNext = resultSetCookies.next();
+//			
+//			if(hasNext)
+//				outputCookieValue = resultSetCookies.getString("cookie_value");
+//			
+//			return outputCookieValue;
+//			
+//		} catch (Exception e) {
+//
+//			log.error("Eccezione in CookieDAO: ", e);
+//			return "";
+//		
+//		} finally {
+//			
+//			if(connection != null)
+//				connection.close();
+//			
+//			if(cookiesStatement != null)
+//				cookiesStatement.close();
+//			
+//			if(resultSetCookies != null)
+//				resultSetCookies.close();
+//			
+//		}
+//		
+//	}
+	
+	public static String findCookieByUserId(int userId) throws SQLException, ClassNotFoundException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -94,9 +149,9 @@ public class CookieDAO {
 					
 			);
 			
-			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE cookie_value = ?");
+			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE user_id = ?");
 			
-			cookiesStatement.setString(1, cookieValue);
+			cookiesStatement.setInt(1, userId);
 			
 			resultSetCookies = cookiesStatement.executeQuery();
 			

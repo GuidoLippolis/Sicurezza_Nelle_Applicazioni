@@ -24,9 +24,22 @@ public class Utils {
     	
     }
     
+    /*
+     * Esempi:
+     * 
+     * - test.txt -> test_1697972596384.txt
+     * - test.prova.txt -> test.prova_1697972655522.txt
+     * 
+     * */
     public static String transformFileName(String fileName) {
         
     	return fileName.substring(0, fileName.lastIndexOf(".")) + "_" + new Date().getTime() + "." + fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+    	
+    }
+    
+    public static String getUserIdFromCookieValue(String cookieValue) {
+    	
+    	return cookieValue.split("@@@")[1];
     	
     }
     

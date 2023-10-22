@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="ISO-8859-1">
-    <title>Login Successful</title>
+    <title>Benvenuto</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -76,38 +76,13 @@
 
 	Cookie[] cookies = null;
 	
-	/*
-	
-		Se non vi è alcuna sessione aperta per nessun utente,
-		si cerca nella lista di cookies della richiesta e, se
-		viene trovato un cookie valido per tale utente, allora
-		la variabile "username" viene valorizzata
-
-	*/
-
-	if (sessionUser == null) {
-		
-	    cookies = request.getCookies();
-	    
-	    for (Cookie cookie : cookies) {
-	    	
-	        if (cookie.getName().equals("rememberMe")) {
-	            rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
-	            isRememberMePresent = true;
-	            break;
-	        }
-	        
-	    }
-	    
-	}
-	
-	if(sessionUser != null || isRememberMePresent) {
+	if(sessionUser != null) {
 	
 %>
 
-	    <h3> Benvenuto, <%= sessionUser %> </h3> <br>
-	    
-        <div class="button-container">
+	<h3> Benvenuto, <%= isRememberMePresent ? rememberedUser : sessionUser %> </h3> <br>
+	
+	<div class="button-container">
         
             <a href="LogoutServlet">
                 <span class="center-label">Logout</span>
@@ -115,15 +90,15 @@
             
             <a href="FileUploadServlet"> Carica proposta progettuale </a>
             
-        </div>
-        
-        <%
-        
-		} else
-			
-			response.sendRedirect("./index.jsp");
+     </div>
+     
+     <%
+     
+	} else
 		
-        %>
-        
+		response.sendRedirect("./index.jsp");
+	
+%>
+
 </body>
 </html>

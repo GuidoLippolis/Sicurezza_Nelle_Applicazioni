@@ -1,7 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,9 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import dao.CookieDAO;
-import enumeration.PropertiesKeys;
-import utils.ApplicationPropertiesLoader;
-import utils.EncryptionUtils;
+import utils.Utils;
 
 /**
  * Servlet implementation class LogoutServlet
@@ -28,8 +25,6 @@ public class LogoutServlet extends HttpServlet {
 	
 	private static final Logger log = Logger.getLogger(LogoutServlet.class);
 	
-	private static Properties prop = ApplicationPropertiesLoader.getProperties();
-       
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -42,8 +37,16 @@ public class LogoutServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		/*
+		 * Recupero della sessione corrente. Il parametro "false"
+		 * serve a fare in modo che, se non è presente una sessione,
+		 * non dev'esserne creata un'altra
+		 * 
+		 * */
+		
 		HttpSession currentSession = request.getSession(false);
 		
+		// Se vi è una sessione aperta, questa viene chiusa
 		if(currentSession != null)
 			currentSession.invalidate();
 		
@@ -51,6 +54,7 @@ public class LogoutServlet extends HttpServlet {
 		
         Cookie[] cookies = request.getCookies();
         
+        // Cancellazione dell'eventuale Cookie "rememberMe"
         try {
 			
             if (cookies != null) {
@@ -59,10 +63,12 @@ public class LogoutServlet extends HttpServlet {
                 	
                     if ("rememberMe".equals(cookie.getName())) {
                     	
-                    	String encryptedCookieFromDB = CookieDAO.findCookieByValue(new EncryptionUtils(prop.getProperty(PropertiesKeys.PASSPHRASE.toString())).encrypt(cookie.getValue()) );
+                    	String encryptedCookieFromDB = CookieDAO.findCookieByUserId(Integer.parseInt(Utils.getUserIdFromCookieValue(cookie.getValue())));
                     	
                     	deletedCookie = CookieDAO.deleteCookieByValue(encryptedCookieFromDB);
+                    	
                         cookie.setMaxAge(0);
+                        
                         response.addCookie(cookie);
                         
                         log.info(deletedCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");

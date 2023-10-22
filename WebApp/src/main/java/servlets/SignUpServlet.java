@@ -65,6 +65,12 @@ public class SignUpServlet extends HttpServlet {
 		
 		try {
 			
+			/*
+			 * Controllo di corrispondenza tra il valore inserito nel campo "password"
+			 * e quello nel campo "conferma password"
+			 * 
+			 * */
+			
 			if(Arrays.equals(password, passwordToConfirm))
 				insertedUser = UserDAO.signUp(new User(username, photo), password);
 			
@@ -74,7 +80,7 @@ public class SignUpServlet extends HttpServlet {
 				
 			 else {
 				
-				log.info("Errore nella registrazione");
+				log.info("Errore nella registrazione: le password non corrispondono");
 				
 				response.sendRedirect("./index.jsp");
 				

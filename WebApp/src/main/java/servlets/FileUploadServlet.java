@@ -3,9 +3,7 @@ package servlets;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -14,18 +12,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
 
-import dao.CookieDAO;
 import dao.FileUploadDAO;
-import enumeration.PropertiesKeys;
 import exception.ForbiddenFileTypeException;
 import model.UploadedFile;
-import utils.ApplicationPropertiesLoader;
-import utils.EncryptionUtils;
 import utils.FileUtils;
 import utils.Utils;
 
@@ -42,8 +35,6 @@ public class FileUploadServlet extends HttpServlet {
 	
 	private static final Logger log = Logger.getLogger(FileUploadServlet.class);
 	
-	private static Properties prop = ApplicationPropertiesLoader.getProperties();
-	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -56,43 +47,40 @@ public class FileUploadServlet extends HttpServlet {
 	 */
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Verifica se l'utente è loggato o ha un cookie "Remember Me" valido
-        // Se non lo è, reindirizza alla pagina di accesso
 
+    	// Viene recuperato lo username dell'utente di un'eventuale sessione aperta
         String sessionUser = (String) request.getSession().getAttribute("user");
         boolean isRememberMePresent = false;
 
-        if (sessionUser == null) {
-        	
-            Cookie[] cookies = request.getCookies();
+        
+        Cookie[] cookies = request.getCookies();
 
-            if (cookies != null) {
+        // Si cerca un eventuale Cookie "rememberMe"
+        if (cookies != null) {
+        	
+            for (Cookie cookie : cookies) {
             	
-                for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("rememberMe")) {
                 	
-                    if (cookie.getName().equals("rememberMe")) {
-                    	
-                        String rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
-                        
-                        sessionUser = rememberedUser;
-                        
-                        isRememberMePresent = true;
-                        
-                        break;
-                        
-                    }
+                    String rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
+                    
+                    sessionUser = rememberedUser;
+                    
+                    isRememberMePresent = true;
+                    
+                    break;
+                    
                 }
             }
         }
 
         if (sessionUser != null || isRememberMePresent) {
         	
-            // Recupera i file dal database per tutti gli utenti
-        	
             List<UploadedFile> uploadedFiles = null;
             
 			try {
 				
+				// Recupera i file dal database per tutti gli utenti per stamparli nella tabella in file-upload.jsp
 				uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
 				
 			} catch (ClassNotFoundException e) {
@@ -137,14 +125,8 @@ public class FileUploadServlet extends HttpServlet {
     		
     	}
     	
+    	// Viene recuperato lo username dell'utente per memorizzarlo nel database
     	sessionUsername = (String) request.getSession(false).getAttribute("user");
-    	
-    	if(cookieUsername == null && request.getSession(false) == null) {
-    		
-			request.getRequestDispatcher("index.jsp").forward(request, response);
-			return;
-    		
-    	}
     	
     	try {
 			
@@ -157,11 +139,18 @@ public class FileUploadServlet extends HttpServlet {
             
             String fileName = getFileName(filePart);
             
+            /*
+             * Il metodo transformFileName aggiunge un timestamp al nome del file per evitare duplicati. In questo
+             * modo viene gestita la situazione in cui due utenti diversi caricano un file con lo stesso nome
+             * 
+             * */
+            
             String finalPath = getServletContext().getRealPath("/") + File.separator + Utils.transformFileName(fileName);
             
             filePart.write(finalPath);
             
-    		HttpSession currentSession = request.getSession(false);
+            
+//    		HttpSession currentSession = request.getSession(false);
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
@@ -170,7 +159,7 @@ public class FileUploadServlet extends HttpServlet {
     		
             FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);
             
-            currentSession.setAttribute("uploadedFileName", fileName);
+//            currentSession.setAttribute("uploadedFileName", fileName);
             
 		} catch (Exception e) {
 			

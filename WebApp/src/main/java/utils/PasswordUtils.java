@@ -3,6 +3,7 @@ package utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 public class PasswordUtils {
 
@@ -42,6 +43,7 @@ public class PasswordUtils {
 		 * */
 		
 		clearArray(password);
+		clearArray(salt);
 		clearArray(passwordAndSalt);
 
 		return hashValue;
@@ -77,8 +79,7 @@ public class PasswordUtils {
 	
 	private static void clearArray(byte[] array) {
 		
-		for(int i=0; i<array.length; i++)
-			array[i] = 0;
+		Arrays.fill(array, (byte)0);
 		
 	}
 	

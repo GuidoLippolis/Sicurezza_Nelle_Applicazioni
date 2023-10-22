@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>File Upload and User Table</title>
+    <title>Caricamento proposte progettuali</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -94,29 +94,37 @@
             <input type="submit" value="Invia file">
         </form>
         
-        <!-- Logout Button within the same section and aligned to the right -->
         <form action="LogoutServlet" method="POST">
             <input type="submit" value="Logout" class="logout-button">
         </form>
 
         <h2>Elenco dei file caricati per utente</h2>
-        <!-- Display Table of Uploaded Files -->
+        
         <table>
             <tr>
                 <th>Utente</th>
                 <th>Nome file</th>
             </tr>
+            
             <%
+            
             List<UploadedFile> uploadedFiles = (List<UploadedFile>) request.getAttribute("uploadedFiles");
+            
             for (UploadedFile file : uploadedFiles) {
+            	
             %>
+            
             <tr>
                 <td><%= file.getUsername() %></td>
                 <td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
             </tr>
+            
             <%
+            
             }
+            
             %>
+            
         </table>
     </div>
 </body>

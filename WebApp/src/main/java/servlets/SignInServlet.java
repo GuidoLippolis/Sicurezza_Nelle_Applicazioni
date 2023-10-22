@@ -1,8 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -16,10 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import dao.CookieDAO;
-import dao.FileUploadDAO;
 import dao.UserDAO;
 import enumeration.PropertiesKeys;
-import model.UploadedFile;
 import model.User;
 import utils.ApplicationPropertiesLoader;
 import utils.EncryptionUtils;
@@ -105,23 +101,28 @@ public class SignInServlet extends HttpServlet {
 				 * 
 				 * - Genero un token derivante dallo username, al quale concateno una stringa casuale
 				 * 
-				 * - La stringa casuale ha il seguente pattern: username#randomstring@@@userid@@@. In questo
-				 *   modo, quando l'utente raggiungerà l'applicazione e proverà a caricare un file di proposta
-				 *   progettuale, verrà estrapolato lo username tramite il metodo getUsernameFromCookie, il
-				 *   quale verrà memorizzato nel database e associato al nome del file relativo alla proposta
-				 *   progettuale
+				 * - La stringa casuale ha il seguente pattern: username#randomstring@@@user_id@@@. In questo modo, quando
+				 *   l'utente raggiungerà l'applicazione e accederà alla pagina per il caricamento di una proposta progettuale,
+				 *   verrà estrapolato lo username tramite il metodo getUsernameFromCookie, il quale verrà memorizzato nel
+				 *   database e associato al nome del file relativo alla proposta progettuale
 				 * 
 				 * */
 				
 				User user = UserDAO.findByUsername(username);
 				
+				// Generazione del valore casuale del Cookie derivante allo username
 				String randomCookieValue = Utils.generateRandomToken(username, 20) + "@@@" + user.getId() + "@@@";
 				
 				Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 				
+				// Setting della durata massima del Cookie in secondi
 				rememberMeCookie.setMaxAge(600000000);
 
-				savedCookie = CookieDAO.saveCookie(new EncryptionUtils(prop.getProperty(PropertiesKeys.PASSPHRASE.toString())).encrypt(rememberMeCookie.getValue()), rememberMeCookie.getMaxAge(), user);
+				// Crittografia simmetrica del
+				String passphrase = prop.getProperty(PropertiesKeys.PASSPHRASE.toString());
+				String encryptedCookieValue = new EncryptionUtils(passphrase).encrypt(rememberMeCookie.getValue());
+				
+				savedCookie = CookieDAO.saveCookie(encryptedCookieValue, rememberMeCookie.getMaxAge(), user);
 				
 				response.addCookie(rememberMeCookie);
 				
