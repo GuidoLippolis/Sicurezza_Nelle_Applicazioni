@@ -19,6 +19,7 @@ import enumeration.PropertiesKeys;
 import model.User;
 import utils.ApplicationPropertiesLoader;
 import utils.EncryptionUtils;
+import utils.PasswordUtils;
 import utils.Utils;
 
 /**
@@ -72,6 +73,8 @@ public class SignInServlet extends HttpServlet {
 			
 			loggedUser = UserDAO.signIn(new User(username), password);
 			
+			PasswordUtils.clearArray(password);
+			
 			HttpSession oldSession = request.getSession(false);
 			
 			if(oldSession != null)
@@ -118,7 +121,7 @@ public class SignInServlet extends HttpServlet {
 				// Setting della durata massima del Cookie in secondi
 				rememberMeCookie.setMaxAge(600000000);
 
-				// Crittografia simmetrica del
+				// Crittografia simmetrica del valore del Cookie
 				String passphrase = prop.getProperty(PropertiesKeys.PASSPHRASE.toString());
 				String encryptedCookieValue = new EncryptionUtils(passphrase).encrypt(rememberMeCookie.getValue());
 				
@@ -126,7 +129,7 @@ public class SignInServlet extends HttpServlet {
 				
 				response.addCookie(rememberMeCookie);
 				
-				log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie non è stato memorizzato correttamente nel database");
+				log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie NON è stato memorizzato correttamente nel database");
 				
 			}
 			
