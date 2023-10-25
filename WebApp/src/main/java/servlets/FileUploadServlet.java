@@ -28,7 +28,6 @@ import utils.Utils;
 @WebServlet("/file-upload")
 @MultipartConfig(
 	    maxFileSize = 1024 * 1024 * 5,  // 5 MB
-	    maxRequestSize = 1024 * 1024 * 10) // 10 MB
 public class FileUploadServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
