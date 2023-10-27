@@ -151,7 +151,7 @@ public class FileUploadServlet extends HttpServlet {
     		
     		if(FileUtils.isFakeTxt(finalPath)) {
     			
-    			request.getSession(false).setAttribute("errorMessage", "Errore nel caricamento della proposta progettuale");
+    			request.getSession(false).setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
     			throw new ForbiddenFileTypeException(finalPath);
     			
     		}
