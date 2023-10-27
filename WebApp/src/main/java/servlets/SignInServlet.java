@@ -154,7 +154,6 @@ public class SignInServlet extends HttpServlet {
 		} catch (Exception e) {
 			
 			log.error("Eccezione in SignInServlet: " + e.getMessage());
-			e.printStackTrace();
 			
 		}
 		

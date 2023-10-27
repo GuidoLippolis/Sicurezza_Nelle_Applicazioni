@@ -107,6 +107,3 @@ GRANT SELECT ON passwords_db.passwords TO 'passwords_usr'@'localhost';
 GRANT INSERT ON cookies_db.cookies TO 'cookies_usr'@'localhost';
 GRANT SELECT ON cookies_db.cookies TO 'cookies_usr'@'localhost';
 GRANT DELETE ON cookies_db.cookies TO 'cookies_usr'@'localhost';
-
-select * from users_db.users; select * from passwords_db.passwords; select * from salts_db.salts; select * from cookies_db.cookies;
-DELETE FROM passwords_db.passwords; DELETE FROM salts_db.salts; DELETE FROM cookies_db.cookies; DELETE FROM users_db.users;

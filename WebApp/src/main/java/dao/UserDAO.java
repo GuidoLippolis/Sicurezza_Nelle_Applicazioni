@@ -1,5 +1,6 @@
 package dao;
 
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +11,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
 
@@ -24,7 +27,7 @@ public class UserDAO {
 	
 	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
-	public static boolean signUp(User user, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
+	public static boolean signUp(String username, InputStream photo, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -61,8 +64,9 @@ public class UserDAO {
 			
 			usersStatement = connection.prepareStatement("INSERT INTO users_db.users(username, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 			
-			usersStatement.setString(1, user.getUsername());
-			usersStatement.setBytes(2, user.getPhoto());
+			usersStatement.setString(1, username);
+//			usersStatement.setBytes(2, user.getPhoto());
+			usersStatement.setBlob(2, photo);
 			
 			int rowsAffectedUsers = usersStatement.executeUpdate();
 			
@@ -82,7 +86,7 @@ public class UserDAO {
 				
 				saltsStatement = connection.prepareStatement("INSERT INTO salts_db.salts(username,salt) VALUES(?,?)");
 				
-				saltsStatement.setString(1, user.getUsername());
+				saltsStatement.setString(1, username);
 				saltsStatement.setBytes(2, salt);
 				
 				int affectedRowsSalts = saltsStatement.executeUpdate();

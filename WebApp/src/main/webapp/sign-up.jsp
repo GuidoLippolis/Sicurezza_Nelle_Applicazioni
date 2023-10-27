@@ -21,7 +21,7 @@
 
         <h1 class="text-white mb-4">Registrati</h1>
 
-		<form action="SignUpServlet" method="POST">
+		<form action="SignUpServlet" method="POST" enctype="multipart/form-data">
 
         <div class="card" style="border-radius: 15px;">
           <div class="card-body">
@@ -106,7 +106,7 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <input class="form-control form-control-lg" name="photo" id="formFileLg" type="file" />
+                <input class="form-control form-control-lg" name="photo" id="formFileLg" type="file"/>
                 <!-- <div class="small text-muted mt-2">Upload your CV/Resume or any other relevant file. Max file size 50 MB</div>  -->
 
               </div>

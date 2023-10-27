@@ -153,7 +153,7 @@ public class FileUploadServlet extends HttpServlet {
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
-    		if(FileUtils.isFileTypeForbidden(finalPath))
+    		if(FileUtils.isFakeTxt(finalPath))
     			throw new ForbiddenFileTypeException(finalPath);
     		
             FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);

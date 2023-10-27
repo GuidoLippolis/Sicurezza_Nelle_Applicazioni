@@ -1,26 +1,37 @@
 package servlets;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Arrays;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
+import org.apache.tika.exception.TikaException;
+import org.xml.sax.SAXException;
 
 import dao.UserDAO;
+import exception.ForbiddenFileTypeException;
 import model.User;
+import utils.FileUtils;
 import utils.PasswordUtils;
+import utils.Utils;
 
 /**
  * Servlet implementation class SignUpServlet
  */
 @WebServlet("/sign-up")
+@MultipartConfig(
+	    maxFileSize = 1024 * 1024 * 5) // 5 MB
 public class SignUpServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -60,11 +71,35 @@ public class SignUpServlet extends HttpServlet {
 		String username = request.getParameter("username");
 		byte[] password = request.getParameter("password").getBytes();
 		byte[] passwordToConfirm = request.getParameter("confirm_password").getBytes();
-		byte[] photo = request.getParameter("photo").getBytes();
+		Part photo = request.getPart("photo");
+		InputStream photoInputStream = null;
+		
+		if(photo != null)
+			photoInputStream = photo.getInputStream();
 		
 		boolean insertedUser = false;
 		
 		try {
+			
+            String fileName = getFileName(photo);
+            
+            /*
+             * Il metodo transformFileName aggiunge un timestamp al nome del file per evitare duplicati. In questo
+             * modo viene gestita la situazione in cui due utenti diversi caricano un file con lo stesso nome
+             * 
+             * */
+            
+            if(fileName != null && fileName.length() != 0) {
+            	
+            	String finalPath = getServletContext().getRealPath("/") + File.separator + Utils.transformFileName(fileName);
+            	
+            	photo.write(finalPath);
+            	
+            	if(!FileUtils.isImage(finalPath))
+            		throw new ForbiddenFileTypeException(finalPath);
+            	
+            }
+            
 			
 			/*
 			 * Controllo di corrispondenza tra il valore inserito nel campo "password"
@@ -74,7 +109,7 @@ public class SignUpServlet extends HttpServlet {
 			
 			if(Arrays.equals(password, passwordToConfirm)) {
 				
-				insertedUser = UserDAO.signUp(new User(username, photo), password);
+				insertedUser = UserDAO.signUp(username, photoInputStream, password);
 				
 				// Pulizia dei dati sensibili
 				PasswordUtils.clearArray(passwordToConfirm);
@@ -99,15 +134,34 @@ public class SignUpServlet extends HttpServlet {
 				
 			}
 			
-		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException e) {
+		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException | ForbiddenFileTypeException | SAXException | TikaException e) {
 			
-			log.error("Errore in SignUpServlet: ", e);
-			e.printStackTrace();
+			log.error("Errore in SignUpServlet: " + e.getMessage());
+			
+		} finally {
+			
+			photoInputStream.close();
 			
 		}
 		
 		doGet(request, response);
 		
 	}
+	
+    private String getFileName(Part part) {
+    	
+        String contentDisposition = part.getHeader("content-disposition");
+        
+        String[] tokens = contentDisposition.split(";");
+        
+        for (String token : tokens) {
+        	
+            if (token.trim().startsWith("filename")) 
+                return token.substring(token.indexOf('=') + 2, token.length() - 1);
+            
+        }
+        
+        return "";
+    }
 
 }
