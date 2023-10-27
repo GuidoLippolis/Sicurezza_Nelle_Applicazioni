@@ -48,7 +48,7 @@ public class FileUploadServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     	// Viene recuperato lo username dell'utente di un'eventuale sessione aperta
-        String sessionUser = (String) request.getSession().getAttribute("user");
+        String sessionUser = (String) request.getSession(false).getAttribute("user");
         boolean isRememberMePresent = false;
 
         
@@ -82,11 +82,7 @@ public class FileUploadServlet extends HttpServlet {
 				// Recupera i file dal database per tutti gli utenti per stamparli nella tabella in file-upload.jsp
 				uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
 				
-			} catch (ClassNotFoundException e) {
-
-				log.error("Eccezione in FileUploadServlet: " + e.getMessage());
-				
-			} catch (SQLException e) {
+			} catch (ClassNotFoundException | SQLException e) {
 
 				log.error("Eccezione in FileUploadServlet: " + e.getMessage());
 				
@@ -153,8 +149,12 @@ public class FileUploadServlet extends HttpServlet {
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
-    		if(FileUtils.isFakeTxt(finalPath))
+    		if(FileUtils.isFakeTxt(finalPath)) {
+    			
+    			request.getSession(false).setAttribute("errorMessage", "Errore nel caricamento della proposta progettuale");
     			throw new ForbiddenFileTypeException(finalPath);
+    			
+    		}
     		
             FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);
             

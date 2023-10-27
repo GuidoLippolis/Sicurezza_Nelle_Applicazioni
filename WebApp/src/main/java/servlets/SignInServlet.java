@@ -143,11 +143,9 @@ public class SignInServlet extends HttpServlet {
 				
 			} else {
 				
+				currentSession.setAttribute("errorMessage", "Login failed. Please check your username and password.");
+				
 				log.info("Errore durante il login");
-				
-				response.sendRedirect("./index.jsp");
-				
-				return;
 				
 			}
 			

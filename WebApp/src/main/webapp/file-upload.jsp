@@ -126,6 +126,24 @@
             %>
             
         </table>
+        
+        			<%
+			
+			String errorMessage = (String) session.getAttribute("errorMessage");
+				            		
+			if(errorMessage != null && errorMessage.length() != 0) {
+			
+			%>
+			
+			<p id="error" style="text-align: center; color: red"><%= errorMessage %></p>
+			
+			<%
+			
+			}
+			
+			session.setAttribute("errorMessage", "");
+			
+			%>
     </div>
 </body>
 </html>

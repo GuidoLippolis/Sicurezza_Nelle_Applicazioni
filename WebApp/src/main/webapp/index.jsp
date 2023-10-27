@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%@page import="model.User"%>
 <%@page import="java.util.List"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
 <meta charset="ISO-8859-1">
@@ -77,6 +78,24 @@
             </div>
             
             <p> Non hai un account? <a href="sign-up"> Registrati </a> </p>
+
+			<%
+			
+			String errorMessage = (String) session.getAttribute("errorMessage");
+				            		
+			if(errorMessage != null && errorMessage.length() != 0) {
+			
+			%>
+			
+			<p id="error" style="text-align: center; color: red"><%= errorMessage %></p>
+			
+			<%
+			
+			}
+			
+			session.setAttribute("errorMessage", "");
+			
+			%>
 
           </div>
         </div>
