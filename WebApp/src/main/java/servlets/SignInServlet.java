@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +16,7 @@ import dao.CookieDAO;
 import dao.UserDAO;
 import enumeration.PropertiesKeys;
 import model.User;
+import net.jcip.annotations.ThreadSafe;
 import utils.ApplicationPropertiesLoader;
 import utils.EncryptionUtils;
 import utils.PasswordUtils;
@@ -25,7 +25,7 @@ import utils.Utils;
 /**
  * Servlet implementation class SignInServlet
  */
-@WebServlet("/sign-in")
+@ThreadSafe
 public class SignInServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;

@@ -22,7 +22,7 @@
 
         <h1 class="text-white mb-4">Accedi</h1>
 
-		<form action="SignInServlet" method="POST">
+		<form action="sign-in" method="POST">
 
         <div class="card" style="border-radius: 15px;">
           <div class="card-body">

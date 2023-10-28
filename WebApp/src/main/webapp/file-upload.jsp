@@ -89,14 +89,14 @@
     </header>
     <div class="container">
         <h2>Carica qui i tuoi file</h2>
-        <form action="FileUploadServlet" method="POST" enctype="multipart/form-data">
+        <form action="file-upload" method="POST" enctype="multipart/form-data">
             <input type="file" name="file" id="file">
             <input type="submit" value="Invia file">
         </form>
         
-        <form action="LogoutServlet" method="POST">
-            <input type="submit" value="Logout" class="logout-button">
-        </form>
+        <a href="logout" class="logout-button">
+            <span class="center-label">Logout</span>
+        </a>
 
         <h2>Elenco dei file caricati per utente</h2>
         
@@ -116,7 +116,7 @@
             
             <tr>
                 <td><%= file.getUsername() %></td>
-                <td><a href="FileDownloadServlet?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
+                <td><a href="view-file?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
             </tr>
             
             <%

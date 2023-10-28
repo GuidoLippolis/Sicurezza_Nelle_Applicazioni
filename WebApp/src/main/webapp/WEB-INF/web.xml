@@ -30,23 +30,23 @@
   	<servlet-class>servlets.FileUploadServlet</servlet-class>
   </servlet>
    <servlet>
-   	<servlet-name>FileDownloadServlet</servlet-name>
-   	<display-name>FileDownloadServlet</display-name>
+   	<servlet-name>FileViewerServlet</servlet-name>
+   	<display-name>FileViewerServlet</display-name>
    	<description>Servlet used to display txt files content to the screen</description>
-   	<servlet-class>servlets.FileDownloadServlet</servlet-class>
+   	<servlet-class>servlets.FileViewerServlet</servlet-class>
    </servlet>
   
    <servlet-mapping>
   
     <servlet-name>SignUpServlet</servlet-name>
-  	<url-pattern>/SignUpServlet</url-pattern>
+  	<url-pattern>/sign-up</url-pattern>
   
    </servlet-mapping>
    
    <servlet-mapping>
   
     <servlet-name>SignInServlet</servlet-name>
-  	<url-pattern>/SignInServlet</url-pattern>
+  	<url-pattern>/sign-in</url-pattern>
   
    </servlet-mapping>
    
@@ -54,19 +54,22 @@
    <servlet-mapping>
 	   
    	<servlet-name>LogoutServlet</servlet-name>
-   	<url-pattern>/LogoutServlet</url-pattern>
+   	<url-pattern>/logout</url-pattern>
    	
    </servlet-mapping>
    
     <servlet-mapping>
 	   
    	<servlet-name>FileUploadServlet</servlet-name>
-   	<url-pattern>/FileUploadServlet</url-pattern>
+   	<url-pattern>/file-upload</url-pattern>
    	
    </servlet-mapping>
-    <servlet-mapping>
-    	<servlet-name>FileDownloadServlet</servlet-name>
-    	<url-pattern>/file-download</url-pattern>
-    </servlet-mapping>
-  
+   
+   <servlet-mapping>
+	   
+   	<servlet-name>FileViewerServlet</servlet-name>
+   	<url-pattern>/view-file</url-pattern>
+   	
+   </servlet-mapping>
+   
 </web-app>

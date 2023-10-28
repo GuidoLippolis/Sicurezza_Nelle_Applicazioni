@@ -21,7 +21,7 @@
 
         <h1 class="text-white mb-4">Registrati</h1>
 
-		<form action="SignUpServlet" method="POST" enctype="multipart/form-data">
+		<form action="sign-up" method="POST" enctype="multipart/form-data">
 
         <div class="card" style="border-radius: 15px;">
           <div class="card-body">

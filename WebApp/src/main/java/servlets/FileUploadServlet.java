@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,15 +18,16 @@ import org.apache.log4j.Logger;
 import dao.FileUploadDAO;
 import exception.ForbiddenFileTypeException;
 import model.UploadedFile;
+import net.jcip.annotations.ThreadSafe;
 import utils.FileUtils;
 import utils.Utils;
 
 /**
  * Servlet implementation class FileUploadServlet
  */
-@WebServlet("/file-upload")
 @MultipartConfig(
 	    maxFileSize = 1024 * 1024 * 2) // 5 MB
+@ThreadSafe
 public class FileUploadServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -94,7 +94,7 @@ public class FileUploadServlet extends HttpServlet {
             
         } else 
         	
-            response.sendRedirect("./index.jsp");
+            response.sendRedirect("sign-in");
         
     }
     

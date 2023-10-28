@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,21 +11,22 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import dao.FileUploadDAO;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Servlet implementation class FileDownloadServlet
  */
-@WebServlet("/FileDownloadServlet")
-public class FileDownloadServlet extends HttpServlet {
+@ThreadSafe
+public class FileViewerServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger log = Logger.getLogger(FileDownloadServlet.class);
+	private static final Logger log = Logger.getLogger(FileViewerServlet.class);
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public FileDownloadServlet() {
+    public FileViewerServlet() {
         super();
     }
 
@@ -58,7 +58,7 @@ public class FileDownloadServlet extends HttpServlet {
                 
             } catch (Exception e) {
                 
-                log.error("Eccezione in FileDownloadServlet: " + e.getMessage());
+                log.error("Eccezione in FileViewerServlet: " + e.getMessage());
                 response.getWriter().write("Error occurred");
                 
             }

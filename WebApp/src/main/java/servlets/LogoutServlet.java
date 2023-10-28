@@ -3,7 +3,6 @@ package servlets;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,12 +12,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import dao.CookieDAO;
+import net.jcip.annotations.ThreadSafe;
 import utils.Utils;
 
 /**
  * Servlet implementation class LogoutServlet
  */
-@WebServlet("/logout")
+@ThreadSafe
 public class LogoutServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -83,7 +83,7 @@ public class LogoutServlet extends HttpServlet {
 
 		}
 		
-		response.sendRedirect("./index.jsp");
+		response.sendRedirect("sign-in");
 	
 	}
 

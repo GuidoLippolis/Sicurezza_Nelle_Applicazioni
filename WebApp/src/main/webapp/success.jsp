@@ -84,11 +84,11 @@
 	
 	<div class="button-container">
         
-            <a href="LogoutServlet">
+            <a href="logout">
                 <span class="center-label">Logout</span>
             </a>
             
-            <a href="FileUploadServlet"> Carica proposta progettuale </a>
+            <a href="file-upload"> Carica proposta progettuale </a>
             
      </div>
      
@@ -96,7 +96,7 @@
      
 	} else
 		
-		response.sendRedirect("./index.jsp");
+		response.sendRedirect("sign-in");
 	
 %>
 

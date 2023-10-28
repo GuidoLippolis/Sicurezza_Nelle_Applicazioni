@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,6 @@ import utils.Utils;
 /**
  * Servlet implementation class SignUpServlet
  */
-@WebServlet("/sign-up")
 @MultipartConfig(
 	    maxFileSize = 1024 * 1024 * 5) // 5 MB
 public class SignUpServlet extends HttpServlet {
@@ -123,7 +121,7 @@ public class SignUpServlet extends HttpServlet {
 				
 				log.info("Registrazione avvenuta con successo");
 				
-				response.sendRedirect("./index.jsp");
+				response.sendRedirect("sign-in");
 				
 				return;
 				
@@ -131,7 +129,7 @@ public class SignUpServlet extends HttpServlet {
 				
 				log.info("Errore nella registrazione: le password non corrispondono");
 				
-				response.sendRedirect("./index.jsp");
+				response.sendRedirect("sign-in");
 				
 				return;
 				
