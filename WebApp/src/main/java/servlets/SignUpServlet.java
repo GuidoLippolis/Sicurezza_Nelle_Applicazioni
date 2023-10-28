@@ -95,8 +95,12 @@ public class SignUpServlet extends HttpServlet {
             	
             	photo.write(finalPath);
             	
-            	if(!FileUtils.isImage(finalPath))
+            	if(!FileUtils.isImage(finalPath)) {
+            		
+            		request.getSession(false).setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
             		throw new ForbiddenFileTypeException(finalPath);
+            		
+            	}
             	
             }
             

@@ -118,6 +118,24 @@
               <button type="submit" class="btn btn-primary btn-lg">Registrati</button>
             </div>
             
+            <%
+			
+			String errorMessage = (String) session.getAttribute("errorMessage");
+				            		
+			if(errorMessage != null && errorMessage.length() != 0) {
+			
+			%>
+			
+			<p id="error" style="text-align: center; color: red"><%= errorMessage %></p>
+			
+			<%
+			
+			}
+			
+			session.setAttribute("errorMessage", "");
+			
+			%>
+            
           </div>
         </div>
 

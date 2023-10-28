@@ -143,9 +143,6 @@ public class FileUploadServlet extends HttpServlet {
             String finalPath = getServletContext().getRealPath("/") + File.separator + Utils.transformFileName(fileName);
             
             filePart.write(finalPath);
-            
-            
-//    		HttpSession currentSession = request.getSession(false);
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
@@ -157,8 +154,6 @@ public class FileUploadServlet extends HttpServlet {
     		}
     		
             FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);
-            
-//            currentSession.setAttribute("uploadedFileName", fileName);
             
 		} catch (Exception e) {
 			
