@@ -150,7 +150,7 @@ public class FileUploadServlet extends HttpServlet {
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
-    		if(FileUtils.isFileTooLarge(fileName))
+    		if(FileUtils.isFileTooLarge(finalPath))
     			throw new FileTooLargeException(fileName, Long.parseLong(prop.getProperty(PropertiesKeys.MAX_FILE_SIZE_MB.toString())));
     		
     		if(FileUtils.isFakeTxt(finalPath)) {

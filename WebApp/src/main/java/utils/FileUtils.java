@@ -44,8 +44,6 @@ public class FileUtils {
 		
 		for(String name : metadata.names()) {
 			
-			System.out.println(name + "\t" + metadata.get(name));
-			
 			if(name.equals("Content-Type")) {
 				
 				fileType = metadata.get(name);

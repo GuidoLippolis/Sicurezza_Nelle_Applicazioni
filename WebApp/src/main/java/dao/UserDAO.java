@@ -217,7 +217,10 @@ public class UserDAO {
 			while(resultSet.next())
 				users.add(new User(resultSet.getInt("id"), resultSet.getString("username")));
 			
-			return users.get(0);
+			if(users.isEmpty())
+				return new User();
+			else
+				return users.get(0);
 			
 		} catch (Exception e) {
 
