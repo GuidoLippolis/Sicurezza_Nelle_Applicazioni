@@ -25,11 +25,13 @@ public class EncryptionUtils {
     
     private static void setKey(String secret) throws Exception {
     	
+    	byte[] keyBytes;
+    	
         if (secretKeySpec == null) {
         	
             MessageDigest sha = MessageDigest.getInstance(prop.getProperty(PropertiesKeys.HASHING_ALGORITHM.toString()));
             
-            byte[] keyBytes = sha.digest(secret.getBytes(StandardCharsets.UTF_8));
+            keyBytes = sha.digest(secret.getBytes(StandardCharsets.UTF_8));
             
             keyBytes = Arrays.copyOf(keyBytes, 16);
             
