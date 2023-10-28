@@ -83,6 +83,8 @@ public class LogoutServlet extends HttpServlet {
 
 		}
 		
+        log.info("Logout effettuato con successo");
+        
 		response.sendRedirect("sign-in");
 	
 	}

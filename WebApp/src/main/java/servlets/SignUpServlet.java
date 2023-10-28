@@ -68,9 +68,12 @@ public class SignUpServlet extends HttpServlet {
 		 * */
 		
 		String username = request.getParameter("username");
+		
 		byte[] password = request.getParameter("password").getBytes();
 		byte[] passwordToConfirm = request.getParameter("confirm_password").getBytes();
+		
 		Part photo = request.getPart("photo");
+		
 		InputStream photoInputStream = null;
 		
 		if(photo != null)
@@ -127,7 +130,7 @@ public class SignUpServlet extends HttpServlet {
 				
 			}  else {
 				
-				log.info("Errore nella registrazione: le password non corrispondono");
+				log.info("Errore nella registrazione");
 				
 				response.sendRedirect("sign-in");
 				

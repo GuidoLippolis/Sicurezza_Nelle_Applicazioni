@@ -55,8 +55,6 @@ public class FileUploadDAO {
 			else
 				connection.rollback();
 			
-			log.info("Il file " + fileName + " è stato caricato con successo sul database");
-			
 			return true;
 			
 		} catch (Exception e) {

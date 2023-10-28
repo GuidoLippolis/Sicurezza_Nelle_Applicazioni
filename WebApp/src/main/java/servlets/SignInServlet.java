@@ -56,9 +56,10 @@ public class SignInServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String username = request.getParameter("username");
-		byte[] password = request.getParameter("password").getBytes();
-		boolean rememberMe = "on".equals(request.getParameter("rememberme"));
 		
+		byte[] password = request.getParameter("password").getBytes();
+		
+		boolean rememberMe = "on".equals(request.getParameter("rememberme"));
 		boolean loggedUser = false;
 		boolean savedCookie = false;
 		

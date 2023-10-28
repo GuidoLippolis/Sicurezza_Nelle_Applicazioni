@@ -162,6 +162,8 @@ public class FileUploadServlet extends HttpServlet {
     		
             FileUploadDAO.saveFileToDatabase(FileUtils.getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);
             
+            log.info("Il file " + fileName + " è stato caricato con successo sul database");
+            
 		} catch (Exception e) {
 			
 			log.error("Eccezione in FileUploadServlet: " + e.getMessage());
