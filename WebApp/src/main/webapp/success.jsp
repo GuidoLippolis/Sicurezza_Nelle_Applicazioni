@@ -38,7 +38,7 @@
             border-radius: 5px;
             width: 150px;
             transition: background-color 0.3s ease;
-            position: relative; /* Add relative positioning */
+            position: relative;
         }
 
         a:hover {
@@ -47,19 +47,19 @@
 
         .button-container {
             text-align: center;
-            display: flex; /* Use flexbox to control layout */
-            justify-content: center; /* Center align the buttons horizontally */
+            display: flex;
+            justify-content: center;
         }
 
         .button-container a {
-            margin: 0 10px; /* Add margin to separate the buttons horizontally */
+            margin: 0 10px;
         }
 
         .center-label {
-            position: absolute; /* Absolute positioning to center the label */
+            position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); /* Center horizontally and vertically */
+            transform: translate(-50%, -50%);
         }
     </style>
 </head>

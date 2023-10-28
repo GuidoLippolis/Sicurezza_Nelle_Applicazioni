@@ -21,7 +21,6 @@ import org.xml.sax.SAXException;
 
 import dao.UserDAO;
 import exception.ForbiddenFileTypeException;
-import model.User;
 import utils.FileUtils;
 import utils.PasswordUtils;
 import utils.Utils;
@@ -81,7 +80,7 @@ public class SignUpServlet extends HttpServlet {
 		
 		try {
 			
-            String fileName = getFileName(photo);
+            String fileName = FileUtils.getFileName(photo);
             
             /*
              * Il metodo transformFileName aggiunge un timestamp al nome del file per evitare duplicati. In questo
@@ -152,20 +151,4 @@ public class SignUpServlet extends HttpServlet {
 		
 	}
 	
-    private String getFileName(Part part) {
-    	
-        String contentDisposition = part.getHeader("content-disposition");
-        
-        String[] tokens = contentDisposition.split(";");
-        
-        for (String token : tokens) {
-        	
-            if (token.trim().startsWith("filename")) 
-                return token.substring(token.indexOf('=') + 2, token.length() - 1);
-            
-        }
-        
-        return "";
-    }
-
 }

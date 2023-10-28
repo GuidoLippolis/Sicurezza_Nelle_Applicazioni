@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.servlet.http.Part;
-
 import org.apache.log4j.Logger;
 
 import enumeration.PropertiesKeys;
@@ -41,12 +39,6 @@ public class UserDAO {
 		
 		int userId = 0;
 		
-		/*
-		 * TODO: Il parametro di createSalt va recuperato da un file .properties
-		 * TODO: Le query e l'algoritmo di hashing vanno anche recuperate da un file .properties
-		 * 
-		 * */
-		
 		byte[] salt = PasswordUtils.createSalt(10);
 		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, prop.getProperty(PropertiesKeys.HASHING_ALGORITHM.toString()));
 		
@@ -65,8 +57,9 @@ public class UserDAO {
 			usersStatement = connection.prepareStatement("INSERT INTO users_db.users(username, photo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			usersStatement.setString(1, username);
-//			usersStatement.setBytes(2, user.getPhoto());
-			usersStatement.setBlob(2, photo);
+
+			if(photo != null)
+				usersStatement.setBlob(2, photo);
 			
 			int rowsAffectedUsers = usersStatement.executeUpdate();
 			
@@ -155,6 +148,7 @@ public class UserDAO {
 			 * 
 			 * - Recupero del valore del salt associato all'utente
 			 * - Generazione del valore hash della concatenazione di password e salt
+			 * - Ricerca dell'utente tramite il valore della password
 			 * 
 			 * */
 			

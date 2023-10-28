@@ -91,8 +91,11 @@ public class PasswordUtils {
 	public static byte[] createSalt(int length) {
 		
 		byte[] bytes = new byte[length];
+		
 		SecureRandom random = new SecureRandom();
+		
 		random.nextBytes(bytes);
+		
 		return bytes;
 		
 	}

@@ -79,22 +79,6 @@
 
             <div class="row align-items-center py-3">
             
-            <!-- 
-            
-              <div class="col-md-3 ps-5">
-                <h6 class="mb-0">Full name</h6>
-              </div>
-            
-              <div class="col-md-9 pe-5">
-                <textarea class="form-control" rows="3" placeholder="Message sent to the employer"></textarea>
-              </div>
-              
-            <hr class="mx-n3">
-            
-             -->
-            
-            
-              
             </div>
 
 
@@ -107,7 +91,6 @@
               <div class="col-md-9 pe-5">
 
                 <input class="form-control form-control-lg" name="photo" id="formFileLg" type="file"/>
-                <!-- <div class="small text-muted mt-2">Upload your CV/Resume or any other relevant file. Max file size 50 MB</div>  -->
 
               </div>
             </div>
@@ -140,28 +123,6 @@
         </div>
 
 		</form>
-		
-		<ol>
-        
-        <%
-        
-        	
-        
-        	/* List<User> users = (List<User>) request.getAttribute("usersList"); */
-        	
-        	/* if(users != null) {
-        		
-            	for(User user : users) {
-            		
-            		out.println( "<li style='color:white;'> " + user.toString() + " </li>" );
-            		
-            	}
-        		
-        	} */
-        
-        %>
-
-        </ol>
 		
       </div>
     </div>

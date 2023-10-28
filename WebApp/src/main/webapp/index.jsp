@@ -35,7 +35,6 @@
               </div>
               <div class="col-md-9 pe-5">
 
-                <!-- <input type="email" class="form-control form-control-lg" name = "email" placeholder="example@example.com" required />  -->
 				<input type="text" class="form-control form-control-lg" name = "username" placeholder="test" required />
 
               </div>

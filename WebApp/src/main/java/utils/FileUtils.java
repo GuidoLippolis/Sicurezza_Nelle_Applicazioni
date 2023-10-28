@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.http.Part;
+
+import org.apache.log4j.Logger;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
@@ -15,7 +18,11 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
+import servlets.SignInServlet;
+
 public class FileUtils {
+	
+	private static final Logger log = Logger.getLogger(SignInServlet.class);
 	
 	public static boolean isFakeTxt(String fileName) throws IOException, SAXException, TikaException {
 		
@@ -97,37 +104,48 @@ public class FileUtils {
 	        
 	    } catch (IOException e) {
 	    	
-	        e.printStackTrace();
+	        log.error("Eccezione in FileUtils: " + e.getMessage());
 	        return new byte[0];
 	        
 	    }
+	    
 	}
 	
 	public static byte[] getBytesFromInputStream(InputStream inputStream) throws IOException {
 		
-        // Create a BufferedInputStream for efficient reading.
         BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
 
-        // Create a byte array to store the read data.
-        byte[] buffer = new byte[1024]; // You can adjust the buffer size as needed.
+        byte[] buffer = new byte[1024];
 
         int bytesRead;
         
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        while ((bytesRead = bufferedInputStream.read(buffer)) != -1) {
-            // Process the bytes read or write them to another stream, file, etc.
+        while ((bytesRead = bufferedInputStream.read(buffer)) != -1)
             byteArrayOutputStream.write(buffer, 0, bytesRead);
-        }
 
-        // Get the byte array containing the data read from the input stream.
         byte[] data = byteArrayOutputStream.toByteArray();
 
-        // Close the input stream when you're done.
         bufferedInputStream.close();
         
         return data;
 		
 	}
+	
+    public static String getFileName(Part part) {
+    	
+        String contentDisposition = part.getHeader("content-disposition");
+        
+        String[] tokens = contentDisposition.split(";");
+        
+        for (String token : tokens) {
+        	
+            if (token.trim().startsWith("filename")) 
+                return token.substring(token.indexOf('=') + 2, token.length() - 1);
+            
+        }
+        
+        return "";
+    }
 	
 }

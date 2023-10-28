@@ -27,7 +27,7 @@ import utils.Utils;
  */
 @WebServlet("/file-upload")
 @MultipartConfig(
-	    maxFileSize = 1024 * 1024 * 5) // 5 MB
+	    maxFileSize = 1024 * 1024 * 2) // 5 MB
 public class FileUploadServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -80,7 +80,7 @@ public class FileUploadServlet extends HttpServlet {
 			try {
 				
 				// Recupera i file dal database per tutti gli utenti per stamparli nella tabella in file-upload.jsp
-				uploadedFiles = FileUploadDAO.getAllFilesForAllUsers();
+				uploadedFiles = FileUploadDAO.findAll();
 				
 			} catch (ClassNotFoundException | SQLException e) {
 
@@ -132,7 +132,7 @@ public class FileUploadServlet extends HttpServlet {
             
             Part filePart = request.getPart("file");
             
-            String fileName = getFileName(filePart);
+            String fileName = FileUtils.getFileName(filePart);
             
             /*
              * Il metodo transformFileName aggiunge un timestamp al nome del file per evitare duplicati. In questo
@@ -153,7 +153,7 @@ public class FileUploadServlet extends HttpServlet {
     			
     		}
     		
-            FileUploadDAO.saveFileToDatabase(getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);
+            FileUploadDAO.saveFileToDatabase(FileUtils.getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);
             
 		} catch (Exception e) {
 			
@@ -165,20 +165,4 @@ public class FileUploadServlet extends HttpServlet {
         
     }
     
-    private String getFileName(Part part) {
-    	
-        String contentDisposition = part.getHeader("content-disposition");
-        
-        String[] tokens = contentDisposition.split(";");
-        
-        for (String token : tokens) {
-        	
-            if (token.trim().startsWith("filename")) 
-                return token.substring(token.indexOf('=') + 2, token.length() - 1);
-            
-        }
-        
-        return "";
-    }
-
 }

@@ -182,54 +182,54 @@ public class CookieDAO {
 		
 	}
 	
-	public static long findExpirationDateByCookieValue(String encryptedCookieValue) throws SQLException, ClassNotFoundException {
-		
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		
-		Connection connection = null;
-		
-		PreparedStatement cookiesStatement = null;
-		
-		ResultSet resultSetCookies = null;
-		
-		try {
-			
-			connection = DriverManager.getConnection(
-					
-					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
-					
-			);
-			
-			cookiesStatement = connection.prepareStatement("SELECT expiration_date FROM cookies_db.cookies WHERE cookie_value = ?");
-			
-			cookiesStatement.setString(1, encryptedCookieValue);
-			
-			resultSetCookies = cookiesStatement.executeQuery();
-			
-			boolean hasNext = resultSetCookies.next();
-			
-			if(hasNext)
-				return resultSetCookies.getLong("expiration_date");
-			else
-				return 0;
-			
-		} catch (Exception e) {
-
-			log.error("Eccezione in CookieDAO: ", e);
-			return 0;
-		
-		} finally {
-			
-			if(connection != null)
-				connection.close();
-			
-			if(cookiesStatement != null)
-				cookiesStatement.close();
-			
-		}
-		
-	}
+//	public static long findExpirationDateByCookieValue(String encryptedCookieValue) throws SQLException, ClassNotFoundException {
+//		
+//		Class.forName("com.mysql.cj.jdbc.Driver");
+//		
+//		Connection connection = null;
+//		
+//		PreparedStatement cookiesStatement = null;
+//		
+//		ResultSet resultSetCookies = null;
+//		
+//		try {
+//			
+//			connection = DriverManager.getConnection(
+//					
+//					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
+//					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
+//					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+//					
+//			);
+//			
+//			cookiesStatement = connection.prepareStatement("SELECT expiration_date FROM cookies_db.cookies WHERE cookie_value = ?");
+//			
+//			cookiesStatement.setString(1, encryptedCookieValue);
+//			
+//			resultSetCookies = cookiesStatement.executeQuery();
+//			
+//			boolean hasNext = resultSetCookies.next();
+//			
+//			if(hasNext)
+//				return resultSetCookies.getLong("expiration_date");
+//			else
+//				return 0;
+//			
+//		} catch (Exception e) {
+//
+//			log.error("Eccezione in CookieDAO: ", e);
+//			return 0;
+//		
+//		} finally {
+//			
+//			if(connection != null)
+//				connection.close();
+//			
+//			if(cookiesStatement != null)
+//				cookiesStatement.close();
+//			
+//		}
+//		
+//	}
 	
 }
