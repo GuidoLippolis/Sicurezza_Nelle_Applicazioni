@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 import javax.servlet.http.Part;
 
@@ -18,11 +19,14 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
+import enumeration.PropertiesKeys;
 import servlets.SignInServlet;
 
 public class FileUtils {
 	
 	private static final Logger log = Logger.getLogger(SignInServlet.class);
+	
+	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 	
 	public static boolean isFakeTxt(String fileName) throws IOException, SAXException, TikaException {
 		
@@ -85,6 +89,24 @@ public class FileUtils {
 	
 		return fileType.equals("image/png") || fileType.equals("image/jpeg") || fileType.equals("image/jpg");
 	
+	}
+	
+	public static boolean isFileTooLarge(String fileName) throws IOException, SAXException, TikaException {
+		
+		long MAX_FILE_SIZE_MB = Long.parseLong(prop.getProperty(PropertiesKeys.MAX_FILE_SIZE_MB.toString()));
+		
+		BodyContentHandler bodyContentHandler = new BodyContentHandler();
+		
+		Metadata metadata = new Metadata();
+		
+		FileInputStream content = new FileInputStream(fileName);
+
+		Parser parser = new AutoDetectParser();
+		
+		parser.parse(content, bodyContentHandler, metadata, new ParseContext());
+
+		return content.getChannel().size() > MAX_FILE_SIZE_MB * 1024 * 1024;
+		
 	}
 
 	public static byte[] getFileContent(File file) {

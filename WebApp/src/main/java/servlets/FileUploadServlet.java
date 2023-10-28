@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -16,23 +17,27 @@ import javax.servlet.http.Part;
 import org.apache.log4j.Logger;
 
 import dao.FileUploadDAO;
+import enumeration.PropertiesKeys;
+import exception.FileTooLargeException;
 import exception.ForbiddenFileTypeException;
 import model.UploadedFile;
 import net.jcip.annotations.ThreadSafe;
+import utils.ApplicationPropertiesLoader;
 import utils.FileUtils;
 import utils.Utils;
 
 /**
  * Servlet implementation class FileUploadServlet
  */
-@MultipartConfig(
-	    maxFileSize = 1024 * 1024 * 2) // 2 MB
+@MultipartConfig
 @ThreadSafe
 public class FileUploadServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private static final Logger log = Logger.getLogger(FileUploadServlet.class);
+	
+	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -48,10 +53,9 @@ public class FileUploadServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     	// Viene recuperato lo username dell'utente di un'eventuale sessione aperta
-        String sessionUser = (String) request.getSession(false).getAttribute("user");
+        String sessionUser = (String) request.getSession().getAttribute("user");
         boolean isRememberMePresent = false;
 
-        
         Cookie[] cookies = request.getCookies();
 
         // Si cerca un eventuale Cookie "rememberMe"
@@ -121,7 +125,7 @@ public class FileUploadServlet extends HttpServlet {
     	}
     	
     	// Viene recuperato lo username dell'utente per memorizzarlo nel database
-    	sessionUsername = (String) request.getSession(false).getAttribute("user");
+    	sessionUsername = (String) request.getSession().getAttribute("user");
     	
     	try {
 			
@@ -146,9 +150,12 @@ public class FileUploadServlet extends HttpServlet {
     		
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
+    		if(FileUtils.isFileTooLarge(fileName))
+    			throw new FileTooLargeException(fileName, Long.parseLong(prop.getProperty(PropertiesKeys.MAX_FILE_SIZE_MB.toString())));
+    		
     		if(FileUtils.isFakeTxt(finalPath)) {
     			
-    			request.getSession(false).setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
+    			request.getSession().setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
     			throw new ForbiddenFileTypeException(finalPath);
     			
     		}

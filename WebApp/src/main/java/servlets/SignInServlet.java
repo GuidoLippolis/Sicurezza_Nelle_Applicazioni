@@ -114,7 +114,7 @@ public class SignInServlet extends HttpServlet {
 				User user = UserDAO.findByUsername(username);
 				
 				// Generazione del valore casuale del Cookie derivante allo username
-				String randomCookieValue = Utils.generateRandomToken(username, 20) + "@@@" + user.getId() + "@@@";
+				String randomCookieValue = username + "#" + Utils.generateRandomToken(20) + "@@@" + user.getId() + "@@@";
 				
 				Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 				

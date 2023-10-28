@@ -41,18 +41,16 @@ public enum PropertiesKeys {
 	
 	CRYPTOGRAPHY_MODE,
 	
-	/*
-	 * Algoritmo di crittografia simmetrica
-	 * 
-	 * */
+	// Algoritmo di crittografia simmetrica
 	
 	SYMMETRIC_ENCRYPTION_ALGORITM,
 	
-	/*
-	 * Passphrase per crittografia
-	 * 
-	 * */
+	// Passphrase per crittografia
 	
-	PASSPHRASE
+	PASSPHRASE,
+	
+	// Dimensione massima proposte progettuali
+	
+	MAX_FILE_SIZE_MB;
 	
 }

@@ -76,59 +76,6 @@ public class FileUploadDAO {
 		
 	}
 	
-//	public static List<UploadedFile> getFilesForUser(String username) throws ClassNotFoundException, SQLException {
-//		
-//		Class.forName("com.mysql.cj.jdbc.Driver");
-//		
-//		Connection connection = null;
-//		
-//		PreparedStatement uploaedFilesStatement = null;
-//		
-//		ResultSet resultSetUploadedFiles = null;
-//		
-//		List<UploadedFile> uploadedFilesList = new ArrayList<UploadedFile>();
-//		
-//		try {
-//			
-//			connection = DriverManager.getConnection(
-//					
-//					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.USERS_DB_NAME.toString()), 
-//					prop.getProperty(PropertiesKeys.USERS_DB_USERNAME.toString()), 
-//					prop.getProperty(PropertiesKeys.USERS_DB_PASSWORD.toString())
-//					
-//			);
-//			
-//			uploaedFilesStatement = connection.prepareStatement("SELECT * FROM users_db.uploaded_files WHERE username = ?");
-//			
-//			uploaedFilesStatement.setString(1, username);
-//			
-//			resultSetUploadedFiles = uploaedFilesStatement.executeQuery();
-//			
-//			while(resultSetUploadedFiles.next())
-//				uploadedFilesList.add(new UploadedFile(resultSetUploadedFiles.getString("file_name"), resultSetUploadedFiles.getBytes("file_data"), resultSetUploadedFiles.getString("username")));
-//			
-//			return uploadedFilesList;
-//			
-//		} catch (Exception e) {
-//
-//			log.error("Eccezione in FileUploadDAO: ", e);
-//			return uploadedFilesList;
-//		
-//		} finally {
-//			
-//			if(connection != null)
-//				connection.close();
-//			
-//			if(uploaedFilesStatement != null)
-//				uploaedFilesStatement.close();
-//			
-//			if(resultSetUploadedFiles != null)
-//				resultSetUploadedFiles.close();
-//			
-//		}
-//		
-//	}
-	
 	public static List<UploadedFile> findAll() throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
