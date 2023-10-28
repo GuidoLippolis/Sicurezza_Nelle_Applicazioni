@@ -44,4 +44,10 @@ public class Utils {
     	
     }
     
+    public static boolean isUsernameValid(String username) {
+
+        return username.matches("^[a-zA-Z0-9]*$");
+        
+    }
+    
 }

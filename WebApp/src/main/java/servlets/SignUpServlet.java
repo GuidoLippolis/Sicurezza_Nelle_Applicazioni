@@ -22,6 +22,7 @@ import dao.UserDAO;
 import exception.DifferentPasswordsException;
 import exception.ForbiddenFileTypeException;
 import exception.UserAlreadyExistsException;
+import exception.UsernameNotValidException;
 import utils.FileUtils;
 import utils.PasswordUtils;
 import utils.Utils;
@@ -82,6 +83,9 @@ public class SignUpServlet extends HttpServlet {
 		boolean insertedUser = false;
 		
 		try {
+			
+			if(!Utils.isUsernameValid(username))
+				throw new UsernameNotValidException(username);
 			
             String fileName = FileUtils.getFileName(photo);
             
@@ -157,6 +161,11 @@ public class SignUpServlet extends HttpServlet {
 			request.getSession(false).setAttribute("errorMessage", "Le password non corrispondono");
 			log.error("Eccezione in SignUpServlet: " + e.getMessage());
 			
+		} catch (UsernameNotValidException e) {
+
+			request.getSession(false).setAttribute("errorMessage", "Username non valido");
+			log.error("Eccezione in SignUpServlet: " + e.getMessage());
+		
 		} finally {
 			
 			photoInputStream.close();
