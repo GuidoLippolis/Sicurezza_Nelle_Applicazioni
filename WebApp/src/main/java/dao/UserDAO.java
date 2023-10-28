@@ -15,6 +15,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import enumeration.PropertiesKeys;
+import exception.UserAlreadyExistsException;
 import model.User;
 import utils.ApplicationPropertiesLoader;
 import utils.PasswordUtils;
@@ -25,7 +26,12 @@ public class UserDAO {
 	
 	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
-	public static boolean signUp(String username, InputStream photo, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
+	public static boolean signUp(String username, InputStream photo, byte[] password) throws SQLException, ClassNotFoundException, NoSuchAlgorithmException, UserAlreadyExistsException {
+
+		User user = UserDAO.findByUsername(username);
+		
+		if(user.getUsername() != null)
+			throw new UserAlreadyExistsException(username);
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		

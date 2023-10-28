@@ -19,7 +19,9 @@ import org.apache.tika.exception.TikaException;
 import org.xml.sax.SAXException;
 
 import dao.UserDAO;
+import exception.DifferentPasswordsException;
 import exception.ForbiddenFileTypeException;
+import exception.UserAlreadyExistsException;
 import utils.FileUtils;
 import utils.PasswordUtils;
 import utils.Utils;
@@ -92,12 +94,8 @@ public class SignUpServlet extends HttpServlet {
             	
             	photo.write(finalPath);
             	
-            	if(!FileUtils.isImage(finalPath)) {
-            		
-            		request.getSession(false).setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
+            	if(!FileUtils.isImage(finalPath))
             		throw new ForbiddenFileTypeException(finalPath);
-            		
-            	}
             	
             }
             
@@ -115,7 +113,9 @@ public class SignUpServlet extends HttpServlet {
 				// Pulizia dei dati sensibili
 				PasswordUtils.clearArray(passwordToConfirm);
 				
-			}
+			} else
+				
+				throw new DifferentPasswordsException();
 			
 			if(insertedUser) {
 				
@@ -135,9 +135,24 @@ public class SignUpServlet extends HttpServlet {
 				
 			}
 			
-		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException | ForbiddenFileTypeException | SAXException | TikaException e) {
+		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException | SAXException | TikaException e) {
 			
 			log.error("Errore in SignUpServlet: " + e.getMessage());
+			
+		} catch (UserAlreadyExistsException e) {
+			
+			request.getSession().setAttribute("errorMessage", "Utente esistente");
+			log.error("Eccezione in SignUpServlet: " + e.getMessage());
+			
+		} catch (ForbiddenFileTypeException e) {
+			
+			request.getSession(false).setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
+			log.error("Eccezione in SignUpServlet: " + e.getMessage());
+			
+		} catch (DifferentPasswordsException e) {
+
+			request.getSession(false).setAttribute("errorMessage", "Le password non corrispondono");
+			log.error("Eccezione in SignUpServlet: " + e.getMessage());
 			
 		} finally {
 			
