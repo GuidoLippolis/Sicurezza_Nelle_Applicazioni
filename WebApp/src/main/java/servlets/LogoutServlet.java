@@ -71,7 +71,7 @@ public class LogoutServlet extends HttpServlet {
                         
                         response.addCookie(cookie);
                         
-                        log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");
+                        log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
                         
                     }
                 }

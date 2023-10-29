@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.apache.tika.exception.TikaException;
 import org.xml.sax.SAXException;
 
+import dao.CookieDAO;
 import dao.UserDAO;
 import exception.DifferentPasswordsException;
 import exception.ForbiddenFileTypeException;
@@ -50,6 +52,66 @@ public class SignUpServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		boolean isRememberMeCookieExpired = false;
+		boolean deletedRememberMeCookie = false;
+		
+		Cookie[] cookies = request.getCookies();
+		
+		try {
+			
+			/*
+			 * Quando cerco di raggiungere la rotta /sign-in, controllo:
+			 * 
+			 * - Se c'è un Cookie "rememberMe" e questo non è scaduto, l'attributo user della sessione
+			 *   corrente viene valorizzato con lo username dell'utente attualmente loggato
+			 * 
+			 * - Se non c'è un Cookie "rememberMe", ma vi è una sessione aperta, l'utente viene
+			 *   reindirizzato alla pagina di benvenuto
+			 *   
+			 * - Altrimenti, viene reindirizzato alla pagina di login
+			 * 
+			 * */
+			
+			if(cookies != null) {
+				
+				for(Cookie cookie : cookies) {
+					
+					if(cookie.getName().equals("rememberMe")) {
+						
+						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+						
+						if(isRememberMeCookieExpired)
+							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+						
+						log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
+						
+						if(!isRememberMeCookieExpired) {
+							
+							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
+							request.getRequestDispatcher("./success.jsp").forward(request, response);
+							return;
+							
+						} else {
+							
+							request.getRequestDispatcher("index.jsp").forward(request, response);
+							return;
+							
+						}
+						
+					
+					}
+					
+					
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			
+			log.error("Eccezione in SignInServlet: " + e.getMessage());
+			
+		}
+		
 		request.getRequestDispatcher("sign-up.jsp").forward(request, response);
 		
 	}

@@ -55,7 +55,6 @@ public class SignInServlet extends HttpServlet {
 
 		System.out.println("############### SignInServlet.doGet() ###############");
 		
-		boolean isRememberMeCookiePresent = false;
 		boolean isRememberMeCookieExpired = false;
 		boolean deletedRememberMeCookie = false;
 		
@@ -82,16 +81,14 @@ public class SignInServlet extends HttpServlet {
 					
 					if(cookie.getName().equals("rememberMe")) {
 						
-						isRememberMeCookiePresent = true;
-
 						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 						
 						if(isRememberMeCookieExpired)
 							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 						
-						log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");
+						log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 						
-						if(isRememberMeCookiePresent && !isRememberMeCookieExpired) {
+						if(!isRememberMeCookieExpired) {
 							
 							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
 							request.getRequestDispatcher("./success.jsp").forward(request, response);
@@ -101,6 +98,7 @@ public class SignInServlet extends HttpServlet {
 							
 							request.getRequestDispatcher("index.jsp").forward(request, response);
 							return;
+							
 						}
 						
 					
