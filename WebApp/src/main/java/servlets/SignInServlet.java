@@ -160,53 +160,52 @@ public class SignInServlet extends HttpServlet {
 				
 				currentSession.setAttribute("user", username);
 				
-			}
-			
-			
-			/*
-			 * Se l'utente ha selezionato l'opzione "Remember Me" al momento
-			 * del login, viene creato un nuovo Cookie per l'utente il cui
-			 * nome è una stringa randomica derivante dallo username dell'utente
-			 * stesso. Viene settata la durata massima del Cookie e quest'ultimo
-			 * viene aggiunto alla risposta del server
-			 * 
-			 * */
-			
-			if(rememberMe) {
-				
 				/*
-				 * GESTIONE DEI COOKIE:
-				 * 
-				 * - Recupero l'utente tramite lo username
-				 * 
-				 * - Genero un token derivante dallo username, al quale concateno una stringa casuale
-				 * 
-				 * - La stringa casuale ha il seguente pattern: username#randomstring@@@user_id@@@. In questo modo, quando
-				 *   l'utente raggiungerà l'applicazione e accederà alla pagina per il caricamento di una proposta progettuale,
-				 *   verrà estrapolato lo username tramite il metodo getUsernameFromCookie, il quale verrà memorizzato nel
-				 *   database e associato al nome del file relativo alla proposta progettuale
+				 * Se l'utente ha selezionato l'opzione "Remember Me" al momento
+				 * del login, viene creato un nuovo Cookie per l'utente il cui
+				 * nome è una stringa randomica derivante dallo username dell'utente
+				 * stesso. Viene settata la durata massima del Cookie e quest'ultimo
+				 * viene aggiunto alla risposta del server
 				 * 
 				 * */
 				
-				User user = UserDAO.findByUsername(username);
-				
-				// Generazione del valore casuale del Cookie derivante allo username
-				String randomCookieValue = username + "#" + Utils.generateRandomToken(20) + "@@@" + user.getId() + "@@@";
-				
-				Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
-				
-				// Setting della durata massima del Cookie in secondi
-				rememberMeCookie.setMaxAge((int) (System.currentTimeMillis() + 15 * 60 * 1000));
+				if(rememberMe) {
+					
+					/*
+					 * GESTIONE DEI COOKIE:
+					 * 
+					 * - Recupero l'utente tramite lo username
+					 * 
+					 * - Genero un token derivante dallo username, al quale concateno una stringa casuale
+					 * 
+					 * - La stringa casuale ha il seguente pattern: username#randomstring@@@user_id@@@. In questo modo, quando
+					 *   l'utente raggiungerà l'applicazione e accederà alla pagina per il caricamento di una proposta progettuale,
+					 *   verrà estrapolato lo username tramite il metodo getUsernameFromCookie, il quale verrà memorizzato nel
+					 *   database e associato al nome del file relativo alla proposta progettuale
+					 * 
+					 * */
+					
+					User user = UserDAO.findByUsername(username);
+					
+					// Generazione del valore casuale del Cookie derivante allo username
+					String randomCookieValue = username + "#" + Utils.generateRandomToken(20) + "@@@" + user.getId() + "@@@";
+					
+					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
+					
+					// Setting della durata massima del Cookie in secondi
+					rememberMeCookie.setMaxAge((int) (System.currentTimeMillis() + 15 * 60 * 1000));
 
-				// Crittografia simmetrica del valore del Cookie
-				String passphrase = prop.getProperty(PropertiesKeys.PASSPHRASE.toString());
-				String encryptedCookieValue = new EncryptionUtils(passphrase).encrypt(rememberMeCookie.getValue());
-				
-				savedCookie = CookieDAO.saveCookie(encryptedCookieValue, rememberMeCookie.getMaxAge(), user);
-				
-				response.addCookie(rememberMeCookie);
-				
-				log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie NON è stato memorizzato correttamente nel database");
+					// Crittografia simmetrica del valore del Cookie
+					String passphrase = prop.getProperty(PropertiesKeys.PASSPHRASE.toString());
+					String encryptedCookieValue = new EncryptionUtils(passphrase).encrypt(rememberMeCookie.getValue());
+					
+					savedCookie = CookieDAO.saveCookie(encryptedCookieValue, rememberMeCookie.getMaxAge(), user);
+					
+					response.addCookie(rememberMeCookie);
+					
+					log.info(savedCookie ? "Cookie memorizzato correttamente nel database" : "Errore: il Cookie NON è stato memorizzato correttamente nel database");
+					
+				}
 				
 			}
 			
