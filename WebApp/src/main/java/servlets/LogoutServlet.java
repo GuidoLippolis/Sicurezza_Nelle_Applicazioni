@@ -50,7 +50,7 @@ public class LogoutServlet extends HttpServlet {
 		if(currentSession != null)
 			currentSession.invalidate();
 		
-		boolean deletedCookie = false;
+		boolean deletedRememberMeCookie = false;
 		
         Cookie[] cookies = request.getCookies();
         
@@ -65,13 +65,13 @@ public class LogoutServlet extends HttpServlet {
                     	
                     	String encryptedCookieFromDB = CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue()));
                     	
-                    	deletedCookie = CookieDAO.deleteCookieByValue(encryptedCookieFromDB);
+                    	deletedRememberMeCookie = CookieDAO.deleteCookieByValue(encryptedCookieFromDB);
                     	
                         cookie.setMaxAge(0);
                         
                         response.addCookie(cookie);
                         
-                        log.info(deletedCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");
+                        log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");
                         
                     }
                 }

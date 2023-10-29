@@ -89,6 +89,8 @@ public class SignInServlet extends HttpServlet {
 						if(isRememberMeCookieExpired)
 							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 						
+						log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie NON è stato cancellato correttamente dal database");
+						
 						if(isRememberMeCookiePresent && !isRememberMeCookieExpired) {
 							
 							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
