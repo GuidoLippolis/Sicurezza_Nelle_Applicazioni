@@ -101,26 +101,27 @@
               <button type="submit" class="btn btn-primary btn-lg">Registrati</button>
             </div>
             
-            <%
+            <div id="errorDiv" style="display: none;">
+			    <p id="errorMessage"></p>
+			</div>
 			
-			String errorMessage = (String) session.getAttribute("errorMessage");
-				            		
-			if(errorMessage != null && errorMessage.length() != 0) {
+			<% if (request.getAttribute("errorMessage") != null) { %>
 			
-			%>
-			
-			<p id="error" style="text-align: center; color: red"><%= errorMessage %></p>
-			
-			<%
-			
-			}
-			
-			session.setAttribute("errorMessage", "");
-			session.invalidate();
-			
-			%>
-			
+			    <script>
+			    
+			        var errorDiv = document.getElementById("errorDiv");
+			        errorDiv.style.display = "block";
+			        var errorMessage = document.getElementById("errorMessage");
+			        errorMessage.innerText = "<%= request.getAttribute("errorMessage") %>";
+			        errorMessage.style.color = "red";
+			        errorMessage.style.textAlign = "center";
+			        
+			    </script>
+			    
+			<% } %>
+            
           </div>
+          
         </div>
 
 		</form>

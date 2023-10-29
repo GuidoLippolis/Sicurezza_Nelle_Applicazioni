@@ -98,13 +98,6 @@ public class SignInServlet extends HttpServlet {
 				}
 				
 			}
-				
-			if(request.getSession(false) != null) {
-				
-				response.sendRedirect("./success.jsp");
-				return;
-				
-			}
 			
 		} catch (Exception e) {
 			
@@ -226,11 +219,11 @@ public class SignInServlet extends HttpServlet {
 			
 		} catch (LoginFailedException e) {
 			
-			request.setAttribute("error", "Login errato! Username e/o password errati");
+			log.error("Eccezione in SignInServlet: " + e.getMessage());
+			
+			request.setAttribute("errorMessage", e.getMessage());
 
 			request.getRequestDispatcher("./index.jsp").forward(request, response);
-			
-			log.error("Eccezione in SignInServlet: " + e.getMessage());
 
 			return;
 			

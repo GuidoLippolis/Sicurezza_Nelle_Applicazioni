@@ -82,13 +82,20 @@
 			    <p id="errorMessage"></p>
 			</div>
 			
-			<% if (request.getAttribute("error") != null) { %>
-			    <script>
-			        document.getElementById("errorDiv").style.display = "block";
-			        document.getElementById("errorMessage").innerText = "<%= request.getAttribute("error") %>";
-			    </script>
-			<% } %>
+			<% if (request.getAttribute("errorMessage") != null) { %>
 			
+			    <script>
+			    
+			        var errorDiv = document.getElementById("errorDiv");
+			        errorDiv.style.display = "block";
+			        var errorMessage = document.getElementById("errorMessage");
+			        errorMessage.innerText = "<%= request.getAttribute("errorMessage") %>";
+			        errorMessage.style.color = "red";
+			        errorMessage.style.textAlign = "center";
+			        
+			    </script>
+			    
+			<% } %>
 
           </div>
         </div>

@@ -77,9 +77,12 @@
    	<url-pattern>/view-file</url-pattern>
    	
    </servlet-mapping>
+   
    <servlet-mapping>
+   
    	<servlet-name>LoginSuccessfulServlet</servlet-name>
    	<url-pattern>/welcome</url-pattern>
+   	
    </servlet-mapping>
    
 </web-app>

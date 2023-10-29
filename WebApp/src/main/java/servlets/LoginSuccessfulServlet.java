@@ -25,7 +25,7 @@ public class LoginSuccessfulServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		
+		request.getRequestDispatcher("success.jsp").forward(request, response);
 		
 	}
 

@@ -50,8 +50,6 @@ public class SignUpServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		System.out.println("############### SignUpServlet.doGet() ###############");
-		
 		request.getRequestDispatcher("sign-up.jsp").forward(request, response);
 		
 	}
@@ -134,15 +132,10 @@ public class SignUpServlet extends HttpServlet {
 				
 				return;
 				
-			}  else {
+			}  else 
 				
 				log.info("Errore nella registrazione");
-				
-//				response.sendRedirect("sign-in");
-//				
-//				return;
-				
-			}
+			
 			
 		} catch (SQLException | NoSuchAlgorithmException | ClassNotFoundException | SAXException | TikaException e) {
 			
@@ -150,25 +143,29 @@ public class SignUpServlet extends HttpServlet {
 			
 		} catch (UserAlreadyExistsException e) {
 			
-			request.getSession().setAttribute("errorMessage", "Utente esistente");
+//			request.getSession().setAttribute("errorMessage", "Utente esistente");
+			request.setAttribute("errorMessage", e.getMessage());
 			log.error("Eccezione in SignUpServlet: " + e.getMessage());
 			
 		} catch (ForbiddenFileTypeException e) {
 			
 //			request.getSession(false).setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
-			request.getSession().setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
+//			request.getSession().setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
+			request.setAttribute("errorMessage", e.getMessage());
 			log.error("Eccezione in SignUpServlet: " + e.getMessage());
 			
 		} catch (DifferentPasswordsException e) {
 
 //			request.getSession(false).setAttribute("errorMessage", "Le password non corrispondono");
-			request.getSession().setAttribute("errorMessage", "Le password non corrispondono");
+//			request.getSession().setAttribute("errorMessage", "Le password non corrispondono");
+			request.setAttribute("errorMessage", e.getMessage());
 			log.error("Eccezione in SignUpServlet: " + e.getMessage());
 			
 		} catch (UsernameNotValidException e) {
 
 //			request.getSession(false).setAttribute("errorMessage", "Username non valido");
-			request.getSession().setAttribute("errorMessage", "Username non valido");
+//			request.getSession().setAttribute("errorMessage", "Username non valido");
+			request.setAttribute("errorMessage", e.getMessage());
 			log.error("Eccezione in SignUpServlet: " + e.getMessage());
 		
 		} finally {
