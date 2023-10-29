@@ -78,23 +78,17 @@
             
             <p> Non hai un account? <a href="sign-up"> Registrati </a> </p>
 
-			<%
+			<div id="errorDiv" style="display: none;">
+			    <p id="errorMessage"></p>
+			</div>
 			
-			String errorMessage = (String) session.getAttribute("errorMessage");
-				            		
-			if(errorMessage != null && errorMessage.length() != 0) {
+			<% if (request.getAttribute("error") != null) { %>
+			    <script>
+			        document.getElementById("errorDiv").style.display = "block";
+			        document.getElementById("errorMessage").innerText = "<%= request.getAttribute("error") %>";
+			    </script>
+			<% } %>
 			
-			%>
-			
-			<p id="error" style="text-align: center; color: red"><%= errorMessage %></p>
-			
-			<%
-			
-			}
-			
-			session.setAttribute("errorMessage", "");
-			
-			%>
 
           </div>
         </div>

@@ -1,12 +1,17 @@
 package utils;
 
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Properties;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import enumeration.PropertiesKeys;
@@ -17,13 +22,13 @@ public class EncryptionUtils {
     
     private static Properties prop = ApplicationPropertiesLoader.getProperties();
 
-    public EncryptionUtils(String passphrase) throws Exception {
+    public EncryptionUtils(String passphrase) throws NoSuchAlgorithmException {
     	
         setKey(passphrase);
         
     }
     
-    private static void setKey(String secret) throws Exception {
+    private static void setKey(String secret) throws NoSuchAlgorithmException {
     	
         if (secretKeySpec == null) {
         	
@@ -40,7 +45,7 @@ public class EncryptionUtils {
     }
 
     
-    public String encrypt(String plaintext) throws Exception {
+    public String encrypt(String plaintext) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
     	
         Cipher cipher = Cipher.getInstance(prop.getProperty(PropertiesKeys.CRYPTOGRAPHY_MODE.toString()));
         

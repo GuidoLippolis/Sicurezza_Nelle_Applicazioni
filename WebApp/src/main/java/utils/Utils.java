@@ -18,9 +18,9 @@ public class Utils {
     	
     }
     
-    public static boolean isCookieValid(long currentTime, long expirationTime) {
+    public static boolean isCookieExpired(long expirationTime) {
     	
-    	return expirationTime > currentTime;
+    	return (System.currentTimeMillis() / 1000) > expirationTime;
     	
     }
     

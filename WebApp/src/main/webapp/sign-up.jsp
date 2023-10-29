@@ -116,6 +116,7 @@
 			}
 			
 			session.setAttribute("errorMessage", "");
+			session.invalidate();
 			
 			%>
 			

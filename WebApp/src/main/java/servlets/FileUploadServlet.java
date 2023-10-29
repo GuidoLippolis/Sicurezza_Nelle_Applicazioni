@@ -53,7 +53,7 @@ public class FileUploadServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     	// Viene recuperato lo username dell'utente di un'eventuale sessione aperta
-        String sessionUser = (String) request.getSession().getAttribute("user");
+        String sessionUser = (String) request.getSession(false).getAttribute("user");
         boolean isRememberMePresent = false;
 
         Cookie[] cookies = request.getCookies();

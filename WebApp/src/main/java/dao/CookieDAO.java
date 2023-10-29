@@ -182,4 +182,61 @@ public class CookieDAO {
 		
 	}
 	
+	public static long findCookieExpirationTimeByUserId(int userId) throws SQLException, ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection connection = null;
+		
+		PreparedStatement cookiesStatement = null;
+		
+		ResultSet resultSetCookies = null;
+		
+		long expirationTime = 0;
+		
+		try {
+			
+			connection = DriverManager.getConnection(
+					
+					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
+					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
+					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+					
+			);
+			
+			connection.setAutoCommit(false);
+			
+			cookiesStatement = connection.prepareStatement("SELECT expiration_date FROM cookies_db.cookies WHERE user_id = ?");
+			
+			cookiesStatement.setInt(1, userId);
+			
+			resultSetCookies = cookiesStatement.executeQuery();
+			
+			boolean hasNext = resultSetCookies.next();
+			
+			if(hasNext)
+				expirationTime = resultSetCookies.getLong("expiration_date");
+			
+			return expirationTime;
+			
+		} catch (Exception e) {
+
+			log.error("Eccezione in CookieDAO: ", e);
+			return 0;
+			
+		} finally {
+			
+			if(connection != null)
+				connection.close();
+			
+			if(cookiesStatement != null)
+				cookiesStatement.close();
+			
+			if(resultSetCookies != null)
+				resultSetCookies.close();
+			
+		}
+		
+	}
+	
 }

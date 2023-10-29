@@ -70,17 +70,13 @@
 
 <%
 	// Recupero l'utente dall'oggetto session
-	String sessionUser = (String) session.getAttribute("user");
-	String rememberedUser = null;
-	boolean isRememberMePresent = false;
+	String username = (String) session.getAttribute("user");
 
-	Cookie[] cookies = null;
-	
-	if(sessionUser != null) {
+	if(username != null) {
 	
 %>
 
-	<h3> Benvenuto, <%= isRememberMePresent ? rememberedUser : sessionUser %> </h3> <br>
+	<h3> Benvenuto, <%= username %> </h3> <br>
 	
 	<div class="button-container">
         

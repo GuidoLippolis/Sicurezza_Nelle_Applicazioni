@@ -1,8 +1,15 @@
 package servlets;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +22,7 @@ import org.apache.log4j.Logger;
 import dao.CookieDAO;
 import dao.UserDAO;
 import enumeration.PropertiesKeys;
+import exception.LoginFailedException;
 import model.User;
 import net.jcip.annotations.ThreadSafe;
 import utils.ApplicationPropertiesLoader;
@@ -46,6 +54,64 @@ public class SignInServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		System.out.println("############### SignInServlet.doGet() ###############");
+		
+		boolean isRememberMeCookiePresent = false;
+		boolean isRememberMeCookieExpired = false;
+		
+		Cookie[] cookies = request.getCookies();
+		
+		try {
+			
+			/*
+			 * Quando cerco di raggiungere la rotta /sign-in, controllo:
+			 * 
+			 * - Se c'è un Cookie "rememberMe" e questo non è scaduto, l'attributo user della sessione
+			 *   corrente viene valorizzato con lo username dell'utente attualmente loggato
+			 * 
+			 * - Se non c'è un Cookie "rememberMe", ma vi è una sessione aperta, l'utente viene
+			 *   reindirizzato alla pagina di benvenuto
+			 *   
+			 * - Altrimenti, viene reindirizzato alla pagina di login
+			 * 
+			 * */
+			
+			if(cookies != null) {
+				
+				for(Cookie cookie : cookies) {
+					
+					if(cookie.getValue().equals("rememberMe")) {
+						
+						isRememberMeCookiePresent = true;
+
+						if(Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue()))))
+							isRememberMeCookieExpired = true;
+						
+						if(isRememberMeCookiePresent && !isRememberMeCookieExpired)
+							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
+						else
+							request.getRequestDispatcher("index.jsp").forward(request, response);
+					
+					}
+					
+					
+				}
+				
+			}
+				
+			if(request.getSession(false) != null) {
+				
+				response.sendRedirect("./success.jsp");
+				return;
+				
+			}
+			
+		} catch (Exception e) {
+			
+			log.error("Eccezione in SignInServlet: " + e.getMessage());
+			
+		}
+		
 		request.getRequestDispatcher("index.jsp").forward(request, response);
 	
 	}
@@ -76,16 +142,21 @@ public class SignInServlet extends HttpServlet {
 			
 			PasswordUtils.clearArray(password);
 			
-			HttpSession oldSession = request.getSession(false);
+			if(loggedUser) {
+				
+				HttpSession oldSession = request.getSession(false);
+				
+				if(oldSession != null)
+					oldSession.invalidate();
+				
+				HttpSession currentSession = request.getSession();
+				
+				currentSession.setMaxInactiveInterval(60 * 15);
+				
+				currentSession.setAttribute("user", username);
+				
+			}
 			
-			if(oldSession != null)
-				oldSession.invalidate();
-			
-			HttpSession currentSession = request.getSession();
-			
-			currentSession.setMaxInactiveInterval(60 * 15);
-			
-			currentSession.setAttribute("user", username);
 			
 			/*
 			 * Se l'utente ha selezionato l'opzione "Remember Me" al momento
@@ -143,16 +214,25 @@ public class SignInServlet extends HttpServlet {
 				return;
 				
 			} else {
-				
-				currentSession.setAttribute("errorMessage", "Login errato! Username e/o password errati");
-				
-				log.info("Errore durante il login");
+
+				throw new LoginFailedException();
 				
 			}
 			
-		} catch (Exception e) {
+		} catch (ClassNotFoundException | SQLException | InvalidKeyException
+				| NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			
 			log.error("Eccezione in SignInServlet: " + e.getMessage());
+			
+		} catch (LoginFailedException e) {
+			
+			request.setAttribute("error", "Login errato! Username e/o password errati");
+
+			request.getRequestDispatcher("./index.jsp").forward(request, response);
+			
+			log.error("Eccezione in SignInServlet: " + e.getMessage());
+
+			return;
 			
 		}
 		
