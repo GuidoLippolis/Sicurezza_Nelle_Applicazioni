@@ -47,62 +47,6 @@ public class FileUploadServlet extends HttpServlet {
         super();
     }
 
-//	/**
-//	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-//	 */
-//    
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//
-//    	// Viene recuperato lo username dell'utente di un'eventuale sessione aperta
-//        String sessionUser = (String) request.getSession(false).getAttribute("user");
-//        boolean isRememberMePresent = false;
-//
-//        Cookie[] cookies = request.getCookies();
-//
-//        // Si cerca un eventuale Cookie "rememberMe"
-//        if (cookies != null) {
-//        	
-//            for (Cookie cookie : cookies) {
-//            	
-//                if (cookie.getName().equals("rememberMe")) {
-//                	
-//                    String rememberedUser = Utils.getUsernameFromCookie(cookie.getValue());
-//                    
-//                    sessionUser = rememberedUser;
-//                    
-//                    isRememberMePresent = true;
-//                    
-//                    break;
-//                    
-//                }
-//            }
-//        }
-//
-//        if (sessionUser != null || isRememberMePresent) {
-//        	
-//            List<UploadedFile> uploadedFiles = null;
-//            
-//			try {
-//				
-//				// Recupera i file dal database per tutti gli utenti per stamparli nella tabella in file-upload.jsp
-//				uploadedFiles = FileUploadDAO.findAll();
-//				
-//			} catch (ClassNotFoundException | SQLException e) {
-//
-//				log.error("Eccezione in FileUploadServlet: " + e.getMessage());
-//				
-//			}
-//
-//            request.setAttribute("uploadedFiles", uploadedFiles);
-//            
-//            request.getRequestDispatcher("file-upload.jsp").forward(request, response);
-//            
-//        } else 
-//        	
-//            response.sendRedirect("sign-in");
-//        
-//    }
-    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
