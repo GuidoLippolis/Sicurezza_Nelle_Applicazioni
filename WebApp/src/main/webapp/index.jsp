@@ -62,7 +62,7 @@
             <div class="row align-items-center py-3">
 				    <div class="col-md-9 pe-5">
 				        <div class="form-check">
-				            <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberme">
+				            <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
 				            <label class="form-check-label" for="rememberMe">Remember me</label>
 				        </div>
 				    </div>

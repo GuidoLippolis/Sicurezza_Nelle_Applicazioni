@@ -9,7 +9,6 @@ import java.util.Properties;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -58,6 +57,7 @@ public class SignInServlet extends HttpServlet {
 		
 		boolean isRememberMeCookiePresent = false;
 		boolean isRememberMeCookieExpired = false;
+		boolean deletedRememberMeCookie = false;
 		
 		Cookie[] cookies = request.getCookies();
 		
@@ -80,17 +80,27 @@ public class SignInServlet extends HttpServlet {
 				
 				for(Cookie cookie : cookies) {
 					
-					if(cookie.getValue().equals("rememberMe")) {
+					if(cookie.getName().equals("rememberMe")) {
 						
 						isRememberMeCookiePresent = true;
 
-						if(Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue()))))
-							isRememberMeCookieExpired = true;
+						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 						
-						if(isRememberMeCookiePresent && !isRememberMeCookieExpired)
+						if(isRememberMeCookieExpired)
+							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+						
+						if(isRememberMeCookiePresent && !isRememberMeCookieExpired) {
+							
 							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
-						else
+							request.getRequestDispatcher("./success.jsp").forward(request, response);
+							return;
+							
+						} else {
+							
 							request.getRequestDispatcher("index.jsp").forward(request, response);
+							return;
+						}
+						
 					
 					}
 					
@@ -118,7 +128,7 @@ public class SignInServlet extends HttpServlet {
 		
 		byte[] password = request.getParameter("password").getBytes();
 		
-		boolean rememberMe = "on".equals(request.getParameter("rememberme"));
+		boolean rememberMe = "on".equals(request.getParameter("rememberMe"));
 		boolean loggedUser = false;
 		boolean savedCookie = false;
 		
@@ -184,7 +194,7 @@ public class SignInServlet extends HttpServlet {
 				Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 				
 				// Setting della durata massima del Cookie in secondi
-				rememberMeCookie.setMaxAge(60 * 15);
+				rememberMeCookie.setMaxAge((int) (System.currentTimeMillis() + 15 * 60 * 1000));
 
 				// Crittografia simmetrica del valore del Cookie
 				String passphrase = prop.getProperty(PropertiesKeys.PASSPHRASE.toString());

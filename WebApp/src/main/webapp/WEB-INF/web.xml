@@ -35,12 +35,6 @@
    	<description>Servlet used to display txt files content to the screen</description>
    	<servlet-class>servlets.FileViewerServlet</servlet-class>
    </servlet>
-   <servlet>
-   	<servlet-name>LoginSuccessfulServlet</servlet-name>
-   	<display-name>LoginSuccessfulServlet</display-name>
-   	<description></description>
-   	<servlet-class>servlets.LoginSuccessfulServlet</servlet-class>
-   </servlet>
   
    <servlet-mapping>
   
@@ -75,13 +69,6 @@
 	   
    	<servlet-name>FileViewerServlet</servlet-name>
    	<url-pattern>/view-file</url-pattern>
-   	
-   </servlet-mapping>
-   
-   <servlet-mapping>
-   
-   	<servlet-name>LoginSuccessfulServlet</servlet-name>
-   	<url-pattern>/welcome</url-pattern>
    	
    </servlet-mapping>
    
