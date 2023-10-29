@@ -211,7 +211,6 @@ public class SignInServlet extends HttpServlet {
 				
 				log.info("Login effettuato con successo");
 				
-//				response.sendRedirect("./success.jsp");
 				response.sendRedirect("welcome");
 				
 				return;
