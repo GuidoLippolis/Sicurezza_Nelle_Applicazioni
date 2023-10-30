@@ -3,7 +3,7 @@ DROP DATABASE IF EXISTS salts_db;
 DROP DATABASE IF EXISTS cookies_db;
 DROP DATABASE IF EXISTS users_db;
 
--- Creazione dei vari database ciascuno contenente una tabella
+-- Creazione dei vari database
 
 CREATE DATABASE IF NOT EXISTS users_db;
 CREATE DATABASE IF NOT EXISTS passwords_db;
@@ -68,10 +68,10 @@ CREATE USER 'salts_usr'@'localhost' IDENTIFIED BY 'salts_usr_password';
 CREATE USER 'cookies_usr'@'localhost' IDENTIFIED BY 'cookies_usr_password';
 
 /*
-	Per la tabella degli utenti, fornisco all'utente "users_usr@localhost"
-	il permesso di INSERT sui database: users_db (tabella users); passwords_db
-	(tabella passwords) e salts_db (tabella salts). Fornisco inoltre il permesso
-	di SELECT sul database users_db (tabella users)
+	Per la tabella degli utenti, fornisco all'utente "users_usr@localhost" il permesso
+	di INSERT sui database: users_db (tabelle users, uploaded_files); passwords_db
+	(tabella passwords) e salts_db (tabella salts). Fornisco inoltre il permesso di SELECT sul 
+	database users_db (tabella users)
 
 */
 

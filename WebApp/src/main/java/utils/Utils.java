@@ -2,8 +2,6 @@ package utils;
 
 import java.util.Date;
 
-import javax.servlet.http.Cookie;
-
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class Utils {
@@ -20,15 +18,9 @@ public class Utils {
     	
     }
     
-//    public static boolean isCookieExpired(long expirationTime) {
-//    	
-//    	return (System.currentTimeMillis() / 1000) > expirationTime;
-//    	
-//    }
-    
     public static boolean isCookieExpired(long expirationTime) {
     	
-    	return (System.currentTimeMillis() / 1000) > expirationTime;
+    	return (int) (System.currentTimeMillis() / 1000) > (int) expirationTime;
     	
     }
     

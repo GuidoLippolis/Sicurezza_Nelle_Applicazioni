@@ -43,7 +43,6 @@ public class EncryptionUtils {
         }
         
     }
-
     
     public String encrypt(String plaintext) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
     	

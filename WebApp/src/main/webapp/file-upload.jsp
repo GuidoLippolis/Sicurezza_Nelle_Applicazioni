@@ -116,7 +116,7 @@
             
             <tr>
                 <td><%= file.getUsername() %></td>
-                <td><a href="view-file?username=<%= file.getUsername() %>&id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
+                <td><a href="view-file?id=<%= file.getId() %>"><%= file.getFileName() %></a></td>
             </tr>
             
             <%

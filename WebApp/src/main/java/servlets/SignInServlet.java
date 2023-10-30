@@ -53,8 +53,6 @@ public class SignInServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		System.out.println("############### SignInServlet.doGet() ###############");
-		
 		boolean isRememberMeCookieExpired = false;
 		boolean deletedRememberMeCookie = false;
 		
@@ -191,7 +189,7 @@ public class SignInServlet extends HttpServlet {
 					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 					
 					// Setting della durata massima del Cookie in secondi
-					rememberMeCookie.setMaxAge((int) (System.currentTimeMillis() + 15 * 60 * 1000));
+					rememberMeCookie.setMaxAge((int) ((System.currentTimeMillis() + 15 * 60 * 1000) / 1000));
 
 					// Crittografia simmetrica del valore del Cookie
 					String passphrase = prop.getProperty(PropertiesKeys.PASSPHRASE.toString());

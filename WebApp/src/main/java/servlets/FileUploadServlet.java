@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
+import org.apache.tika.exception.TikaException;
+import org.xml.sax.SAXException;
 
 import dao.CookieDAO;
 import dao.FileUploadDAO;
@@ -51,10 +53,18 @@ public class FileUploadServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
     
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @SuppressWarnings("unused")
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     	// Viene recuperato lo username dell'utente di un'eventuale sessione aperta
         String sessionUser = (String) request.getSession(false).getAttribute("user");
+        
+        if(sessionUser == null) {
+        	
+        	request.getRequestDispatcher("sign-in").forward(request, response);
+        	return;
+        	
+        }
         
 		boolean isRememberMeCookieExpired = false;
 		boolean deletedRememberMeCookie = false;
@@ -78,7 +88,7 @@ public class FileUploadServlet extends HttpServlet {
 						
 						if(isRememberMeCookieExpired) {
 							
-							request.getRequestDispatcher("index.jsp").forward(request, response);
+							request.getRequestDispatcher("sign-in").forward(request, response);
 							return;
 							
 						}
@@ -128,6 +138,7 @@ public class FileUploadServlet extends HttpServlet {
     	Cookie[] cookies = request.getCookies();
     	String cookieUsername = null;
     	String sessionUsername = null;
+    	boolean savedFile = false;
     	
     	if(cookies != null) {
     		
@@ -171,18 +182,24 @@ public class FileUploadServlet extends HttpServlet {
     		if(FileUtils.isFileTooLarge(finalPath))
     			throw new FileTooLargeException(fileName, Long.parseLong(prop.getProperty(PropertiesKeys.MAX_FILE_SIZE_MB.toString())));
     		
-    		if(FileUtils.isFakeTxt(finalPath)) {
-    			
-    			request.getSession().setAttribute("errorMessage", "ATTENZIONE! Tipo di file non consentito!");
-    			throw new ForbiddenFileTypeException(finalPath);
-    			
-    		}
+    		if(FileUtils.isFakeTxt(finalPath))
+    			throw new ForbiddenFileTypeException(fileName);
     		
-            FileUploadDAO.saveFileToDatabase(FileUtils.getFileName(filePart), FileUtils.getFileContent(new File(finalPath)), finalUsername);
+            savedFile = FileUploadDAO.saveFileToDatabase(FileUtils.getFileName(filePart), FileUtils.getFileBytes(new File(finalPath)), finalUsername);
             
-            log.info("Il file " + fileName + " è stato caricato con successo sul database");
+            log.info(savedFile ? "Il file " + fileName + " è stato salvato correttamente sul database" : "Il file " + fileName + " NON è stato salvato correttamente sul database");
             
-		} catch (Exception e) {
+		} catch (ForbiddenFileTypeException e) {
+			
+			request.setAttribute("errorMessage", e.getMessage());
+			log.error("Eccezione in FileUploadServlet: " + e.getMessage());
+			
+		} catch (FileTooLargeException e) {
+			
+			request.setAttribute("errorMessage", e.getMessage());
+			log.error("Eccezione in FileUploadServlet: " + e.getMessage());
+			
+		} catch (ClassNotFoundException | SQLException | SAXException | TikaException e) {
 			
 			log.error("Eccezione in FileUploadServlet: " + e.getMessage());
 			

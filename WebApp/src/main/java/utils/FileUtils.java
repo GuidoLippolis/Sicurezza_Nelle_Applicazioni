@@ -24,7 +24,7 @@ import servlets.SignInServlet;
 
 public class FileUtils {
 	
-	private static final Logger log = Logger.getLogger(SignInServlet.class);
+	private static final Logger log = Logger.getLogger(FileUtils.class);
 	
 	private static Properties prop = ApplicationPropertiesLoader.getProperties();
 	
@@ -74,8 +74,6 @@ public class FileUtils {
 		
 		for(String name : metadata.names()) {
 			
-			System.out.println(name + "\t" + metadata.get(name));
-			
 			if(name.equals("Content-Type")) {
 				
 				fileType = metadata.get(name);
@@ -107,7 +105,7 @@ public class FileUtils {
 		
 	}
 
-	public static byte[] getFileContent(File file) {
+	public static byte[] getFileBytes(File file) {
 		
 	    byte[] buffer = new byte[1024];
 	    

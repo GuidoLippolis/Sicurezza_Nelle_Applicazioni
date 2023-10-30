@@ -164,7 +164,7 @@ public class SignUpServlet extends HttpServlet {
             	photo.write(finalPath);
             	
             	if(!FileUtils.isImage(finalPath))
-            		throw new ForbiddenFileTypeException(finalPath);
+            		throw new ForbiddenFileTypeException(fileName);
             	
             }
             
