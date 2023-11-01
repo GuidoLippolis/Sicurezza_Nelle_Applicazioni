@@ -12,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
@@ -57,7 +58,13 @@ public class FileUploadServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     	// Viene recuperato lo username dell'utente di un'eventuale sessione aperta
-        String sessionUser = (String) request.getSession(false).getAttribute("user");
+    	
+    	HttpSession session = request.getSession(false);
+    	
+    	String sessionUser = null;
+    	
+    	if(session != null)
+    		sessionUser = (String) request.getSession(false).getAttribute("user");
         
         if(sessionUser == null) {
         	
