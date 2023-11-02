@@ -66,13 +66,6 @@ public class FileUploadServlet extends HttpServlet {
     	if(session != null)
     		sessionUser = (String) request.getSession(false).getAttribute("user");
         
-//        if(sessionUser == null) {
-//        	
-//        	request.getRequestDispatcher("sign-in").forward(request, response);
-//        	return;
-//        	
-//        }
-        
 		boolean isRememberMeCookieExpired = true;
 		boolean deletedRememberMeCookie = false;
 		
@@ -95,7 +88,6 @@ public class FileUploadServlet extends HttpServlet {
 						
 						if(isRememberMeCookieExpired) {
 							
-//							request.getRequestDispatcher("sign-in").forward(request, response);
 							request.getRequestDispatcher("./index.jsp").forward(request, response);
 							return;
 							
@@ -113,7 +105,7 @@ public class FileUploadServlet extends HttpServlet {
 			
 		}
 		
-        if (sessionUser != null || isRememberMeCookieExpired == false) {
+        if (sessionUser != null || !isRememberMeCookieExpired) {
         	
             List<UploadedFile> uploadedFiles = null;
             

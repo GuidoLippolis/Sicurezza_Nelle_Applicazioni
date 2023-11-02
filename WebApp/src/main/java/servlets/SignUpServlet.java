@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.apache.log4j.Logger;
@@ -54,6 +55,13 @@ public class SignUpServlet extends HttpServlet {
 
 		boolean isRememberMeCookieExpired = false;
 		boolean deletedRememberMeCookie = false;
+		
+    	HttpSession session = request.getSession(false);
+    	
+    	String sessionUser = null;
+    	
+    	if(session != null)
+    		sessionUser = (String) request.getSession(false).getAttribute("user");
 		
 		Cookie[] cookies = request.getCookies();
 		
@@ -112,7 +120,13 @@ public class SignUpServlet extends HttpServlet {
 			
 		}
 		
-		request.getRequestDispatcher("sign-up.jsp").forward(request, response);
+		if(sessionUser != null || !isRememberMeCookieExpired)
+			
+			request.getRequestDispatcher("welcome").forward(request, response);
+		
+		else
+			
+			request.getRequestDispatcher("sign-up.jsp").forward(request, response);
 		
 	}
 	

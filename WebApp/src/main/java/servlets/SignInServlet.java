@@ -56,6 +56,13 @@ public class SignInServlet extends HttpServlet {
 		boolean isRememberMeCookieExpired = false;
 		boolean deletedRememberMeCookie = false;
 		
+    	HttpSession session = request.getSession(false);
+    	
+    	String sessionUser = null;
+    	
+    	if(session != null)
+    		sessionUser = (String) request.getSession(false).getAttribute("user");
+		
 		Cookie[] cookies = request.getCookies();
 		
 		try {
@@ -113,7 +120,13 @@ public class SignInServlet extends HttpServlet {
 			
 		}
 		
-		request.getRequestDispatcher("index.jsp").forward(request, response);
+		if(sessionUser != null || !isRememberMeCookieExpired)
+		
+			request.getRequestDispatcher("welcome").forward(request, response);
+		
+		else
+			
+			request.getRequestDispatcher("index.jsp").forward(request, response);
 	
 	}
 	
