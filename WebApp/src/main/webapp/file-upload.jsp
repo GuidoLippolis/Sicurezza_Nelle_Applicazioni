@@ -108,11 +108,6 @@
             
             <%
             
-            HttpSession currentSession = request.getSession(false);
-            
-            if(currentSession.getAttribute("user") == null)
-            	response.sendRedirect("sign-in");
-            
             List<UploadedFile> uploadedFiles = (List<UploadedFile>) request.getAttribute("uploadedFiles");
             
             if(uploadedFiles != null) {
