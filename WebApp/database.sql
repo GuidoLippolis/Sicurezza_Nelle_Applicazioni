@@ -13,17 +13,21 @@ CREATE DATABASE IF NOT EXISTS cookies_db;
 USE users_db;
 
 CREATE TABLE users (
+
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
   photo LONGBLOB
+  
 );
 
 CREATE TABLE uploaded_files (
+
     id INT AUTO_INCREMENT PRIMARY KEY,
     file_name VARCHAR(255) NOT NULL,
     file_data LONGBLOB NOT NULL,
     username VARCHAR(50) NOT NULL,
     FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE
+    
 );
 
 USE passwords_db;

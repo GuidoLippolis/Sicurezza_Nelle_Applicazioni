@@ -152,7 +152,7 @@ public class SignInServlet extends HttpServlet {
 			 * 
 			 * */
 			
-			loggedUser = UserDAO.signIn(new User(username), password);
+			loggedUser = UserDAO.signIn(username, password);
 			
 			PasswordUtils.clearArray(password);
 			

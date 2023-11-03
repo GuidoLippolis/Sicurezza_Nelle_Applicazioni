@@ -135,7 +135,7 @@ public class UserDAO {
 		
 	}
 	
-	public static boolean signIn(User user, byte[] password) throws ClassNotFoundException, SQLException {
+	public static boolean signIn(String username, byte[] password) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -158,7 +158,7 @@ public class UserDAO {
 			 * 
 			 * */
 			
-			byte[] userSalt = SaltDAO.findSaltByUsername(user.getUsername());
+			byte[] userSalt = SaltDAO.findSaltByUsername(username);
 			
 			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, prop.getProperty(Constants.HASHING_ALGORITHM));
 			
