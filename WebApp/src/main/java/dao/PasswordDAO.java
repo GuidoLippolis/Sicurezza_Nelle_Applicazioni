@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import enumeration.PropertiesKeys;
+import constants.Constants;
 import utils.ApplicationPropertiesLoader;
 
 public class PasswordDAO {
@@ -29,12 +29,12 @@ public class PasswordDAO {
 		ResultSet resultSet = null;
 		
 		try {
-
+			
 			connection = DriverManager.getConnection(
 					
-					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.PASSWORDS_DB_NAME.toString()), 
-					prop.getProperty(PropertiesKeys.PASSWORDS_DB_USERNAME.toString()), 
-					prop.getProperty(PropertiesKeys.PASSWORDS_DB_PASSWORD.toString())
+					System.getenv(Constants.JDBC_URL) + System.getenv(Constants.PASSWORDS_DB_NAME), 
+					System.getenv(Constants.PASSWORDS_DB_USERNAME), 
+					System.getenv(Constants.PASSWORDS_DB_PASSWORD)
 					
 			);
 			

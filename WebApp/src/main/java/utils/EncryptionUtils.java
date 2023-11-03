@@ -14,7 +14,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
-import enumeration.PropertiesKeys;
+import constants.Constants;
 
 public class EncryptionUtils {
 	
@@ -32,13 +32,13 @@ public class EncryptionUtils {
     	
         if (secretKeySpec == null) {
         	
-            MessageDigest sha = MessageDigest.getInstance(prop.getProperty(PropertiesKeys.HASHING_ALGORITHM.toString()));
+            MessageDigest sha = MessageDigest.getInstance(prop.getProperty(Constants.HASHING_ALGORITHM));
             
             byte[] keyBytes = sha.digest(secret.getBytes(StandardCharsets.UTF_8));
             
             keyBytes = Arrays.copyOf(keyBytes, 16);
             
-            secretKeySpec = new SecretKeySpec(keyBytes, prop.getProperty(PropertiesKeys.SYMMETRIC_ENCRYPTION_ALGORITM.toString()));
+            secretKeySpec = new SecretKeySpec(keyBytes, prop.getProperty(Constants.SYMMETRIC_ENCRYPTION_ALGORITM));
             
         }
         
@@ -46,7 +46,7 @@ public class EncryptionUtils {
     
     public String encrypt(String plaintext) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
     	
-        Cipher cipher = Cipher.getInstance(prop.getProperty(PropertiesKeys.CRYPTOGRAPHY_MODE.toString()));
+        Cipher cipher = Cipher.getInstance(prop.getProperty(Constants.CRYPTOGRAPHY_MODE));
         
         cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
         

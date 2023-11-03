@@ -14,7 +14,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import enumeration.PropertiesKeys;
+import constants.Constants;
 import exception.UserAlreadyExistsException;
 import model.User;
 import utils.ApplicationPropertiesLoader;
@@ -46,15 +46,15 @@ public class UserDAO {
 		int userId = 0;
 		
 		byte[] salt = PasswordUtils.createSalt(10);
-		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, prop.getProperty(PropertiesKeys.HASHING_ALGORITHM.toString()));
+		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, prop.getProperty(Constants.HASHING_ALGORITHM));
 		
 		try {
 			
 			connection = DriverManager.getConnection(
 					
-					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.USERS_DB_NAME.toString()), 
-					prop.getProperty(PropertiesKeys.USERS_DB_USERNAME.toString()), 
-					prop.getProperty(PropertiesKeys.USERS_DB_PASSWORD.toString())
+					System.getenv(Constants.JDBC_URL) + System.getenv(Constants.USERS_DB_NAME), 
+					System.getenv(Constants.USERS_DB_USERNAME), 
+					System.getenv(Constants.USERS_DB_PASSWORD)
 					
 			);
 			
@@ -160,7 +160,7 @@ public class UserDAO {
 			
 			byte[] userSalt = SaltDAO.findSaltByUsername(user.getUsername());
 			
-			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, prop.getProperty(PropertiesKeys.HASHING_ALGORITHM.toString()));
+			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, prop.getProperty(Constants.HASHING_ALGORITHM));
 			
 			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
 			
@@ -202,9 +202,9 @@ public class UserDAO {
 			
 			connection = DriverManager.getConnection(
 					
-					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.USERS_DB_NAME.toString()), 
-					prop.getProperty(PropertiesKeys.USERS_DB_USERNAME.toString()), 
-					prop.getProperty(PropertiesKeys.USERS_DB_PASSWORD.toString())
+					System.getenv(Constants.JDBC_URL) + System.getenv(Constants.USERS_DB_NAME), 
+					System.getenv(Constants.USERS_DB_USERNAME), 
+					System.getenv(Constants.USERS_DB_PASSWORD)
 					
 			);
 			

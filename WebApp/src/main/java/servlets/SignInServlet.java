@@ -18,9 +18,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import constants.Constants;
 import dao.CookieDAO;
 import dao.UserDAO;
-import enumeration.PropertiesKeys;
 import exception.LoginFailedException;
 import model.User;
 import net.jcip.annotations.ThreadSafe;
@@ -205,7 +205,7 @@ public class SignInServlet extends HttpServlet {
 					rememberMeCookie.setMaxAge((int) ((System.currentTimeMillis() + 15 * 60 * 1000) / 1000));
 
 					// Crittografia simmetrica del valore del Cookie
-					String passphrase = prop.getProperty(PropertiesKeys.PASSPHRASE.toString());
+					String passphrase = System.getenv(Constants.PASSPHRASE);
 					String encryptedCookieValue = new EncryptionUtils(passphrase).encrypt(rememberMeCookie.getValue());
 					
 					savedCookie = CookieDAO.saveCookie(encryptedCookieValue, rememberMeCookie.getMaxAge(), user);

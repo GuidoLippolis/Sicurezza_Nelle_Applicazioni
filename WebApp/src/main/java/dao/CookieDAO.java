@@ -10,7 +10,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import enumeration.PropertiesKeys;
+import constants.Constants;
 import model.User;
 import utils.ApplicationPropertiesLoader;
 
@@ -32,9 +32,9 @@ public class CookieDAO {
 			
 			connection = DriverManager.getConnection(
 					
-					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+					System.getenv(Constants.JDBC_URL) + System.getenv(Constants.COOKIES_DB_NAME), 
+					System.getenv(Constants.COOKIES_DB_USERNAME), 
+					System.getenv(Constants.COOKIES_DB_PASSWORD)
 					
 			);
 			
@@ -88,9 +88,9 @@ public class CookieDAO {
 			
 			connection = DriverManager.getConnection(
 					
-					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+					System.getenv(Constants.JDBC_URL) + System.getenv(Constants.COOKIES_DB_NAME), 
+					System.getenv(Constants.COOKIES_DB_USERNAME), 
+					System.getenv(Constants.COOKIES_DB_PASSWORD)
 					
 			);
 			
@@ -139,9 +139,9 @@ public class CookieDAO {
 			
 			connection = DriverManager.getConnection(
 					
-					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+					System.getenv(Constants.JDBC_URL) + System.getenv(Constants.COOKIES_DB_NAME), 
+					System.getenv(Constants.COOKIES_DB_USERNAME), 
+					System.getenv(Constants.COOKIES_DB_PASSWORD)
 					
 			);
 			
@@ -198,9 +198,9 @@ public class CookieDAO {
 			
 			connection = DriverManager.getConnection(
 					
-					prop.getProperty(PropertiesKeys.JDCB_URL.toString()) + prop.getProperty(PropertiesKeys.COOKIES_DB_NAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_USERNAME.toString()), 
-					prop.getProperty(PropertiesKeys.COOKIES_DB_PASSWORD.toString())
+					System.getenv(Constants.JDBC_URL) + System.getenv(Constants.COOKIES_DB_NAME), 
+					System.getenv(Constants.COOKIES_DB_USERNAME), 
+					System.getenv(Constants.COOKIES_DB_PASSWORD)
 					
 			);
 			

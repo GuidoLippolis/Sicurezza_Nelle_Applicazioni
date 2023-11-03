@@ -19,8 +19,7 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
-import enumeration.PropertiesKeys;
-import servlets.SignInServlet;
+import constants.Constants;
 
 public class FileUtils {
 	
@@ -89,7 +88,7 @@ public class FileUtils {
 	
 	public static boolean isFileTooLarge(String fileName) throws IOException, SAXException, TikaException {
 		
-		long MAX_FILE_SIZE_MB = Long.parseLong(prop.getProperty(PropertiesKeys.MAX_FILE_SIZE_MB.toString()));
+		long MAX_FILE_SIZE_MB = Long.parseLong(prop.getProperty(Constants.MAX_FILE_SIZE_MB));
 		
 		BodyContentHandler bodyContentHandler = new BodyContentHandler();
 		

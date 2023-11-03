@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import enumeration.PropertiesKeys;
+import constants.Constants;
 
 /*
  * Questa classe ha lo scopo di inizializzare l'oggetto prop
@@ -25,7 +25,9 @@ public class ApplicationPropertiesLoader {
     	
         try {
         	
-            FileInputStream in = new FileInputStream(System.getenv(PropertiesKeys.PATH_TO_PROPERTIES_FILE.toString()));
+        	System.out.println("PERCORSO AL FILE PROPERTIES = " + System.getenv(Constants.PATH_TO_PROPERTIES_FILE));
+        	
+            FileInputStream in = new FileInputStream(System.getenv(Constants.PATH_TO_PROPERTIES_FILE));
             
             prop.load(in);
             

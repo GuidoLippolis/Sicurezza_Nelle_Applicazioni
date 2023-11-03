@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
 import org.apache.tika.exception.TikaException;
 import org.xml.sax.SAXException;
 
+import constants.Constants;
 import dao.CookieDAO;
 import dao.FileUploadDAO;
-import enumeration.PropertiesKeys;
 import exception.FileTooLargeException;
 import exception.ForbiddenFileTypeException;
 import model.UploadedFile;
@@ -180,7 +180,7 @@ public class FileUploadServlet extends HttpServlet {
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
     		if(FileUtils.isFileTooLarge(finalPath))
-    			throw new FileTooLargeException(fileName, Long.parseLong(prop.getProperty(PropertiesKeys.MAX_FILE_SIZE_MB.toString())));
+    			throw new FileTooLargeException(fileName, Long.parseLong(prop.getProperty(Constants.MAX_FILE_SIZE_MB.toString())));
     		
     		if(FileUtils.isFakeTxt(finalPath))
     			throw new ForbiddenFileTypeException(fileName);
