@@ -18,12 +18,6 @@ public class Utils {
     	
     }
     
-    public static boolean isCookieExpired(long expirationTime) {
-    	
-    	return (int) (System.currentTimeMillis() / 1000) > (int) expirationTime;
-    	
-    }
-    
     /*
      * Esempi:
      * 
@@ -47,6 +41,25 @@ public class Utils {
     public static boolean isUsernameValid(String username) {
 
         return username.matches("^[a-zA-Z0-9]*$");
+        
+    }
+    
+    public static int calculateMinutesFromNow(int minutes) {
+
+    	Date now = new Date();
+    	
+    	Date expirationTime = new Date(now.getTime() + minutes * 60 * 1000);
+    	
+    	return (int) (expirationTime.getTime() - now.getTime()) / 1000;
+    	
+    }
+    
+    public static boolean isCookieExpired(int seconds) {
+    	
+        Date now = new Date();
+        Date expirationTime = new Date(now.getTime() + seconds * 1000);
+
+        return now.after(expirationTime);
         
     }
     

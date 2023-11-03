@@ -25,8 +25,6 @@ public class ApplicationPropertiesLoader {
     	
         try {
         	
-        	System.out.println("PERCORSO AL FILE PROPERTIES = " + System.getenv(Constants.PATH_TO_PROPERTIES_FILE));
-        	
             FileInputStream in = new FileInputStream(System.getenv(Constants.PATH_TO_PROPERTIES_FILE));
             
             prop.load(in);

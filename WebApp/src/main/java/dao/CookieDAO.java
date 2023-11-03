@@ -182,7 +182,7 @@ public class CookieDAO {
 		
 	}
 	
-	public static long findCookieExpirationTimeByUserId(int userId) throws SQLException, ClassNotFoundException {
+	public static int findCookieExpirationTimeByUserId(int userId) throws SQLException, ClassNotFoundException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -192,7 +192,7 @@ public class CookieDAO {
 		
 		ResultSet resultSetCookies = null;
 		
-		long expirationTime = 0;
+		int expirationTime = 0;
 		
 		try {
 			
@@ -215,7 +215,7 @@ public class CookieDAO {
 			boolean hasNext = resultSetCookies.next();
 			
 			if(hasNext)
-				expirationTime = resultSetCookies.getLong("expiration_date");
+				expirationTime = resultSetCookies.getInt("expiration_date");
 			
 			return expirationTime;
 			
