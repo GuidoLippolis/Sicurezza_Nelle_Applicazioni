@@ -53,7 +53,7 @@ public class SignInServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		boolean isRememberMeCookieExpired = false;
+		boolean isRememberMeCookieExpired = true;
 		boolean deletedRememberMeCookie = false;
 		
     	HttpSession session = request.getSession(false);
