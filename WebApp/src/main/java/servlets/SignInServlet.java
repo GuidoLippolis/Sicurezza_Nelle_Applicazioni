@@ -88,24 +88,24 @@ public class SignInServlet extends HttpServlet {
 						
 						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 						
-						if(isRememberMeCookieExpired)
+						if(isRememberMeCookieExpired) {
+							
 							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
-						
-						log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
-						
-						if(!isRememberMeCookieExpired) {
+							
+							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
+							
+							request.getRequestDispatcher("index.jsp").forward(request, response);
+							return;
+							
+						} else {
+							
+							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
 							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
 							request.getRequestDispatcher("./success.jsp").forward(request, response);
 							return;
 							
-						} else {
-							
-							request.getRequestDispatcher("index.jsp").forward(request, response);
-							return;
-							
 						}
-						
 					
 					}
 					
@@ -202,8 +202,8 @@ public class SignInServlet extends HttpServlet {
 					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
 					
 					// Setting della durata massima del Cookie in secondi
-					rememberMeCookie.setMaxAge((int) ((System.currentTimeMillis() + 15 * 60 * 1000) / 1000));
-
+					rememberMeCookie.setMaxAge(Utils.calculateMinutesFromNow(15));
+			
 					// Crittografia simmetrica del valore del Cookie
 					String passphrase = System.getenv(Constants.PASSPHRASE);
 					String encryptedCookieValue = new EncryptionUtils(passphrase).encrypt(rememberMeCookie.getValue());

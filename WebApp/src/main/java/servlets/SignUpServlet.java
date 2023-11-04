@@ -88,25 +88,25 @@ public class SignUpServlet extends HttpServlet {
 						
 						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 						
-						if(isRememberMeCookieExpired)
+						if(isRememberMeCookieExpired) {
+							
 							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
-						
-						log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
-						
-						if(!isRememberMeCookieExpired) {
+							
+							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
+							
+							request.getRequestDispatcher("index.jsp").forward(request, response);
+							return;
+							
+						} else {
+							
+							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
 							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
 							request.getRequestDispatcher("./success.jsp").forward(request, response);
 							return;
 							
-						} else {
-							
-							request.getRequestDispatcher("index.jsp").forward(request, response);
-							return;
-							
 						}
 						
-					
 					}
 					
 					

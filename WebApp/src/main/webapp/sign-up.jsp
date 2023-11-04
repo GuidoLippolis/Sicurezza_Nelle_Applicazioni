@@ -97,9 +97,21 @@
 
             <hr class="mx-n3">
 
+			<!-- 
+			
             <div class="px-5 py-4">
               <button type="submit" class="btn btn-primary btn-lg">Registrati</button>
             </div>
+			
+			 -->
+
+            
+			<div class="px-5 py-4 d-flex justify-content-between">
+			    <button type="submit" class="btn btn-primary btn-lg">Registrati</button>
+			    <a href="sign-in" class="btn btn-primary btn-lg" style="margin-top: 10px;">Torna alla login</a>
+			</div>
+
+            
             
             <div id="errorDiv" style="display: none;">
 			    <p id="errorMessage"></p>

@@ -80,15 +80,22 @@ public class FileUploadServlet extends HttpServlet {
 					if(cookie.getName().equals("rememberMe")) {
 						
 						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
-						
-						if(isRememberMeCookieExpired)
-							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
-						
-						log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
-						
+
 						if(isRememberMeCookieExpired) {
 							
-							request.getRequestDispatcher("./index.jsp").forward(request, response);
+							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+							
+							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
+							
+							request.getRequestDispatcher("index.jsp").forward(request, response);
+							return;
+							
+						} else {
+							
+							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
+							
+							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
+							request.getRequestDispatcher("./success.jsp").forward(request, response);
 							return;
 							
 						}
