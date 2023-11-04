@@ -67,43 +67,31 @@ public class UserDAO {
 			if(photo != null)
 				usersStatement.setBlob(2, photo);
 			
-			int rowsAffectedUsers = usersStatement.executeUpdate();
+			usersStatement.executeUpdate();
 			
-			if(rowsAffectedUsers == 1) {
-				
-				resultSetUsers = usersStatement.getGeneratedKeys();
-				resultSetUsers.next();
-				
-				userId = resultSetUsers.getInt(1);
-				
-				passwordsStatement = connection.prepareStatement("INSERT INTO passwords_db.passwords(user_id, password) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
+			resultSetUsers = usersStatement.getGeneratedKeys();
+			resultSetUsers.next();
+			
+			userId = resultSetUsers.getInt(1);
+			
+			passwordsStatement = connection.prepareStatement("INSERT INTO passwords_db.passwords(user_id, password) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
 
-				passwordsStatement.setInt(1, userId);
-				passwordsStatement.setBytes(2, hashedPassword);
-				
-				int rowsAffectedPasswords = passwordsStatement.executeUpdate();
-				
-				saltsStatement = connection.prepareStatement("INSERT INTO salts_db.salts(username,salt) VALUES(?,?)");
-				
-				saltsStatement.setString(1, username);
-				saltsStatement.setBytes(2, salt);
-				
-				int affectedRowsSalts = saltsStatement.executeUpdate();
-				
-				if(rowsAffectedPasswords == 1 && affectedRowsSalts == 1) {
-					
-					connection.commit();
-					return true;
-					
-				} else {
-					
-					connection.rollback();
-					return false;
-					
-				}
-				
-			}
+			passwordsStatement.setInt(1, userId);
+			passwordsStatement.setBytes(2, hashedPassword);
 			
+			passwordsStatement.executeUpdate();
+			
+			saltsStatement = connection.prepareStatement("INSERT INTO salts_db.salts(username,salt) VALUES(?,?)");
+			
+			saltsStatement.setString(1, username);
+			saltsStatement.setBytes(2, salt);
+			
+			saltsStatement.executeUpdate();
+			
+			connection.commit();
+			
+			return true;
+				
 		} catch (Exception e) {
 
 			log.error("Eccezione in UserDAO: " + e.getMessage());
@@ -131,7 +119,7 @@ public class UserDAO {
 			
 		}
 		
-		return true;
+//		return true;
 		
 	}
 	
@@ -231,6 +219,9 @@ public class UserDAO {
 			
 			if(connection != null)
 				connection.close();
+			
+			if(preparedStatement != null)
+				preparedStatement.close();
 			
 			if(resultSet != null)
 				resultSet.close();

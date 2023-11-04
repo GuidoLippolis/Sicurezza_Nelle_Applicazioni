@@ -239,7 +239,8 @@ public class SignUpServlet extends HttpServlet {
 		
 		} finally {
 			
-			photoInputStream.close();
+			if(photoInputStream != null)
+				photoInputStream.close();
 			
 		}
 		
