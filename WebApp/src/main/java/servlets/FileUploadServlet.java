@@ -95,8 +95,6 @@ public class FileUploadServlet extends HttpServlet {
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
 							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
-							request.getRequestDispatcher("./success.jsp").forward(request, response);
-							return;
 							
 						}
 						
