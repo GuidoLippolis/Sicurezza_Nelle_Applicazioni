@@ -189,14 +189,14 @@ public class SignUpServlet extends HttpServlet {
 			 * 
 			 * */
 			
-			if(Arrays.equals(password, passwordToConfirm)) {
+			if(Arrays.equals(password, passwordToConfirm))
 				
 				registeredUser = UserDAO.signUp(username, photoInputStream, password);
 				
 				// Pulizia dei dati sensibili
-				PasswordUtils.clearArray(passwordToConfirm);
+//				PasswordUtils.clearArray(passwordToConfirm);
 				
-			} else
+			else
 				
 				throw new DifferentPasswordsException();
 			
@@ -238,6 +238,9 @@ public class SignUpServlet extends HttpServlet {
 			log.error("Eccezione in SignUpServlet: " + e.getMessage());
 		
 		} finally {
+			
+			PasswordUtils.clearArray(passwordToConfirm);
+			PasswordUtils.clearArray(password);
 			
 			if(photoInputStream != null)
 				photoInputStream.close();

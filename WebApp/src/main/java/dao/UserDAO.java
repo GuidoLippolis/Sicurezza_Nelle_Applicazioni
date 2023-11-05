@@ -103,7 +103,9 @@ public class UserDAO {
 		
 		} finally {
 			
+			PasswordUtils.clearArray(password);
 			PasswordUtils.clearArray(salt);
+			PasswordUtils.clearArray(hashedPassword);
 			
 			if(connection != null)
 				connection.close();
@@ -135,6 +137,9 @@ public class UserDAO {
 		
 		boolean loggedUser = false;
 		
+		byte[] userSalt = new byte[0];
+		byte[] hashedPasswordAndSalt = new byte[0];
+		
 		try {
 			
 			/*
@@ -146,9 +151,9 @@ public class UserDAO {
 			 * 
 			 * */
 			
-			byte[] userSalt = SaltDAO.findSaltByUsername(username);
+			userSalt = SaltDAO.findSaltByUsername(username);
 			
-			byte[] hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, prop.getProperty(Constants.HASHING_ALGORITHM));
+			hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, prop.getProperty(Constants.HASHING_ALGORITHM));
 			
 			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
 			
@@ -158,6 +163,9 @@ public class UserDAO {
 			return false;
 		
 		} finally {
+			
+			PasswordUtils.clearArray(userSalt);
+			PasswordUtils.clearArray(hashedPasswordAndSalt);
 			
 			if(passwordsConnection != null)
 				passwordsConnection.close();
