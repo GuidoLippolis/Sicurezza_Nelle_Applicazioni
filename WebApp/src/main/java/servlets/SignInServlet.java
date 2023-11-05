@@ -154,7 +154,7 @@ public class SignInServlet extends HttpServlet {
 			
 			loggedUser = UserDAO.signIn(username, password);
 			
-			PasswordUtils.clearArray(password);
+//			PasswordUtils.clearArray(password);
 			
 			if(loggedUser) {
 				
@@ -246,6 +246,10 @@ public class SignInServlet extends HttpServlet {
 			request.getRequestDispatcher("./index.jsp").forward(request, response);
 
 			return;
+			
+		} finally {
+			
+			PasswordUtils.clearArray(password);
 			
 		}
 		
