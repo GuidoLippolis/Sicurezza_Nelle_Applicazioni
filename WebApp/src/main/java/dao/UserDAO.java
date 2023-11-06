@@ -45,8 +45,8 @@ public class UserDAO {
 		
 		int userId = 0;
 		
-	byte[] salt = PasswordUtils.createSalt(10);
-	byte[] hashedPassword = PasswordUtils.generateHash(password, salt, prop.getProperty(Constants.HASHING_ALGORITHM));
+		byte[] salt = PasswordUtils.createSalt(10);
+		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, prop.getProperty(Constants.HASHING_ALGORITHM));
 		
 		try {
 			
@@ -121,8 +121,6 @@ public class UserDAO {
 			
 		}
 		
-//		return true;
-		
 	}
 	
 	public static boolean signIn(String username, byte[] password) throws ClassNotFoundException, SQLException {
@@ -164,6 +162,7 @@ public class UserDAO {
 		
 		} finally {
 			
+			PasswordUtils.clearArray(password);
 			PasswordUtils.clearArray(userSalt);
 			PasswordUtils.clearArray(hashedPasswordAndSalt);
 			

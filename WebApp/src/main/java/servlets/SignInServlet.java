@@ -86,12 +86,10 @@ public class SignInServlet extends HttpServlet {
 					
 					if(cookie.getName().equals("rememberMe")) {
 						
-//						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByCookieValue(cookie.getValue()));
 						
 						if(isRememberMeCookieExpired) {
 							
-//							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(cookie.getValue());
 							
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
@@ -103,7 +101,6 @@ public class SignInServlet extends HttpServlet {
 							
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
-//							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
 							request.getSession().setAttribute("user", CookieDAO.findUsernameByCookieValue(cookie.getValue()));
 							request.getRequestDispatcher("./success.jsp").forward(request, response);
 							return;
@@ -184,8 +181,6 @@ public class SignInServlet extends HttpServlet {
 					/*
 					 * GESTIONE DEI COOKIE:
 					 * 
-					 * - Recupero l'utente tramite lo username
-					 * 
 					 * - Genero un token derivante dallo username, al quale concateno una stringa casuale
 					 * 
 					 * - La stringa casuale ha il seguente pattern: username#randomstring@@@user_id@@@. In questo modo, quando
@@ -194,8 +189,6 @@ public class SignInServlet extends HttpServlet {
 					 *   database e associato al nome del file relativo alla proposta progettuale
 					 * 
 					 * */
-					
-					User user = UserDAO.findByUsername(username);
 					
 					// Generazione del valore casuale del Cookie derivante allo username
 					String randomCookieValue = username + "#" + Utils.generateRandomToken(20);
@@ -213,7 +206,7 @@ public class SignInServlet extends HttpServlet {
 					rememberMeCookie.setHttpOnly(true);
 					rememberMeCookie.setSecure(true);
 			
-					savedCookie = CookieDAO.saveCookie(encryptedCookieValue, rememberMeCookie.getMaxAge(), user.getUsername());
+					savedCookie = CookieDAO.saveCookie(encryptedCookieValue, rememberMeCookie.getMaxAge(), username);
 					
 					response.addCookie(rememberMeCookie);
 					

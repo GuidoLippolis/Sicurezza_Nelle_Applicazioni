@@ -10,7 +10,6 @@ import java.sql.Statement;
 import org.apache.log4j.Logger;
 
 import constants.Constants;
-import model.User;
 
 public class CookieDAO {
 	

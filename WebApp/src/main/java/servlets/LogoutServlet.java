@@ -62,7 +62,6 @@ public class LogoutServlet extends HttpServlet {
                 	
                     if ("rememberMe".equals(cookie.getName())) {
                     	
-//                    	String encryptedCookieFromDB = CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue()));
                     	String encryptedCookieFromDB = CookieDAO.findCookieByValue(CookieDAO.findCookieByValue(cookie.getValue()));
                     	
                     	deletedRememberMeCookie = CookieDAO.deleteCookieByValue(encryptedCookieFromDB);

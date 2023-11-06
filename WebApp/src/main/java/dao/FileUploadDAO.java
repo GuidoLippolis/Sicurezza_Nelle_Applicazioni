@@ -8,20 +8,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
 import constants.Constants;
 import model.UploadedFile;
-import utils.ApplicationPropertiesLoader;
 
 public class FileUploadDAO {
 	
 	private static final Logger log = Logger.getLogger(FileUploadDAO.class);
 	
-	private static Properties prop = ApplicationPropertiesLoader.getProperties();
-
 	public static boolean saveFileToDatabase(String fileName, byte[] fileContent, String username) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");

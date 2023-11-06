@@ -16,8 +16,6 @@ public class SaltDAO {
 	
 	private static final Logger log = Logger.getLogger(SaltDAO.class);
 	
-	private static Properties prop = ApplicationPropertiesLoader.getProperties();
-
 	public static byte[] findSaltByUsername(String username) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");

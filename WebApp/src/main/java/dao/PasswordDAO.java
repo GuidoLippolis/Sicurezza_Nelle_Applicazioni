@@ -5,19 +5,15 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
 import constants.Constants;
-import utils.ApplicationPropertiesLoader;
 
 public class PasswordDAO {
 
 	private static final Logger log = Logger.getLogger(PasswordDAO.class);
 	
-	private static Properties prop = ApplicationPropertiesLoader.getProperties();
-
 	public static boolean findUserByPassword(byte[] hashedPassword) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");

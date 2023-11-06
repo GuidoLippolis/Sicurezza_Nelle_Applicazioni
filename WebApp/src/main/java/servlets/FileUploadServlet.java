@@ -79,12 +79,10 @@ public class FileUploadServlet extends HttpServlet {
 					
 					if(cookie.getName().equals("rememberMe")) {
 						
-//						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByCookieValue(cookie.getValue()));
 						
 						if(isRememberMeCookieExpired) {
 							
-//							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
 							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(cookie.getValue());
 							
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
@@ -96,7 +94,6 @@ public class FileUploadServlet extends HttpServlet {
 							
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
-//							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
 							request.getSession().setAttribute("user", CookieDAO.findUsernameByCookieValue(cookie.getValue()));
 							
 						}
