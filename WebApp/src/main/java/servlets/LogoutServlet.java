@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import dao.CookieDAO;
 import net.jcip.annotations.ThreadSafe;
-import utils.Utils;
 
 /**
  * Servlet implementation class LogoutServlet
@@ -63,7 +62,8 @@ public class LogoutServlet extends HttpServlet {
                 	
                     if ("rememberMe".equals(cookie.getName())) {
                     	
-                    	String encryptedCookieFromDB = CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue()));
+//                    	String encryptedCookieFromDB = CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue()));
+                    	String encryptedCookieFromDB = CookieDAO.findCookieByValue(CookieDAO.findCookieByValue(cookie.getValue()));
                     	
                     	deletedRememberMeCookie = CookieDAO.deleteCookieByValue(encryptedCookieFromDB);
                     	

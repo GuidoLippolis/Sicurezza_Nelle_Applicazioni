@@ -86,11 +86,13 @@ public class SignInServlet extends HttpServlet {
 					
 					if(cookie.getName().equals("rememberMe")) {
 						
-						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+//						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByCookieValue(cookie.getValue()));
 						
 						if(isRememberMeCookieExpired) {
 							
-							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+//							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(cookie.getValue());
 							
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
@@ -101,7 +103,8 @@ public class SignInServlet extends HttpServlet {
 							
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
-							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
+//							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
+							request.getSession().setAttribute("user", CookieDAO.findUsernameByCookieValue(cookie.getValue()));
 							request.getRequestDispatcher("./success.jsp").forward(request, response);
 							return;
 							
@@ -154,8 +157,6 @@ public class SignInServlet extends HttpServlet {
 			
 			loggedUser = UserDAO.signIn(username, password);
 			
-//			PasswordUtils.clearArray(password);
-			
 			if(loggedUser) {
 				
 				HttpSession oldSession = request.getSession(false);
@@ -197,18 +198,22 @@ public class SignInServlet extends HttpServlet {
 					User user = UserDAO.findByUsername(username);
 					
 					// Generazione del valore casuale del Cookie derivante allo username
-					String randomCookieValue = username + "#" + Utils.generateRandomToken(20) + "@@@" + user.getId() + "@@@";
+					String randomCookieValue = username + "#" + Utils.generateRandomToken(20);
 					
-					Cookie rememberMeCookie = new Cookie("rememberMe", randomCookieValue);
+					// Crittografia simmetrica del valore del Cookie
+					String passphrase = System.getenv(Constants.PASSPHRASE);
+					String encryptedCookieValue = new EncryptionUtils(passphrase).encrypt(randomCookieValue);
+					
+					Cookie rememberMeCookie = new Cookie("rememberMe", encryptedCookieValue);
 					
 					// Setting della durata massima del Cookie in secondi
 					rememberMeCookie.setMaxAge(Utils.calculateMinutesFromNow(15));
-			
-					// Crittografia simmetrica del valore del Cookie
-					String passphrase = System.getenv(Constants.PASSPHRASE);
-					String encryptedCookieValue = new EncryptionUtils(passphrase).encrypt(rememberMeCookie.getValue());
 					
-					savedCookie = CookieDAO.saveCookie(encryptedCookieValue, rememberMeCookie.getMaxAge(), user);
+					// Setting di attributi di sicurezza
+					rememberMeCookie.setHttpOnly(true);
+					rememberMeCookie.setSecure(true);
+			
+					savedCookie = CookieDAO.saveCookie(encryptedCookieValue, rememberMeCookie.getMaxAge(), user.getUsername());
 					
 					response.addCookie(rememberMeCookie);
 					

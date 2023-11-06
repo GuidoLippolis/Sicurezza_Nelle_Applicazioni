@@ -79,11 +79,13 @@ public class FileUploadServlet extends HttpServlet {
 					
 					if(cookie.getName().equals("rememberMe")) {
 						
-						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
-
+//						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+						isRememberMeCookieExpired = Utils.isCookieExpired(CookieDAO.findCookieExpirationTimeByCookieValue(cookie.getValue()));
+						
 						if(isRememberMeCookieExpired) {
 							
-							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+//							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(CookieDAO.findCookieByUserId(Utils.getUserIdFromCookieValue(cookie.getValue())));
+							deletedRememberMeCookie = CookieDAO.deleteCookieByValue(cookie.getValue());
 							
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
@@ -94,7 +96,8 @@ public class FileUploadServlet extends HttpServlet {
 							
 							log.info(deletedRememberMeCookie ? "Il cookie è stato cancellato correttamente dal database" : "Il cookie è ancora nel database");
 							
-							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
+//							request.getSession().setAttribute("user", Utils.getUsernameFromCookie(cookie.getValue()));
+							request.getSession().setAttribute("user", CookieDAO.findUsernameByCookieValue(cookie.getValue()));
 							
 						}
 						
@@ -144,19 +147,27 @@ public class FileUploadServlet extends HttpServlet {
     	String cookieUsername = null;
     	String sessionUsername = null;
     	boolean savedFile = false;
-    	
-    	if(cookies != null) {
-    		
-    		for(Cookie cookie : cookies) {
-    			
-    			if(cookie.getName().equals("rememberMe")) 
-    				
-    				cookieUsername = Utils.getUsernameFromCookie(cookie.getValue());
 
-    			
-    		}
+    	try {
+			
+        	if(cookies != null) {
+        		
+        		for(Cookie cookie : cookies) {
+        			
+        			if(cookie.getName().equals("rememberMe")) 
+        				
+        				cookieUsername = CookieDAO.findUsernameByCookieValue(cookie.getValue());
+
+        			
+        		}
+        		
+        	}
     		
-    	}
+		} catch (Exception e) {
+			
+			log.error("Eccezione in FileUploadServlet: " + e.getMessage());
+			
+		}
     	
     	// Viene recuperato lo username dell'utente per memorizzarlo nel database
     	sessionUsername = (String) request.getSession().getAttribute("user");

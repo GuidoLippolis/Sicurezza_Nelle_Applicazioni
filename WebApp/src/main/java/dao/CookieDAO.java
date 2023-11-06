@@ -6,21 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
 import constants.Constants;
 import model.User;
-import utils.ApplicationPropertiesLoader;
 
 public class CookieDAO {
 	
 	private static final Logger log = Logger.getLogger(CookieDAO.class);
 	
-	private static Properties prop = ApplicationPropertiesLoader.getProperties();
-
-	public static boolean saveCookie(String encryptedCookieValue, int maxAge, User user) throws ClassNotFoundException, SQLException {
+	public static boolean saveCookie(String encryptedCookieValue, int maxAge, String username) throws ClassNotFoundException, SQLException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -40,11 +36,11 @@ public class CookieDAO {
 			
 			connection.setAutoCommit(false);
 			
-			cookiesStatement = connection.prepareStatement("INSERT INTO cookies_db.cookies(cookie_value, expiration_date, user_id) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			cookiesStatement = connection.prepareStatement("INSERT INTO cookies_db.cookies(cookie_value, expiration_date, username) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			
 			cookiesStatement.setString(1, encryptedCookieValue);
 			cookiesStatement.setInt(2, maxAge);
-			cookiesStatement.setInt(3, user.getId());
+			cookiesStatement.setString(3, username);
 			
 			int rowsAffectedCookies = cookiesStatement.executeUpdate();
 			
@@ -72,7 +68,62 @@ public class CookieDAO {
 		
 	}
 	
-	public static String findCookieByUserId(int userId) throws SQLException, ClassNotFoundException {
+	public static String findUsernameByCookieValue(String value) throws SQLException, ClassNotFoundException {
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection connection = null;
+		
+		PreparedStatement cookiesStatement = null;
+		
+		ResultSet resultSetCookies = null;
+		
+		String username = null;
+		
+		try {
+			
+			connection = DriverManager.getConnection(
+					
+					System.getenv(Constants.JDBC_URL) + System.getenv(Constants.COOKIES_DB_NAME), 
+					System.getenv(Constants.COOKIES_DB_USERNAME), 
+					System.getenv(Constants.COOKIES_DB_PASSWORD)
+					
+			);
+			
+			cookiesStatement = connection.prepareStatement("SELECT username FROM cookies_db.cookies WHERE cookie_value = ?");
+			
+			cookiesStatement.setString(1, value);
+			
+			resultSetCookies = cookiesStatement.executeQuery();
+			
+			boolean hasNext = resultSetCookies.next();
+			
+			if(hasNext)
+				username = resultSetCookies.getString("username");
+			
+			return username;
+			
+		} catch (Exception e) {
+
+			log.error("Eccezione in CookieDAO: ", e);
+			return "";
+		
+		} finally {
+			
+			if(connection != null)
+				connection.close();
+			
+			if(cookiesStatement != null)
+				cookiesStatement.close();
+			
+			if(resultSetCookies != null)
+				resultSetCookies.close();
+			
+		}
+		
+	}
+	
+	public static String findCookieByValue(String value) throws SQLException, ClassNotFoundException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -94,9 +145,9 @@ public class CookieDAO {
 					
 			);
 			
-			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE user_id = ?");
+			cookiesStatement = connection.prepareStatement("SELECT cookie_value FROM cookies_db.cookies WHERE cookie_value = ?");
 			
-			cookiesStatement.setInt(1, userId);
+			cookiesStatement.setString(1, value);
 			
 			resultSetCookies = cookiesStatement.executeQuery();
 			
@@ -182,7 +233,7 @@ public class CookieDAO {
 		
 	}
 	
-	public static int findCookieExpirationTimeByUserId(int userId) throws SQLException, ClassNotFoundException {
+	public static int findCookieExpirationTimeByCookieValue(String value) throws SQLException, ClassNotFoundException {
 		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		
@@ -206,9 +257,9 @@ public class CookieDAO {
 			
 			connection.setAutoCommit(false);
 			
-			cookiesStatement = connection.prepareStatement("SELECT expiration_date FROM cookies_db.cookies WHERE user_id = ?");
+			cookiesStatement = connection.prepareStatement("SELECT expiration_date FROM cookies_db.cookies WHERE username = ?");
 			
-			cookiesStatement.setInt(1, userId);
+			cookiesStatement.setString(1, value);
 			
 			resultSetCookies = cookiesStatement.executeQuery();
 			

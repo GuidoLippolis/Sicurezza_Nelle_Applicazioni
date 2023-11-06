@@ -59,8 +59,8 @@ CREATE TABLE IF NOT EXISTS cookies (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     cookie_value VARCHAR(500) NOT NULL UNIQUE,
     expiration_date BIGINT NOT NULL,
-	user_id INT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users_db.users(id) ON DELETE CASCADE
+    username VARCHAR(50) NOT NULL,
+    FOREIGN KEY (username) REFERENCES users_db.users(username) ON DELETE CASCADE
 
 );
 
