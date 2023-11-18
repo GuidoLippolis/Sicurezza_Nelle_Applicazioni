@@ -154,6 +154,8 @@ public class SignInServlet extends HttpServlet {
 			
 			loggedUser = UserDAO.signIn(username, password);
 			
+			PasswordUtils.clearArray(password);
+			
 			if(loggedUser) {
 				
 				HttpSession oldSession = request.getSession(false);

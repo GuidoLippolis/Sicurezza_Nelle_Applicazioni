@@ -48,6 +48,8 @@ public class UserDAO {
 		byte[] salt = PasswordUtils.createSalt(10);
 		byte[] hashedPassword = PasswordUtils.generateHash(password, salt, prop.getProperty(Constants.HASHING_ALGORITHM));
 		
+		PasswordUtils.clearArray(password);
+		
 		try {
 			
 			connection = DriverManager.getConnection(
@@ -81,6 +83,8 @@ public class UserDAO {
 			
 			passwordsStatement.executeUpdate();
 			
+			PasswordUtils.clearArray(hashedPassword);
+			
 			saltsStatement = connection.prepareStatement("INSERT INTO salts_db.salts(username,salt) VALUES(?,?)");
 			
 			saltsStatement.setString(1, username);
@@ -88,6 +92,8 @@ public class UserDAO {
 			
 			saltsStatement.executeUpdate();
 			
+			PasswordUtils.clearArray(salt);
+
 			connection.commit();
 			
 			return true;
@@ -149,11 +155,15 @@ public class UserDAO {
 			 * 
 			 * */
 			
-			userSalt = SaltDAO.findSaltByUsername(username);
-			
-			hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, prop.getProperty(Constants.HASHING_ALGORITHM));
-			
-			loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
+	userSalt = SaltDAO.findSaltByUsername(username);
+	
+	hashedPasswordAndSalt = PasswordUtils.generateHash(password, userSalt, prop.getProperty(Constants.HASHING_ALGORITHM));
+	
+	PasswordUtils.clearArray(userSalt);
+	
+	loggedUser = PasswordDAO.findUserByPassword(hashedPasswordAndSalt) ? true : false;
+	
+	PasswordUtils.clearArray(hashedPasswordAndSalt);
 			
 		} catch (Exception e) {
 

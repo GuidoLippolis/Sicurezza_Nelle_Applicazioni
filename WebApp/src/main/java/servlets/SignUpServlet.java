@@ -189,11 +189,14 @@ public class SignUpServlet extends HttpServlet {
 			 * 
 			 * */
 			
-			if(Arrays.equals(password, passwordToConfirm))
-				
+			if(Arrays.equals(password, passwordToConfirm)) {
+
 				registeredUser = UserDAO.signUp(username, photoInputStream, password);
 				
-			else
+				PasswordUtils.clearArray(password);
+				PasswordUtils.clearArray(passwordToConfirm);
+				
+			} else
 				
 				throw new DifferentPasswordsException();
 			
