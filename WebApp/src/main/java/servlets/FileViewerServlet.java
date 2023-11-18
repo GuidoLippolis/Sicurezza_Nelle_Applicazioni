@@ -46,7 +46,7 @@ public class FileViewerServlet extends HttpServlet {
                 
             	log.info("File trovato nel database");
             	
-                response.setContentType("text/plain");
+                response.setContentType("text/html");
                 response.setCharacterEncoding("UTF-8");
 
                 OutputStream out = response.getOutputStream();
