@@ -189,7 +189,9 @@ public class FileUploadServlet extends HttpServlet {
             String finalPath = getServletContext().getRealPath("/") + File.separator + Utils.transformFileName(fileName);
             
             filePart.write(finalPath);
-    		
+            
+            String fileContent = FileUtils.readFileContent(finalPath);
+            
     		String finalUsername = cookieUsername != null ? cookieUsername : sessionUsername;
     		
     		if(FileUtils.isFileTooLarge(finalPath))
@@ -198,7 +200,7 @@ public class FileUploadServlet extends HttpServlet {
     		if(FileUtils.isFakeTxt(finalPath))
     			throw new ForbiddenFileTypeException(fileName);
     		
-            savedFile = FileUploadDAO.saveFileToDatabase(FileUtils.getFileName(filePart), FileUtils.getFileBytes(new File(finalPath)), finalUsername);
+            savedFile = FileUploadDAO.saveFileToDatabase(FileUtils.getFileName(filePart), FileUtils.removeScriptTags(fileContent).getBytes(), finalUsername);
             
             log.info(savedFile ? "Il file " + fileName + " è stato salvato correttamente sul database" : "Il file " + fileName + " NON è stato salvato correttamente sul database");
             

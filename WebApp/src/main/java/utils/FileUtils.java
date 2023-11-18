@@ -1,12 +1,16 @@
 package utils;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.Part;
 
@@ -163,6 +167,28 @@ public class FileUtils {
         }
         
         return "";
+    }
+    
+    public static String readFileContent(String filePath) throws IOException {
+    	
+        StringBuilder content = new StringBuilder();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        	
+            String line;
+            
+            while ((line = br.readLine()) != null) 
+                content.append(line).append("\n");
+            
+        }
+
+        return content.toString();
+    }
+    
+    public static String removeScriptTags(String input) {
+        
+        return Pattern.compile("<script[^>]*>(.*?)</script>", Pattern.DOTALL).matcher(input).replaceAll("");
+        
     }
 	
 }
