@@ -12,12 +12,6 @@ public class Utils {
 		
 	}
     
-    public static String getUsernameFromCookie(String cookieValue) {
-    	
-    	return cookieValue.split("#")[0];
-    	
-    }
-    
     /*
      * Esempi:
      * 

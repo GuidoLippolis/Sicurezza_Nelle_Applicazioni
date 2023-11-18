@@ -178,17 +178,7 @@ public class SignInServlet extends HttpServlet {
 				
 				if(rememberMe) {
 					
-					/*
-					 * GESTIONE DEI COOKIE:
-					 * 
-					 * - Genero un token derivante dallo username, al quale concateno una stringa casuale
-					 * 
-					 * - La stringa casuale ha il seguente pattern: username#randomstring@@@user_id@@@. In questo modo, quando
-					 *   l'utente raggiungerà l'applicazione e accederà alla pagina per il caricamento di una proposta progettuale,
-					 *   verrà estrapolato lo username tramite il metodo getUsernameFromCookie, il quale verrà memorizzato nel
-					 *   database e associato al nome del file relativo alla proposta progettuale
-					 * 
-					 * */
+					// GESTIONE DEI COOKIE
 					
 					// Generazione del valore casuale del Cookie derivante allo username
 					String randomCookieValue = username + "#" + Utils.generateRandomToken(20);
